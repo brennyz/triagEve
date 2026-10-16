@@ -33,6 +33,7 @@ export function switchTab(tab) {
   if (tab === 'eef') actions.renderEef?.();
   if (tab === 'contacts') actions.renderContacts?.();
   if (tab === 'nood') actions.renderNood?.();
+  if (tab === 'meds') actions.renderMeds?.();
 }
 
 $$('.nav-btn').forEach((b) => b.addEventListener('click', () => switchTab(b.dataset.tab)));

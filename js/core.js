@@ -26,6 +26,8 @@ const store = {
   profile: null,
   contacts: [],
   editingContactId: null,
+  medications: [],
+  editingMedId: null,
 };
 
 const loaders = [];

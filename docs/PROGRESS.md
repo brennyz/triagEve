@@ -9,7 +9,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 3 – Navigatie + Home-overzicht (2026-10-16) – nav Home/Chat/Dagboek/Agenda/Meer, Home met lege-teksten, Noodkaart-knop (112). Code gesplitst naar `js/*.js`. Getest zonder Supabase via `?preview=1` in Chrome 390×844 en desktop; geen JS-fouten. Live e2e wacht op fase 1.
 - [x] Fase 4 – Agenda: afspraken + overleggen (+ .ics) (2026-10-16) – soort/locatie, label per soort, `.ics` download. Bestaande items = overleg. Migratie `20261016190000_agenda.sql` (wacht op secrets). Getest in preview: labels, locatie, ICS-inhoud, formulierlabel bij afspraak.
 - [x] Fase 5 – Over Eef + Noodkaart + Contacten (2026-10-16) – profielvelden, contacten met tel:, noodkaart (112, huisarts, noodcontacten, teksten). Migratie `20261017100000_eef.sql`. Getest in preview 390×844. RLS-test wacht op secrets.
-- [ ] Fase 6 – Medicatie
+- [x] Fase 6 – Medicatie (2026-10-16) – huidige/gestopt, stoppen, dagboekregel bij wijziging, disclaimer. Migratie `20261017110000_medicatie.sql`. Live-sync wacht op secrets; UI in preview getest.
 - [ ] Fase 7 – Taken
 - [ ] Fase 8 – Dagboek verbeteren
 - [ ] Fase 9 – Overzicht voor arts (print/PDF)

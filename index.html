@@ -135,8 +135,15 @@
     <div id="tab-meds" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
-        <p class="empty">Het medicatie-overzicht volgt nog. Nog niets ingevuld.</p>
+        <p class="notice">Dit is een overzicht voor de familie. Volg altijd het advies van de arts/apotheek.</p>
+        <h2 class="section-title">Huidige medicatie</h2>
+        <div id="meds-current" class="list"></div>
+        <details class="stopped-box">
+          <summary>Gestopt</summary>
+          <div id="meds-stopped" class="list"></div>
+        </details>
       </div>
+      <button id="add-med" class="fab" title="Nieuwe medicatie" aria-label="Nieuwe medicatie">+</button>
     </div>
     <div id="tab-tasks" class="tab-panel" hidden>
       <div class="scroll">
@@ -217,6 +224,31 @@
         <button type="button" id="delete-btn" class="danger" hidden>Verwijderen</button>
         <span class="spacer"></span>
         <button type="button" id="cancel-btn" class="ghost">Annuleren</button>
+        <button type="submit" class="primary">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="med-editor">
+    <form id="med-form" method="dialog">
+      <h2 id="med-title">Nieuwe medicatie</h2>
+      <label for="m-name">Naam *</label>
+      <input id="m-name" required>
+      <label for="m-dose">Dosis</label>
+      <input id="m-dose" placeholder="bijv. 500 mg">
+      <label for="m-schedule">Wanneer</label>
+      <input id="m-schedule" placeholder="bijv. 2x per dag, ochtend en avond">
+      <label for="m-reason">Waarvoor</label>
+      <input id="m-reason">
+      <label for="m-notes">Notitie</label>
+      <textarea id="m-notes" rows="2"></textarea>
+      <label for="m-started">Gestart op</label>
+      <input id="m-started" type="date">
+      <div class="dialog-buttons">
+        <button type="button" id="med-delete" class="danger" hidden>Verwijderen</button>
+        <button type="button" id="med-stop" class="ghost" hidden>Stoppen</button>
+        <span class="spacer"></span>
+        <button type="button" id="med-cancel" class="ghost">Annuleren</button>
         <button type="submit" class="primary">Opslaan</button>
       </div>
     </form>

@@ -9,6 +9,7 @@ import './meet.js';
 import './home.js';
 import './eef.js';
 import './contacts.js';
+import './meds.js';
 
 async function start() {
   $('#login-view').hidden = true;
