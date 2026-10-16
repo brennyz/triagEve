@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="theme-color" content="#6d4aff">
-  <meta name="description" content="Contact, dagboek en overleg voor Jacky, Paps en Bren">
+  <meta name="description" content="Contact, dagboek en agenda voor Jacky, Paps en Bren">
   <meta name="robots" content="noindex, nofollow">
   <!-- CSP: *.supabase.co tot het echte project-ref bekend is (fase 1); daarna aanscherpen. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>triagEve</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -22,7 +22,7 @@
     <div class="card login-card">
       <img src="icons/icon.svg" alt="" class="logo">
       <h1>triagEve</h1>
-      <p class="muted">Chat, dagboek &amp; overleg</p>
+      <p class="muted">Samen voor Eef · chat, dagboek &amp; agenda</p>
       <p id="config-warning" class="error" hidden>
         De app is nog niet gekoppeld aan Supabase. Vul <code>config.js</code> in.
       </p>
@@ -44,7 +44,7 @@
   <!-- App -->
   <section id="app-view" class="view" hidden>
     <header class="topbar">
-      <h1 id="page-title">Chat</h1>
+      <h1 id="page-title">Home</h1>
       <div class="topbar-right">
         <span id="conn" class="dot" title="Verbinding"></span>
         <span id="current-user" class="pill"></span>
@@ -52,12 +52,17 @@
       </div>
     </header>
 
+    <!-- Home -->
+    <div id="tab-home" class="tab-panel" hidden>
+      <div class="scroll" id="home-scroll"></div>
+    </div>
+
     <!-- Chat -->
-    <div id="tab-chat" class="tab-panel">
+    <div id="tab-chat" class="tab-panel" hidden>
       <div id="messages" class="messages"></div>
       <form id="chat-form" class="composer">
         <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
-        <button type="submit" class="primary send" title="Versturen">&#10148;</button>
+        <button type="submit" class="primary send" title="Versturen" aria-label="Versturen">&#10148;</button>
       </form>
     </div>
 
@@ -85,7 +90,7 @@
       </div>
     </div>
 
-    <!-- Overleg -->
+    <!-- Agenda -->
     <div id="tab-meet" class="tab-panel" hidden>
       <div class="scroll">
         <nav class="tabs">
@@ -96,20 +101,68 @@
         <input id="meet-search" type="search" placeholder="Zoeken...">
         <div id="meet-list" class="list"></div>
       </div>
-      <button id="add-btn" class="fab" title="Nieuw overleg">+</button>
+      <button id="add-btn" class="fab" title="Nieuwe afspraak" aria-label="Nieuwe afspraak">+</button>
+    </div>
+
+    <!-- Meer -->
+    <div id="tab-more" class="tab-panel" hidden>
+      <div class="scroll">
+        <nav class="menu-list">
+          <button type="button" class="menu-item" data-go="eef">Over Eef</button>
+          <button type="button" class="menu-item" data-go="meds">Medicatie</button>
+          <button type="button" class="menu-item" data-go="tasks">Taken</button>
+          <button type="button" class="menu-item" data-go="contacts">Contacten</button>
+          <button type="button" class="menu-item danger" id="logout-btn-more">Uitloggen</button>
+        </nav>
+      </div>
+    </div>
+
+    <div id="tab-eef" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="empty">Hier komt straks de situatie van Eef. Nog niets ingevuld.</p>
+      </div>
+    </div>
+    <div id="tab-meds" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="empty">Het medicatie-overzicht volgt nog. Nog niets ingevuld.</p>
+      </div>
+    </div>
+    <div id="tab-tasks" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="empty">Nog geen taken.</p>
+      </div>
+    </div>
+    <div id="tab-contacts" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="empty">Nog geen contacten.</p>
+      </div>
+    </div>
+    <div id="tab-nood" class="tab-panel" hidden>
+      <div class="scroll nood-scroll">
+        <button type="button" class="ghost back" data-go="home">← Home</button>
+        <h2>Noodkaart</h2>
+        <a class="emergency-call" href="tel:112">112 bellen</a>
+        <p class="muted">Huisarts en noodcontacten komen hier zodra ze zijn ingevuld.</p>
+      </div>
     </div>
 
     <nav class="bottomnav">
-      <button class="nav-btn active" data-tab="chat">&#128172;<span>Chat</span><b class="badge-count" id="chat-badge" hidden></b></button>
+      <button class="nav-btn active" data-tab="home">&#127968;<span>Home</span></button>
+      <button class="nav-btn" data-tab="chat">&#128172;<span>Chat</span><b class="badge-count" id="chat-badge" hidden></b></button>
       <button class="nav-btn" data-tab="diary">&#128214;<span>Dagboek</span></button>
-      <button class="nav-btn" data-tab="meet">&#128197;<span>Overleg</span></button>
+      <button class="nav-btn" data-tab="meet">&#128197;<span>Agenda</span></button>
+      <button class="nav-btn" data-tab="more">&#8943;<span>Meer</span></button>
     </nav>
   </section>
 
-  <!-- Overleg editor -->
+  <!-- Agenda editor -->
   <dialog id="editor">
     <form id="editor-form" method="dialog">
-      <h2 id="editor-title">Nieuw overleg</h2>
+      <h2 id="editor-title">Nieuwe afspraak</h2>
       <label for="f-title">Onderwerp *</label>
       <input id="f-title" required>
 
@@ -153,6 +206,6 @@
 
   <script src="vendor/supabase.js"></script>
   <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

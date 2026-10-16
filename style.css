@@ -156,11 +156,12 @@ button:disabled { opacity: 0.6; cursor: wait; }
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 8px 0;
-  font-size: 1.3rem;
+  padding: 6px 2px;
+  min-height: 52px;
+  font-size: 1.2rem;
   border-radius: 0;
 }
-.nav-btn span { font-size: 0.75rem; font-weight: 600; }
+.nav-btn span { font-size: 0.68rem; font-weight: 600; }
 .nav-btn.active { color: var(--primary); }
 .badge-count {
   position: absolute;
@@ -316,4 +317,70 @@ dialog h2 { margin-top: 0; }
   border-radius: 10px;
   max-width: 90vw;
   z-index: 10;
+}
+
+/* ---------- Home / Meer ---------- */
+
+.emergency-btn {
+  width: 100%;
+  background: var(--danger);
+  color: white;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 16px;
+  min-height: 52px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+.emergency-btn:hover { filter: brightness(0.95); }
+
+.home-card { margin-bottom: 12px; }
+.home-card h2 { margin: 0 0 8px; font-size: 1rem; }
+.home-card .primary { margin-top: 8px; min-height: 44px; }
+.empty-inline { color: var(--muted); margin: 0; font-size: 0.95rem; }
+
+.home-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  min-height: 44px;
+}
+.home-row strong { font-size: 0.95rem; }
+.home-row span { color: var(--muted); font-size: 0.85rem; }
+
+.menu-list { display: grid; gap: 8px; }
+.menu-item {
+  width: 100%;
+  text-align: left;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  min-height: 48px;
+  font-weight: 600;
+}
+.menu-item.danger { color: var(--danger); }
+.back { margin-bottom: 8px; min-height: 44px; padding-left: 0; }
+
+.nood-scroll { text-align: center; }
+.emergency-call {
+  display: block;
+  background: var(--danger);
+  color: white;
+  font-weight: 800;
+  font-size: 1.6rem;
+  text-decoration: none;
+  padding: 22px 16px;
+  border-radius: 14px;
+  margin: 12px 0;
+  min-height: 64px;
 }

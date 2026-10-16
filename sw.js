@@ -1,10 +1,18 @@
-const CACHE = 'triageve-v3';
+const CACHE = 'triageve-v4';
 const ASSETS = [
   './',
   'index.html',
   'style.css',
-  'app.js',
   'config.js',
+  'js/main.js',
+  'js/core.js',
+  'js/sync.js',
+  'js/auth.js',
+  'js/nav.js',
+  'js/chat.js',
+  'js/diary.js',
+  'js/meet.js',
+  'js/home.js',
   'vendor/supabase.js',
   'manifest.webmanifest',
   'robots.txt',
