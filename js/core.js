@@ -23,6 +23,9 @@ const store = {
   editingDiaryId: null,
   meetFilter: 'upcoming',
   editingMeetingId: null,
+  profile: null,
+  contacts: [],
+  editingContactId: null,
 };
 
 const loaders = [];

@@ -379,10 +379,20 @@ dialog h2 { margin-top: 0; }
   background: var(--danger);
   color: white;
   font-weight: 800;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   text-decoration: none;
-  padding: 22px 16px;
+  padding: 18px 14px;
   border-radius: 14px;
-  margin: 12px 0;
-  min-height: 64px;
+  margin: 8px 0;
+  min-height: 56px;
 }
+.emergency-call.small { font-size: 1.05rem; padding: 12px; min-height: 48px; font-weight: 700; }
+.nood-scroll { padding-bottom: 24px; }
+.nood-scroll h2 { margin: 4px 0 8px; }
+.nood-scroll h3 { margin: 12px 0 6px; font-size: 0.95rem; }
+.nood-block { text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-top: 10px; }
+.nood-block p { margin: 0; white-space: pre-wrap; }
+.check-line { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.check-line input { width: auto; }
+.danger-badge { background: #ffd0d4; color: #8a1020; }
+#eef-form .primary { margin-top: 12px; min-height: 44px; }

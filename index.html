@@ -120,7 +120,16 @@
     <div id="tab-eef" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
-        <p class="empty">Hier komt straks de situatie van Eef. Nog niets ingevuld.</p>
+        <form id="eef-form" class="card">
+          <label for="eef-summary">Situatie</label>
+          <textarea id="eef-summary" rows="4" placeholder="Kort wat er aan de hand is" maxlength="20000"></textarea>
+          <label for="eef-important">Belangrijk om te weten</label>
+          <textarea id="eef-important" rows="4" placeholder="Allergieën, bijzonderheden, wensen" maxlength="20000"></textarea>
+          <label for="eef-emergency">In geval van nood</label>
+          <textarea id="eef-emergency" rows="3" placeholder="Wat te doen" maxlength="20000"></textarea>
+          <p class="item-meta" id="eef-meta">Nog niet bijgewerkt.</p>
+          <button type="submit" class="primary">Opslaan</button>
+        </form>
       </div>
     </div>
     <div id="tab-meds" class="tab-panel" hidden>
@@ -138,15 +147,15 @@
     <div id="tab-contacts" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
-        <p class="empty">Nog geen contacten.</p>
+        <div id="contact-list" class="list"></div>
       </div>
+      <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
     </div>
     <div id="tab-nood" class="tab-panel" hidden>
       <div class="scroll nood-scroll">
         <button type="button" class="ghost back" data-go="home">← Home</button>
         <h2>Noodkaart</h2>
-        <a class="emergency-call" href="tel:112">112 bellen</a>
-        <p class="muted">Huisarts en noodcontacten komen hier zodra ze zijn ingevuld.</p>
+        <div id="nood-body"></div>
       </div>
     </div>
 
@@ -208,6 +217,29 @@
         <button type="button" id="delete-btn" class="danger" hidden>Verwijderen</button>
         <span class="spacer"></span>
         <button type="button" id="cancel-btn" class="ghost">Annuleren</button>
+        <button type="submit" class="primary">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="contact-editor">
+    <form id="contact-form" method="dialog">
+      <h2 id="contact-title">Nieuw contact</h2>
+      <label for="c-name">Naam *</label>
+      <input id="c-name" required>
+      <label for="c-role">Rol</label>
+      <input id="c-role" placeholder="Huisarts, specialist, thuiszorg, buren…">
+      <label for="c-phone">Telefoon</label>
+      <input id="c-phone" type="tel">
+      <label for="c-email">E-mail</label>
+      <input id="c-email" type="email">
+      <label for="c-notes">Notitie</label>
+      <textarea id="c-notes" rows="2"></textarea>
+      <label class="check-line"><input id="c-emergency" type="checkbox"> Noodcontact (bovenaan)</label>
+      <div class="dialog-buttons">
+        <button type="button" id="contact-delete" class="danger" hidden>Verwijderen</button>
+        <span class="spacer"></span>
+        <button type="button" id="contact-cancel" class="ghost">Annuleren</button>
         <button type="submit" class="primary">Opslaan</button>
       </div>
     </form>

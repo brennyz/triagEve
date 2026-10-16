@@ -7,6 +7,8 @@ import './chat.js';
 import './diary.js';
 import './meet.js';
 import './home.js';
+import './eef.js';
+import './contacts.js';
 
 async function start() {
   $('#login-view').hidden = true;
