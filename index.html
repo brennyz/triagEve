@@ -4,25 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="theme-color" content="#6d4aff">
-  <meta name="description" content="Contact, dagboek en overleg voor Jacky, Paps en Bren">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Samen voor Eef: contact, dagboek en agenda voor Jacky, Paps en Bren">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://slddtxwbufoadmvdconz.supabase.co wss://slddtxwbufoadmvdconz.supabase.co; font-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'">
   <title>triagEve</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="triagEve">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Login -->
   <section id="login-view" class="view">
     <div class="card login-card">
       <img src="icons/icon.svg" alt="" class="logo">
       <h1>triagEve</h1>
-      <p class="muted">Chat, dagboek &amp; overleg</p>
-      <p id="config-warning" class="error" hidden>
-        De app is nog niet gekoppeld aan Supabase. Vul <code>config.js</code> in.
-      </p>
+      <p class="muted">Samen voor Eef</p>
+      <p id="config-warning" class="error" hidden></p>
       <form id="login-form">
         <label>Wie ben je?</label>
         <div class="user-picker">
@@ -31,39 +31,87 @@
           <button type="button" class="user-btn" data-user="Bren">Bren</button>
         </div>
         <label for="password">Wachtwoord</label>
-        <input id="password" type="password" autocomplete="current-password" required>
+        <div class="password-row">
+          <input id="password" type="password" autocomplete="current-password" required>
+          <button type="button" id="show-password" class="ghost">Toon</button>
+        </div>
+        <p id="login-hint" class="muted small" hidden>Kies je naam. Het wachtwoord is voor jullie alle drie hetzelfde.</p>
         <p id="login-error" class="error" hidden></p>
         <button type="submit" class="primary" id="login-btn">Inloggen</button>
       </form>
+      <details class="install-hint">
+        <summary>Op je telefoon zetten</summary>
+        <p><strong>iPhone:</strong> deel-knop → Zet op beginscherm.</p>
+        <p><strong>Android:</strong> Chrome-menu (⋮) → App installeren, of Toevoegen aan startscherm.</p>
+      </details>
     </div>
   </section>
 
-  <!-- App -->
   <section id="app-view" class="view" hidden>
     <header class="topbar">
-      <h1 id="page-title">Chat</h1>
+      <button id="back-btn" class="ghost" type="button" hidden aria-label="Terug">←</button>
+      <h1 id="page-title">Home</h1>
       <div class="topbar-right">
         <span id="conn" class="dot" title="Verbinding"></span>
         <span id="current-user" class="pill"></span>
-        <button id="logout-btn" class="ghost">Uitloggen</button>
+        <button id="logout-btn" class="ghost" type="button">Uit</button>
       </div>
     </header>
+    <p id="setup-banner" class="banner" hidden>De database is nog niet klaargezet. Bren moet de stappen in SETUP.md nog doen.</p>
 
-    <!-- Chat -->
-    <div id="tab-chat" class="tab-panel">
+    <div id="panel-home" class="tab-panel" data-panel="home">
+      <div class="scroll">
+        <button type="button" class="emergency-btn" data-go="emergency">Noodkaart</button>
+        <details class="note">
+          <summary>We doen dit samen, mét Eef.</summary>
+          <p>Bespreek met haar wat hier komt te staan.</p>
+        </details>
+        <section class="card" id="status-card">
+          <h2>Hoe gaat het</h2>
+          <p id="status-line" class="muted">Nog geen status.</p>
+          <div class="status-row">
+            <button type="button" class="status-btn good" data-status="goed">Goed</button>
+            <button type="button" class="status-btn mid" data-status="matig">Matig</button>
+            <button type="button" class="status-btn bad" data-status="zorgelijk">Zorgelijk</button>
+          </div>
+          <input id="status-note" placeholder="Korte notitie (mag leeg)">
+          <p class="fine">Bij acuut gevaar: bel 112. Twijfel? Bel de huisarts of huisartsenpost.</p>
+        </section>
+        <section class="card">
+          <h2>Deze week bij Eef</h2>
+          <div id="visits"></div>
+        </section>
+        <section class="card">
+          <h2>Eerstvolgende</h2>
+          <div id="next-meetings"></div>
+        </section>
+        <section class="card">
+          <h2>Open taken</h2>
+          <div id="home-tasks"></div>
+        </section>
+        <section class="card">
+          <h2>Dagboek</h2>
+          <div id="home-diary"></div>
+        </section>
+        <button type="button" class="primary wide" data-go="chat" id="home-chat">Naar de chat</button>
+      </div>
+    </div>
+
+    <div id="panel-chat" class="tab-panel" data-panel="chat" hidden>
       <div id="messages" class="messages"></div>
       <form id="chat-form" class="composer">
         <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
-        <button type="submit" class="primary send" title="Versturen">&#10148;</button>
+        <button type="submit" class="primary send" aria-label="Versturen">&#10148;</button>
       </form>
     </div>
 
-    <!-- Dagboek -->
-    <div id="tab-diary" class="tab-panel" hidden>
+    <div id="panel-diary" class="tab-panel" data-panel="diary" hidden>
       <div class="scroll">
-        <form id="diary-form" class="card diary-compose">
+        <form id="diary-form" class="card">
           <label for="diary-input" id="diary-label">Wat is er gebeurd?</label>
-          <textarea id="diary-input" rows="4" placeholder="Schrijf hier je dagboek..." maxlength="20000"></textarea>
+          <textarea id="diary-input" rows="4" maxlength="20000" placeholder="Schrijf hier..."></textarea>
+          <div class="chips" id="cat-chips"></div>
+          <label class="checkline"><input type="checkbox" id="diary-important"> Belangrijk</label>
           <div class="dialog-buttons">
             <button type="button" id="diary-delete" class="danger" hidden>Verwijderen</button>
             <span class="spacer"></span>
@@ -72,44 +120,237 @@
           </div>
         </form>
         <div class="chips" id="diary-chips">
-          <button class="chip active" data-who="">Iedereen</button>
-          <button class="chip" data-who="Jacky">Jacky</button>
-          <button class="chip" data-who="Paps">Paps</button>
-          <button class="chip" data-who="Bren">Bren</button>
+          <button type="button" class="chip active" data-who="">Iedereen</button>
+          <button type="button" class="chip" data-who="Jacky">Jacky</button>
+          <button type="button" class="chip" data-who="Paps">Paps</button>
+          <button type="button" class="chip" data-who="Bren">Bren</button>
         </div>
         <input id="diary-search" type="search" placeholder="Zoeken in dagboek...">
         <div id="diary-list" class="list"></div>
       </div>
     </div>
 
-    <!-- Overleg -->
-    <div id="tab-meet" class="tab-panel" hidden>
+    <div id="panel-agenda" class="tab-panel" data-panel="agenda" hidden>
       <div class="scroll">
         <nav class="tabs">
-          <button class="tab active" data-filter="upcoming">Komend</button>
-          <button class="tab" data-filter="past">Gebeurd</button>
-          <button class="tab" data-filter="all">Alles</button>
+          <button type="button" class="tab active" data-filter="upcoming">Komend</button>
+          <button type="button" class="tab" data-filter="past">Gebeurd</button>
+          <button type="button" class="tab" data-filter="all">Alles</button>
         </nav>
         <input id="meet-search" type="search" placeholder="Zoeken...">
         <div id="meet-list" class="list"></div>
       </div>
-      <button id="add-btn" class="fab" title="Nieuw overleg">+</button>
+      <button id="add-meet" class="fab" type="button" aria-label="Nieuw agenda-item">+</button>
+    </div>
+
+    <div id="panel-more" class="tab-panel" data-panel="more" hidden>
+      <div class="scroll menu">
+        <button type="button" data-go="eef">Over Eef</button>
+        <button type="button" data-go="wishes">Wensen van Eef</button>
+        <button type="button" data-go="meds">Medicatie</button>
+        <button type="button" data-go="tasks">Taken</button>
+        <button type="button" data-go="contacts">Contacten</button>
+        <button type="button" data-go="measures">Metingen</button>
+        <button type="button" data-go="emergency">Noodkaart</button>
+        <button type="button" data-go="help">Hulp &amp; steun</button>
+        <button type="button" data-go="trash">Prullenbak</button>
+        <button type="button" data-go="print">Overzicht voor arts</button>
+        <button type="button" id="push-btn">Meldingen aan</button>
+        <button type="button" id="large-btn">Grote tekst</button>
+        <button type="button" id="export-btn">Alles downloaden</button>
+        <button type="button" id="more-logout" class="danger">Uitloggen</button>
+      </div>
+    </div>
+
+    <div id="panel-eef" class="tab-panel" data-panel="eef" hidden>
+      <form id="eef-form" class="scroll">
+        <label for="eef-summary">Situatie</label>
+        <textarea id="eef-summary" rows="4" placeholder="Kort: hoe is de situatie?"></textarea>
+        <label for="eef-important">Belangrijk om te weten</label>
+        <textarea id="eef-important" rows="4" placeholder="Allergieën, bijzonderheden"></textarea>
+        <label for="eef-emergency">In geval van nood</label>
+        <textarea id="eef-emergency" rows="4" placeholder="Wat doen we dan?"></textarea>
+        <p id="eef-meta" class="fine"></p>
+        <button type="button" class="ghost" data-history="triageve_profile">Geschiedenis</button>
+        <button type="submit" class="primary wide">Opslaan</button>
+        <div id="eef-history" class="list"></div>
+      </form>
+    </div>
+
+    <div id="panel-wishes" class="tab-panel" data-panel="wishes" hidden>
+      <form id="wishes-form" class="scroll">
+        <p class="fine">Alleen wat Eef zelf wil. Geen BSN, geen DigiD, geen pincodes, geen documenten uploaden.</p>
+        <label for="wishes">Wat Eef belangrijk vindt</label>
+        <textarea id="wishes" rows="4" placeholder="Eten, bezoek, zorg, dagritme"></textarea>
+        <label for="sharing">Wat de familie mag bijhouden</label>
+        <textarea id="sharing" rows="3"></textarea>
+        <label for="representative">Aanspreekpunt voor artsen</label>
+        <textarea id="representative" rows="2"></textarea>
+        <label for="documents">Waar liggen papieren?</label>
+        <textarea id="documents" rows="3" placeholder="Alleen de plek, bijvoorbeeld: map in de la"></textarea>
+        <button type="submit" class="primary wide">Opslaan</button>
+      </form>
+    </div>
+
+    <div id="panel-meds" class="tab-panel" data-panel="meds" hidden>
+      <div class="scroll">
+        <p class="fine">Dit is een overzicht voor de familie. Volg altijd het advies van de arts of apotheek.</p>
+        <form id="med-form" class="card">
+          <input type="hidden" id="med-id">
+          <label for="med-name">Naam</label>
+          <input id="med-name" required>
+          <label for="med-dose">Dosis</label>
+          <input id="med-dose" placeholder="bijv. 500 mg">
+          <label for="med-schedule">Wanneer</label>
+          <input id="med-schedule" placeholder="bijv. ochtend en avond">
+          <label for="med-reason">Waarom</label>
+          <input id="med-reason">
+          <label for="med-notes">Notitie</label>
+          <textarea id="med-notes" rows="2"></textarea>
+          <div class="dialog-buttons">
+            <button type="button" id="med-cancel" class="ghost" hidden>Annuleren</button>
+            <span class="spacer"></span>
+            <button type="submit" class="primary">Opslaan</button>
+          </div>
+        </form>
+        <h2>Huidige medicatie</h2>
+        <div id="med-current" class="list"></div>
+        <h2>Gestopt</h2>
+        <div id="med-stopped" class="list"></div>
+        <div id="med-history" class="list"></div>
+      </div>
+    </div>
+
+    <div id="panel-tasks" class="tab-panel" data-panel="tasks" hidden>
+      <div class="scroll">
+        <p id="task-counts" class="fine"></p>
+        <form id="task-form" class="card row-form">
+          <input id="task-title" placeholder="Nieuwe taak" required>
+          <select id="task-who" aria-label="Wie">
+            <option value="">Niemand</option>
+            <option>Jacky</option>
+            <option>Paps</option>
+            <option>Bren</option>
+          </select>
+          <input id="task-due" type="date" aria-label="Datum">
+          <button type="submit" class="primary">Toevoegen</button>
+        </form>
+        <div class="chips" id="task-filters">
+          <button type="button" class="chip active" data-taskfilter="open">Open</button>
+          <button type="button" class="chip" data-taskfilter="mine">Van mij</button>
+          <button type="button" class="chip" data-taskfilter="done">Klaar</button>
+        </div>
+        <div id="task-list" class="list"></div>
+      </div>
+    </div>
+
+    <div id="panel-contacts" class="tab-panel" data-panel="contacts" hidden>
+      <div class="scroll">
+        <form id="contact-form" class="card">
+          <input type="hidden" id="contact-id">
+          <label for="contact-name">Naam</label>
+          <input id="contact-name" required>
+          <label for="contact-role">Rol</label>
+          <input id="contact-role" placeholder="huisarts, specialist, buur">
+          <label for="contact-phone">Telefoon</label>
+          <input id="contact-phone" type="tel">
+          <label for="contact-email">E-mail</label>
+          <input id="contact-email" type="email">
+          <label for="contact-notes">Notitie</label>
+          <textarea id="contact-notes" rows="2"></textarea>
+          <label class="checkline"><input type="checkbox" id="contact-emergency"> Noodcontact</label>
+          <div class="dialog-buttons">
+            <button type="button" id="contact-cancel" class="ghost" hidden>Annuleren</button>
+            <span class="spacer"></span>
+            <button type="submit" class="primary">Opslaan</button>
+          </div>
+        </form>
+        <div id="contact-list" class="list"></div>
+      </div>
+    </div>
+
+    <div id="panel-measures" class="tab-panel" data-panel="measures" hidden>
+      <div class="scroll">
+        <form id="measure-form" class="card">
+          <label for="measure-kind">Soort</label>
+          <select id="measure-kind">
+            <option value="bloeddruk">Bloeddruk</option>
+            <option value="gewicht">Gewicht</option>
+            <option value="temperatuur">Temperatuur</option>
+            <option value="suiker">Suiker</option>
+            <option value="pijn">Pijn 0-10</option>
+            <option value="overig">Overig</option>
+          </select>
+          <label for="measure-value">Waarde</label>
+          <input id="measure-value" required placeholder="bijv. 120/80">
+          <label for="measure-note">Notitie</label>
+          <input id="measure-note">
+          <button type="submit" class="primary wide">Opslaan</button>
+        </form>
+        <div id="measure-list" class="list"></div>
+      </div>
+    </div>
+
+    <div id="panel-emergency" class="tab-panel" data-panel="emergency" hidden>
+      <div class="scroll emergency">
+        <a class="call-112" href="tel:112">Bel 112</a>
+        <h2>In geval van nood</h2>
+        <p id="emergency-text" class="pre"></p>
+        <h2>Belangrijk om te weten</h2>
+        <p id="emergency-important" class="pre"></p>
+        <h2>Bellen</h2>
+        <div id="emergency-contacts" class="list"></div>
+      </div>
+    </div>
+
+    <div id="panel-help" class="tab-panel" data-panel="help" hidden>
+      <div class="scroll">
+        <p class="fine">De app vervangt geen arts, geen alarmknop en geen 112.</p>
+        <a class="card link-card" href="tel:112"><strong>112</strong><span>Acuut gevaar</span></a>
+        <a class="card link-card" href="tel:113"><strong>113</strong><span>Zelfmoordpreventie, gratis, dag en nacht</span></a>
+        <a class="card link-card" href="tel:08000113"><strong>0800-0113</strong><span>Zelfde hulplijn, ook gratis</span></a>
+        <a class="card link-card" href="tel:0307606055"><strong>030 760 60 55</strong><span>Mantelzorglijn, ma–do 10–16, vr 10–13</span></a>
+        <p class="fine">Bronnen: 113.nl en mantelzorg.nl, gecontroleerd op 16 oktober 2026. Het nummer van de huisartsenpost vul je bij Contacten in.</p>
+        <div id="help-contacts" class="list"></div>
+      </div>
+    </div>
+
+    <div id="panel-trash" class="tab-panel" data-panel="trash" hidden>
+      <div class="scroll">
+        <p class="fine">Verwijderde dingen blijven 30 dagen hier. Daarna zijn ze weg.</p>
+        <div id="trash-list" class="list"></div>
+      </div>
+    </div>
+
+    <div id="panel-print" class="tab-panel" data-panel="print" hidden>
+      <div class="scroll no-print">
+        <button type="button" class="primary wide" id="do-print">Printen / Opslaan als PDF</button>
+        <p class="fine">In het printvenster kies je “Opslaan als PDF”.</p>
+      </div>
+      <article id="print-sheet"></article>
     </div>
 
     <nav class="bottomnav">
-      <button class="nav-btn active" data-tab="chat">&#128172;<span>Chat</span><b class="badge-count" id="chat-badge" hidden></b></button>
-      <button class="nav-btn" data-tab="diary">&#128214;<span>Dagboek</span></button>
-      <button class="nav-btn" data-tab="meet">&#128197;<span>Overleg</span></button>
+      <button type="button" class="nav-btn active" data-tab="home">&#127968;<span>Home</span></button>
+      <button type="button" class="nav-btn" data-tab="chat">&#128172;<span>Chat</span><b class="badge-count" id="chat-badge" hidden></b></button>
+      <button type="button" class="nav-btn" data-tab="diary">&#128214;<span>Dagboek</span></button>
+      <button type="button" class="nav-btn" data-tab="agenda">&#128197;<span>Agenda</span></button>
+      <button type="button" class="nav-btn" data-tab="more">&#9776;<span>Meer</span></button>
     </nav>
   </section>
 
-  <!-- Overleg editor -->
   <dialog id="editor">
-    <form id="editor-form" method="dialog">
-      <h2 id="editor-title">Nieuw overleg</h2>
+    <form id="editor-form">
+      <h2 id="editor-title">Nieuw item</h2>
       <label for="f-title">Onderwerp *</label>
       <input id="f-title" required>
-
+      <label for="f-kind">Soort</label>
+      <select id="f-kind">
+        <option value="overleg">Overleg</option>
+        <option value="afspraak">Afspraak arts / ziekenhuis</option>
+        <option value="bezoek">Bezoek</option>
+        <option value="overig">Overig</option>
+      </select>
       <div class="row">
         <div>
           <label for="f-date">Datum *</label>
@@ -120,25 +361,24 @@
           <input id="f-time" type="time">
         </div>
       </div>
-
+      <label for="f-location">Locatie</label>
+      <input id="f-location">
       <label>Wie zijn erbij?</label>
       <div class="checks">
         <label><input type="checkbox" name="who" value="Jacky"> Jacky</label>
         <label><input type="checkbox" name="who" value="Paps"> Paps</label>
         <label><input type="checkbox" name="who" value="Bren"> Bren</label>
       </div>
-
-      <label for="f-agenda">Agenda / bespreekpunten</label>
-      <textarea id="f-agenda" rows="3" placeholder="Wat willen we bespreken?"></textarea>
-
-      <label for="f-happened">Wat is er gebeurd?</label>
-      <textarea id="f-happened" rows="4" placeholder="Wat is er besproken / besloten?"></textarea>
-
-      <label for="f-actions">Actiepunten (1 per regel)</label>
-      <textarea id="f-actions" rows="3" placeholder="Bren: ...&#10;Paps: ..."></textarea>
-
+      <label for="f-agenda">Agenda</label>
+      <textarea id="f-agenda" rows="3"></textarea>
+      <label for="f-happened" id="happened-label">Wat is er gebeurd?</label>
+      <textarea id="f-happened" rows="4"></textarea>
+      <label for="f-actions">Actiepunten (1 per regel, bijv. Paps: bellen)</label>
+      <textarea id="f-actions" rows="3"></textarea>
       <div class="dialog-buttons">
         <button type="button" id="delete-btn" class="danger" hidden>Verwijderen</button>
+        <button type="button" id="ics-btn" class="ghost" hidden>Zet in mijn agenda</button>
+        <button type="button" id="tasks-from-btn" class="ghost" hidden>Maak taken</button>
         <span class="spacer"></span>
         <button type="button" id="cancel-btn" class="ghost">Annuleren</button>
         <button type="submit" class="primary">Opslaan</button>
@@ -147,7 +387,6 @@
   </dialog>
 
   <div id="toast" class="toast" hidden></div>
-
   <script src="vendor/supabase.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>

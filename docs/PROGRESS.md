@@ -4,7 +4,7 @@ Bijwerken na elke fase: `- [x] Fase N – naam (JJJJ-MM-DD) – korte notitie`.
 Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 
 - [x] Fase 0 – Basis: PWA, login, chat, dagboek, overleg, migraties, workflows, GitHub Pages live (2026-10-16) – nog niet getest tegen echte Supabase
-- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend
+- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (2026-10-16) – code en config.js klaar; workflow draait nog niet want GitHub-secrets zijn leeg. Zie SETUP.md.
 - [ ] Fase 2 – Beveiliging en privacy
 - [ ] Fase 3 – Navigatie + Home-overzicht
 - [ ] Fase 4 – Agenda: afspraken + overleggen (+ .ics)
@@ -23,14 +23,22 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] Fase 17 – E-mail naar bzijffers@gmail.com en stoppen
 
 ## Database-migraties (uitgevoerd door workflow `supabase.yml`)
-- [ ] `20261016180000_init.sql` – wacht op GitHub secrets (fase 1)
+- [ ] `20261016180000_init.sql` en de migraties van 2026-10-17 – lokaal twee keer groen op PostgreSQL 16; op Supabase nog niet, wacht op GitHub-secrets
 
 ## Open vragen voor Bren
-- `.env.local` invullen (5 waarden, zie `.env.example`) + publishable key noemen
-- Is het Supabase-project alleen voor triagEve? (dan signups uit)
-- Supabase GitHub-koppeling naar `Hoorspel` loskoppelen
-- Wachtwoord: huidige houden of sterker? (fase 2)
+- De vijf GitHub-secrets uit SETUP.md. De publishable key staat al in `config.js`.
+- Is het Supabase-project alleen voor triagEve? (dan signups uit en site_url zetten – niet gedaan)
+- Supabase GitHub-koppeling naar `Hoorspel` loskoppelen (niet gedaan)
+- Wachtwoord: huidige houden of een zin van 4+ woorden? Aanrader: iets als `Eef-Thee-Tuin-2026`. Jouw keuze.
+- Later: `VAPID_PRIVATE_KEY` en `BACKUP_PASSPHRASE` (niet nodig om te starten)
 
 ## Notities
 - 2026-10-16: Geen Supabase access token of DB-wachtwoord gevonden in andere projectmappen.
   Service-role keys daar horen bij andere projecten (`ajoitfflpmjemrrmbsew`, `vdkwomhhqvdpnkfvhvkz`).
+- 2026-10-16: Workflow-run 38944109052 sloeg migraties over: secrets leeg. Fase 2 t/m 16
+  staan in de code (schermen, migraties, push-functie, back-up-workflow) maar zijn niet
+  afgevinkt: inloggen en synchronisatie zijn niet tegen de echte database getest.
+- 2026-10-16: Fase 17 (e-mail "klaar") niet verstuurd. De app is nog niet end-to-end live.
+- 2026-10-16: Hulpnummers gecontroleerd. 113 en 0800-0113, gratis, dag en nacht (113.nl).
+  Mantelzorglijn 030 760 60 55, ma–do 10–16, vr 10–13 (mantelzorg.nl/onderwerpen/ondersteuning/waar-kun-je-terecht/mantelzorglijn).
+- Auth-instellingen en de Hoorspel-koppeling zijn niet gewijzigd.

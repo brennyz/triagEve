@@ -317,3 +317,50 @@ dialog h2 { margin-top: 0; }
   max-width: 90vw;
   z-index: 10;
 }
+
+html.large-text { font-size: 20px; }
+button, .nav-btn, .user-btn, .chip, .tab { min-height: 44px; }
+html, body { overflow: hidden; }
+#login-view { height: 100dvh; overflow: auto; display: flex; flex-direction: column; align-items: center; padding: 24px; }
+.login-card { margin: auto; }
+.password-row { display: flex; gap: 8px; align-items: center; }
+.password-row input { flex: 1; }
+.password-row .ghost { white-space: nowrap; }
+.small { font-size: 0.9rem; text-align: left; }
+.install-hint { text-align: left; margin-top: 16px; color: var(--muted); font-size: 0.92rem; }
+.install-hint summary { cursor: pointer; font-weight: 600; color: var(--primary); }
+.fine { color: var(--muted); font-size: 0.85rem; }
+.wide { width: 100%; }
+.pre { white-space: pre-wrap; }
+.banner { background: #ffe7b3; color: #5c3b00; margin: 0; padding: 10px 16px; }
+.note { margin: 8px 0 12px; }
+.menu button, .link-card {
+  display: flex; width: 100%; text-align: left; justify-content: space-between; align-items: center;
+  background: var(--card); color: var(--text); border: 1px solid var(--border); margin-bottom: 8px;
+  text-decoration: none; padding: 12px 14px; border-radius: 12px; font-weight: 600;
+}
+.emergency-btn, .call-112 {
+  display: block; width: 100%; text-align: center; background: var(--danger); color: white;
+  font-weight: 800; font-size: 1.3rem; padding: 16px; border-radius: 14px; text-decoration: none; margin-bottom: 12px;
+}
+.status-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0; }
+.status-btn.good { background: #1f8a4c; color: white; }
+.status-btn.mid { background: #c47b00; color: white; }
+.status-btn.bad { background: var(--danger); color: white; }
+.status-line.goed { color: #1f8a4c; font-weight: 700; }
+.status-line.matig { color: #c47b00; font-weight: 700; }
+.status-line.zorgelijk { color: var(--danger); font-weight: 800; }
+.late { border-color: var(--danger); }
+.checkline { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.checkline input { width: auto; }
+.row-form { display: grid; gap: 8px; }
+h2 { font-size: 1rem; margin: 14px 0 8px; }
+dialog { overflow: auto; }
+#back-btn { color: white; padding: 6px 8px; }
+#print-sheet { padding: 8px 16px 40px; }
+@media print {
+  body * { visibility: hidden; }
+  #print-sheet, #print-sheet * { visibility: visible; }
+  #print-sheet { display: block; position: absolute; inset: 0; background: white; color: black; }
+  .no-print, .bottomnav, .topbar, .banner { display: none !important; }
+}

@@ -17,6 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Ping
+        env:
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           URL=$(grep -oP "SUPABASE_URL:\s*'\K[^']+" config.js)
           KEY=$(grep -oP "SUPABASE_KEY:\s*'\K[^']+" config.js)
@@ -24,4 +26,9 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' "$URL/rest/v1/triageve_messages?select=id&limit=1" \
             -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
           echo "HTTP $code"
+          if [ -n "$SERVICE_KEY" ]; then
+            curl -s -o /dev/null -X POST "$URL/rest/v1/rpc/triageve_purge_deleted" \
+              -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" \
+              -H "Content-Type: application/json" -d '{}' || true
+          fi
           [ "$code" -lt 500 ]

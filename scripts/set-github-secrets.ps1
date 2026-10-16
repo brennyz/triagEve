@@ -19,4 +19,10 @@ foreach ($n in $names) {
   $values[$n] | gh secret set $n -R brennyz/triagEve
   Write-Host "OK  $n"
 }
+foreach ($n in 'VAPID_PRIVATE_KEY', 'BACKUP_PASSPHRASE') {
+  if ($values[$n]) {
+    $values[$n] | gh secret set $n -R brennyz/triagEve
+    Write-Host "OK  $n"
+  }
+}
 Write-Host "Klaar. Start de database-workflow met: gh workflow run supabase.yml -R brennyz/triagEve"

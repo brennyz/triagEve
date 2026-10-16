@@ -31,6 +31,7 @@ jobs:
       PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
       SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       TEAM_PASSWORD: ${{ secrets.TRIAGEVE_TEAM_PASSWORD }}
+      VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -102,3 +103,12 @@ jobs:
           curl -s -X DELETE "$URL/triageve_messages?id=eq.$id" \
             -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" > /dev/null
           exit $fail
+
+      - name: Meld-functie publiceren
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          if [ -n "$VAPID_PRIVATE_KEY" ]; then
+            PUB=$(grep -oP "VAPID_PUBLIC_KEY:\s*'\K[^']*" config.js || true)
+            supabase secrets set VAPID_PRIVATE_KEY="$VAPID_PRIVATE_KEY" VAPID_PUBLIC_KEY="$PUB" --project-ref "$PROJECT_REF"
+          fi
+          supabase functions deploy notify --project-ref "$PROJECT_REF"
