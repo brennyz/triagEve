@@ -1,0 +1,104 @@
+name: Supabase database
+
+# Voert alle migraties in supabase/migrations automatisch uit, maakt het team-account aan
+# (als het nog niet bestaat) en test dat niemand zonder inlog bij de gegevens kan.
+# Benodigde repository secrets (eenmalig, via scripts/set-github-secrets.ps1):
+#   SUPABASE_ACCESS_TOKEN, SUPABASE_DB_PASSWORD, SUPABASE_PROJECT_REF,
+#   SUPABASE_SERVICE_ROLE_KEY, TRIAGEVE_TEAM_PASSWORD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - '.github/workflows/supabase.yml'
+      - 'config.js'
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-db
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      TEAM_PASSWORD: ${{ secrets.TRIAGEVE_TEAM_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Controleer secrets
+        id: secrets
+        run: |
+          missing=""
+          for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF SERVICE_KEY TEAM_PASSWORD; do
+            [ -z "${!v}" ] && missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::warning::Secrets ontbreken:$missing. Draai scripts/set-github-secrets.ps1. Migraties overgeslagen."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: supabase/setup-cli@v1
+        if: steps.secrets.outputs.ok == 'true'
+        with:
+          version: latest
+
+      - name: Migraties uitvoeren
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          supabase link --project-ref "$PROJECT_REF"
+          supabase db push --include-all
+
+      - name: Team-account aanmaken (als het nog niet bestaat)
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          TEAM_EMAIL=$(grep -oP "TEAM_EMAIL:\s*'\K[^']+" config.js)
+          body=$(jq -n --arg e "$TEAM_EMAIL" --arg p "$TEAM_PASSWORD" '{email:$e, password:$p, email_confirm:true}')
+          code=$(curl -s -o resp.json -w '%{http_code}' -X POST \
+            "https://$PROJECT_REF.supabase.co/auth/v1/admin/users" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" \
+            -H "Content-Type: application/json" -d "$body")
+          if [ "$code" = "200" ] || [ "$code" = "201" ]; then
+            echo "Team-account aangemaakt."
+          elif grep -qiE "already|exists|registered" resp.json; then
+            echo "Team-account bestond al."
+          else
+            echo "::error::Team-account aanmaken mislukt (HTTP $code)"; cat resp.json; exit 1
+          fi
+          rm -f resp.json
+
+      - name: Beveiligingstest (zonder inlog mag je niets zien)
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          URL="https://$PROJECT_REF.supabase.co/rest/v1"
+          ANON=$(grep -oP "SUPABASE_KEY:\s*'\K[^']+" config.js)
+          if [ -z "$ANON" ] || echo "$ANON" | grep -q "JOUW"; then
+            echo "::warning::config.js heeft nog geen publishable key; beveiligingstest overgeslagen."; exit 0
+          fi
+          # Een testbericht plaatsen met de service key, dan proberen te lezen zonder inlog.
+          id=$(curl -s -X POST "$URL/triageve_messages" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" \
+            -H "Content-Type: application/json" -H "Prefer: return=representation" \
+            -d '{"author":"CI","body":"[TEST] beveiligingstest"}' | jq -r '.[0].id')
+          fail=0
+          for t in $(ls supabase/migrations/*.sql | xargs grep -ohP "create table if not exists public\.\K\w+" | sort -u); do
+            out=$(curl -s "$URL/$t?select=*&limit=1" -H "apikey: $ANON" -H "Authorization: Bearer $ANON")
+            if echo "$out" | jq -e 'type == "array" and length > 0' > /dev/null 2>&1; then
+              echo "::error::LEK: $t is leesbaar zonder inlog!"; fail=1
+            else
+              echo "OK: $t afgeschermd"
+            fi
+          done
+          curl -s -X DELETE "$URL/triageve_messages?id=eq.$id" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" > /dev/null
+          exit $fail

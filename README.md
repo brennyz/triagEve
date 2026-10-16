@@ -19,12 +19,20 @@ en live gesynchroniseerd. Te openen in Chrome en te installeren als app (PWA).
 - Row Level Security zorgt dat alleen dat team-account de `triageve_*` tabellen kan lezen of
   schrijven. De publieke sleutel in `config.js` geeft zonder wachtwoord geen toegang.
 
-## Eenmalige setup in Supabase
+## Database (automatisch)
 
-1. **SQL Editor → New query**: plak `supabase/setup.sql` en klik **Run**.
-2. **Authentication → Users → Add user → Create new user**
-   - E-mail: `team@triageve.app` · Wachtwoord: het team-wachtwoord · vink **Auto Confirm User** aan.
-3. **Project Settings → API**: zet de Project URL en de publishable (anon) key in `config.js`.
+Database-wijzigingen staan in `supabase/migrations/`. De GitHub Action `supabase.yml` voert ze bij
+elke push uit, maakt het team-account aan en test dat niemand zonder inlog bij de gegevens kan.
+`keepalive.yml` voorkomt dat het gratis Supabase-project pauzeert.
+
+Eenmalig:
+1. Kopieer `.env.example` naar `.env.local` en vul de 5 waarden in (wordt nooit gecommit).
+2. `powershell -ExecutionPolicy Bypass -File scripts/set-github-secrets.ps1`
+3. Zet de Project URL en publishable key in `config.js` en push.
+
+## Voor AI-agents
+
+Zie `AGENTS.md` en `docs/GROK_PLAN.md`.
 
 ## Lokaal draaien
 
