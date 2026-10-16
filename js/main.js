@@ -16,6 +16,7 @@ import './checkins.js';
 import './push.js';
 import './history.js';
 import './offline.js';
+import './support.js';
 
 async function start() {
   $('#login-view').hidden = true;

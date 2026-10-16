@@ -13,6 +13,26 @@ function statusCard() {
     </article>`;
 }
 
+function weekBounds() {
+  const now = new Date();
+  const mondayOffset = (now.getDay() + 6) % 7;
+  const start = new Date(now);
+  start.setDate(now.getDate() - mondayOffset);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  return { start: localDate(start), end: localDate(end) };
+}
+
+function visitCard() {
+  const { start, end } = weekBounds();
+  const visits = alive(store.meetings).filter((m) => m.kind === 'bezoek' && m.date >= start && m.date <= end);
+  const names = [...new Set(visits.flatMap((m) => m.who || []))];
+  const text = names.length
+    ? `Deze week bij Eef: ${names.join(', ')}`
+    : 'Deze week bij Eef: nog niemand ingepland.';
+  return `<article class="card home-card"><h2>Bezoek</h2><p class="empty-inline">${esc(text)}</p></article>`;
+}
+
 function clip(text, n = 140) {
   const t = String(text || '').trim();
   if (t.length <= n) return t;
@@ -72,6 +92,7 @@ export function renderHome() {
       <p>Bespreek met haar wat hier komt te staan. De app is om samen te zorgen, niet om over haar heen te praten.</p>
     </details>
     ${statusCard()}
+    ${visitCard()}
     <button type="button" class="emergency-btn" data-go="nood" aria-label="Noodkaart">Noodkaart</button>
     <article class="card home-card">
       <h2>Komende afspraken</h2>
