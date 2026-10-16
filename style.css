@@ -440,6 +440,11 @@ dialog h2 { margin-top: 0; }
   .status-bad { background: #3d1c22; }
 }
 #measure-form .primary { margin-top: 12px; min-height: 44px; }
+html.large-text { font-size: 125%; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
 .print-head h1 { font-size: 1.3rem; margin: 0 0 4px; }
 .print-section { margin: 16px 0; break-inside: avoid; }
 .print-section h2 { font-size: 1.05rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }

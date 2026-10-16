@@ -15,6 +15,7 @@ import './print.js';
 import './checkins.js';
 import './push.js';
 import './history.js';
+import './offline.js';
 
 async function start() {
   $('#login-view').hidden = true;

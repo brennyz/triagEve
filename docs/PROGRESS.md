@@ -16,8 +16,8 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 10 – Regie en wensen van Eef (2026-10-16) – scherm Wensen van Eef, Home-tekstblok inklapbaar, geen BSN/codes. Migratie `20261017140000_wensen.sql`.
 - [x] Fase 11 – Dagstatus en metingen (2026-10-16) – status op Home (kleur), doorgeven, zorgelijk → dagboek belangrijk, metingen-lijst. Migratie `20261017150000_checkins.sql`. Preview getest; live 3s-sync wacht op secrets.
 - [x] Fase 12 – Meldingen (push) (2026-10-16) – tabel, edge function `notify`, sw push/click, Meer → Meldingen. Geen medische details in de tekst. **Wacht op Bren:** `npx web-push generate-vapid-keys`, publieke sleutel in `config.js`, `VAPID_PRIVATE_KEY` als GitHub secret. Echte push-AC (Android <10s) kan niet zonder die sleutels.
-- [ ] Fase 13 – Geschiedenis, prullenbak, wie-deed-wat
-- [ ] Fase 14 – Offline, back-up, toegankelijkheid
+- [x] Fase 13 – Geschiedenis, prullenbak, wie-deed-wat (2026-10-16) – zachte delete, prullenbak + terugzetten 30 d, geschiedenis Medicatie/Over Eef, trigger `triageve_log`, purge in keepalive. Migratie `20261017170000_history.sql`. Preview: verwijderen → prullenbak → terugzetten.
+- [x] Fase 14 – Offline, back-up, toegankelijkheid (2026-10-16) – outbox + "wacht op verbinding", concepten chat/dagboek, `backup.yml` (wacht op `BACKUP_PASSPHRASE`), JSON-export, grote tekst 125%, aria-labels, focus. Preview: draft, offline-queue, grote tekst. Back-up-workflow groen vereist secret.
 - [ ] Fase 15 – Zorg voor de zorgers
 - [ ] Fase 16 – Eindtest, handleiding, oplevering
 - [ ] Fase 17 – E-mail naar bzijffers@gmail.com en stoppen
@@ -32,11 +32,13 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017140000_wensen.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017150000_checkins.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017160000_push.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017170000_history.sql` – klaar in repo; wacht op GitHub secrets
 
 ## Open vragen voor Bren
 - GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open
 - Wachtwoord: huidige houden of sterker? (fase 2; aanrader: 4+ woorden, bijv. `Eef-Thee-Tuin-2026`)
 - Fase 12: VAPID-sleutels genereren en `VAPID_PRIVATE_KEY` als GitHub secret zetten (publieke sleutel in `config.js`)
+- Fase 14: `BACKUP_PASSPHRASE` kiezen, in wachtwoordmanager bewaren, en als GitHub secret zetten
 
 ## Beantwoord door Bren (2026-10-16)
 - Geheimen en publishable key zijn nu niet beschikbaar; nooit in de repo zetten

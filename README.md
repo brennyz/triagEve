@@ -50,6 +50,24 @@ Eenmalig:
 
 Zie `AGENTS.md` en `docs/GROK_PLAN.md`.
 
+## Back-up en terugzetten
+
+Elke zondag maakt GitHub Actions een **versleutelde** dump van de `triageve_*` tabellen
+(`.github/workflows/backup.yml`). Het bestand `triageve-backup.sql.gpg` staat 90 dagen
+als workflow-artifact. Zonder `BACKUP_PASSPHRASE` (GitHub secret) slaat de job over.
+
+Terugzetten (op de pc van Bren, passphrase uit de wachtwoordmanager):
+
+```
+gpg --decrypt --batch --passphrase "DEZE-ZIN" triageve-backup.sql.gpg > triageve-data.sql
+# Daarna in het Supabase SQL-editor plakken, of:
+psql "postgresql://postgres:<DB-WACHTWOORD>@db.<PROJECT-REF>.supabase.co:5432/postgres" -f triageve-data.sql
+```
+
+Nooit een onversleutelde dump in deze repo of in een openbare artifact zetten.
+
+In de app: Meer → **Alles downloaden** geeft een JSON-archief voor jezelf.
+
 ## Lokaal draaien
 
 ```

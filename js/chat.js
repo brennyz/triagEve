@@ -3,6 +3,7 @@ import {
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
+import { writeRow } from './offline.js';
 
 export async function loadMessages() {
   if (!db) {
@@ -54,7 +55,7 @@ export function renderChat() {
         <div class="bubble" title="${esc(fmtStamp(m.created_at))}">
           ${showName ? `<div class="bubble-author">${esc(m.author)}</div>` : ''}
           <div class="bubble-body">${esc(m.body)}</div>
-          <div class="bubble-time">${esc(fmtTime(m.created_at))}</div>
+          <div class="bubble-time">${esc(fmtTime(m.created_at))}${m.pending ? ' · wacht op verbinding' : ''}</div>
         </div>
       </div>`;
     return html;
@@ -93,13 +94,13 @@ $('#chat-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const body = chatInput.value.trim();
   if (!body) return;
-  if (!db) {
-    chatInput.value = body;
-    return;
-  }
   chatInput.value = '';
   autosize();
-  const { data, error } = await db.from('triageve_messages').insert({ author: store.me, body }).select().single();
+  const { data, error, queued } = await writeRow('triageve_messages', { author: store.me, body });
+  if (queued) {
+    addMessage({ id: `pending-${Date.now()}`, author: store.me, body, created_at: new Date().toISOString(), pending: true });
+    return;
+  }
   if (check(error, 'Versturen')) {
     chatInput.value = body;
     autosize();
