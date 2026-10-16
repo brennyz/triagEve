@@ -4,7 +4,7 @@ Bijwerken na elke fase: `- [x] Fase N – naam (JJJJ-MM-DD) – korte notitie`.
 Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 
 - [x] Fase 0 – Basis: PWA, login, chat, dagboek, overleg, migraties, workflows, GitHub Pages live (2026-10-16) – nog niet getest tegen echte Supabase
-- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-16) – wacht op GitHub secrets en publishable key; migratie `20261016180000_init.sql` mag draaien zodra secrets er zijn; signups blijven AAN (onbekend of het project alleen voor triagEve is); Hoorspel-koppeling koppelt Bren later zelf los. Geen geheimen in de repo.
+- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-16) – URL en publishable key staan in `config.js` (project `slddtxwbufoadmvdconz`). GitHub-secrets zijn nog leeg, dus de migraties draaien nog niet. Signups blijven AAN. Hoorspel koppelt Bren later zelf los. Geen wachtwoord of service-key in de repo.
 - [x] Fase 2 – Beveiliging en privacy (2026-10-16) – auto-uitloggen na 14 dagen, robots/noindex, CSP (`*.supabase.co` tot project-ref bekend is), Privacy-sectie in README. Regio DB onbekend (wacht op fase 1). Wachtwoordkeuze nog open. E2e-inlog wacht op secrets; `node --check` + login-scherm + robots.txt gecontroleerd. `git log` bevat geen echte service-keys (wel het woord `service_role` in docs/vendor).
 - [x] Fase 3 – Navigatie + Home-overzicht (2026-10-16) – nav Home/Chat/Dagboek/Agenda/Meer, Home met lege-teksten, Noodkaart-knop (112). Code gesplitst naar `js/*.js`. Getest zonder Supabase via `?preview=1` in Chrome 390×844 en desktop; geen JS-fouten. Live e2e wacht op fase 1.
 - [x] Fase 4 – Agenda: afspraken + overleggen (+ .ics) (2026-10-16) – soort/locatie, label per soort, `.ics` download. Bestaande items = overleg. Migratie `20261016190000_agenda.sql` (wacht op secrets). Getest in preview: labels, locatie, ICS-inhoud, formulierlabel bij afspraak.
@@ -33,9 +33,10 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017150000_checkins.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017160000_push.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017170000_history.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017180000_grants.sql` – lees/schrijfrechten voor het ingelogde team; anon blijft buiten. Lokaal gedraaid, op Supabase nog niet.
 
 ## Open vragen voor Bren
-- GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open
+- GitHub secrets (5 waarden, zie `SETUP.md`). De publishable key staat al in `config.js`. Zonder de secrets blijft inloggen dicht.
 - Wachtwoord: huidige houden of sterker? (fase 2; aanrader: 4+ woorden, bijv. `Eef-Thee-Tuin-2026`)
 - Fase 12: VAPID-sleutels genereren en `VAPID_PRIVATE_KEY` als GitHub secret zetten (publieke sleutel in `config.js`)
 - Fase 14: `BACKUP_PASSPHRASE` kiezen, in wachtwoordmanager bewaren, en als GitHub secret zetten
@@ -49,3 +50,6 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 ## Notities
 - 2026-10-16: Geen Supabase access token of DB-wachtwoord gevonden in andere projectmappen.
   Service-role keys daar horen bij andere projecten (`ajoitfflpmjemrrmbsew`, `vdkwomhhqvdpnkfvhvkz`).
+- 2026-10-16: De publishable key uit de opdracht staat in `config.js`. Dat is geen geheim.
+  Workflow-run 38944109052 sloeg de migraties over omdat de vijf secrets leeg waren.
+  Auth-instellingen zijn niet gewijzigd. CSP wijst nu alleen naar dit Supabase-project.

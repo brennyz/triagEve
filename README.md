@@ -45,10 +45,10 @@ Database-wijzigingen staan in `supabase/migrations/`. De GitHub Action `supabase
 elke push uit, maakt het team-account aan en test dat niemand zonder inlog bij de gegevens kan.
 `keepalive.yml` voorkomt dat het gratis Supabase-project pauzeert.
 
-Eenmalig:
+Eenmalig, zie `SETUP.md`:
 1. Kopieer `.env.example` naar `.env.local` en vul de 5 waarden in (wordt nooit gecommit).
 2. `powershell -ExecutionPolicy Bypass -File scripts/set-github-secrets.ps1`
-3. Zet de Project URL en publishable key in `config.js` en push.
+3. Start de workflow `supabase.yml`. De URL en publishable key staan al in `config.js`.
 
 ## Voor AI-agents
 
