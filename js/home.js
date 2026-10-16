@@ -28,7 +28,7 @@ export function renderHome() {
       const who = (m.who || []).length ? ` · ${m.who.join(', ')}` : '';
       return `<button type="button" class="home-row" data-go="meet">
         <strong>${esc(m.title)}</strong>
-        <span>${esc(when)}${esc(who)}</span>
+        <span>${esc((actions.KINDS?.[m.kind] || {}).label || 'Overleg')} · ${esc(when)}${esc(who)}</span>
       </button>`;
     }).join('')
     : '<p class="empty-inline">Geen komende afspraken.</p>';

@@ -3,6 +3,13 @@ import {
 } from './core.js';
 import { renderHome } from './home.js';
 
+export const KINDS = {
+  overleg: { label: 'Overleg', icon: '💬' },
+  afspraak: { label: 'Afspraak arts / ziekenhuis', icon: '🏥' },
+  bezoek: { label: 'Bezoek', icon: '🏠' },
+  overig: { label: 'Overig', icon: '📌' },
+};
+
 export async function loadMeetings() {
   if (!db) {
     store.meetings = [];
@@ -22,6 +29,70 @@ function formatMeetingDate(date, time) {
   return time ? `${label} · ${time}` : label;
 }
 
+function kindMeta(kind) {
+  return KINDS[kind] || KINDS.overleg;
+}
+
+function happenedHeading(kind) {
+  return kind === 'afspraak' ? 'Wat zei de arts / wat is er gebeurd?' : 'Wat is er gebeurd?';
+}
+
+function icsEscape(s) {
+  return String(s || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+}
+
+function pad(n) {
+  return String(n).padStart(2, '0');
+}
+
+function ymd(d) {
+  return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+}
+
+export function meetingToIcs(m) {
+  const uid = `triageve-${m.id || 'nieuw'}@triageve.app`;
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//triagEve//NL',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+  ];
+  if (m.time) {
+    const start = new Date(`${m.date}T${m.time}:00`);
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    const stamp = (d) => `${ymd(d)}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+    lines.push(`DTSTART:${stamp(start)}`, `DTEND:${stamp(end)}`);
+  } else {
+    const start = new Date(`${m.date}T00:00:00`);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 1);
+    lines.push(`DTSTART;VALUE=DATE:${ymd(start)}`, `DTEND;VALUE=DATE:${ymd(end)}`);
+  }
+  lines.push(`SUMMARY:${icsEscape(m.title)}`);
+  if (m.location) lines.push(`LOCATION:${icsEscape(m.location)}`);
+  const desc = [m.agenda, m.happened].filter(Boolean).join('\n');
+  if (desc) lines.push(`DESCRIPTION:${icsEscape(desc)}`);
+  lines.push('END:VEVENT', 'END:VCALENDAR');
+  return `${lines.join('\r\n')}\r\n`;
+}
+
+export function downloadIcs(m) {
+  const blob = new Blob([meetingToIcs(m)], { type: 'text/calendar;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const slug = String(m.title || 'afspraak').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 40) || 'afspraak';
+  a.download = `${slug}.ics`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function syncHappenedLabel() {
+  const kind = $('#f-kind')?.value || 'overleg';
+  $('#f-happened-label').textContent = happenedHeading(kind);
+}
+
 export function renderMeetings() {
   const today = localDate();
   const q = $('#meet-search').value.trim().toLowerCase();
@@ -31,7 +102,7 @@ export function renderMeetings() {
   if (store.meetFilter === 'past') items = items.filter((m) => m.date < today);
   if (q) {
     items = items.filter((m) =>
-      [m.title, m.agenda, m.happened, m.actions, (m.who || []).join(' ')]
+      [m.title, m.kind, kindMeta(m.kind).label, m.location, m.agenda, m.happened, m.actions, (m.who || []).join(' ')]
         .join(' ').toLowerCase().includes(q));
   }
 
@@ -56,21 +127,33 @@ export function renderMeetings() {
   list.innerHTML = items.map((m) => {
     const actionLines = (m.actions || '').split('\n').map((s) => s.trim()).filter(Boolean);
     const needsReport = m.date < today && !m.happened;
+    const k = kindMeta(m.kind);
     return `
       <article class="card item" data-id="${m.id}">
         <div class="item-head">
           <h3 class="item-title">${esc(m.title)}${needsReport ? '<span class="badge">nog invullen</span>' : ''}</h3>
           <span class="item-date">${esc(formatMeetingDate(m.date, m.time))}</span>
         </div>
+        <p class="kind-label">${esc(k.icon)} ${esc(k.label)}</p>
+        ${m.location ? `<p class="item-who">Locatie: ${esc(m.location)}</p>` : ''}
         ${m.who?.length ? `<p class="item-who">Met: ${esc(m.who.join(', '))}</p>` : ''}
         ${m.agenda ? `<div class="item-section"><h4>Agenda</h4><p>${esc(m.agenda)}</p></div>` : ''}
-        ${m.happened ? `<div class="item-section"><h4>Wat is er gebeurd</h4><p>${esc(m.happened)}</p></div>` : ''}
+        ${m.happened ? `<div class="item-section"><h4>${esc(happenedHeading(m.kind))}</h4><p>${esc(m.happened)}</p></div>` : ''}
         ${actionLines.length ? `<div class="item-section"><h4>Actiepunten</h4><ul>${actionLines.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
         <div class="item-meta">Laatst bewerkt door ${esc(m.updated_by || m.created_by || '?')} · ${esc(fmtStamp(m.updated_at))}</div>
+        <button type="button" class="ghost ics-btn" data-ics="${m.id}">Zet in mijn agenda</button>
       </article>`;
   }).join('');
 
-  $$('#meet-list .item').forEach((el) => el.addEventListener('click', () => openEditor(Number(el.dataset.id))));
+  $$('#meet-list .item').forEach((el) => el.addEventListener('click', (e) => {
+    if (e.target.closest('[data-ics]')) return;
+    openEditor(Number(el.dataset.id));
+  }));
+  $$('#meet-list [data-ics]').forEach((btn) => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const m = store.meetings.find((x) => String(x.id) === String(btn.dataset.ics));
+    if (m) downloadIcs(m);
+  }));
 }
 
 function openEditor(id = null) {
@@ -80,12 +163,15 @@ function openEditor(id = null) {
   $('#f-title').value = m?.title || '';
   $('#f-date').value = m?.date || localDate();
   $('#f-time').value = m?.time || '';
+  $('#f-kind').value = m?.kind || 'overleg';
+  $('#f-location').value = m?.location || '';
   $('#f-agenda').value = m?.agenda || '';
   $('#f-happened').value = m?.happened || '';
   $('#f-actions').value = m?.actions || '';
   const who = m?.who || [store.me];
   $$('input[name="who"]').forEach((cb) => { cb.checked = who.includes(cb.value); });
   $('#delete-btn').hidden = !m;
+  syncHappenedLabel();
   $('#editor').showModal();
 }
 
@@ -100,6 +186,7 @@ $$('#tab-meet .tab').forEach((tab) => {
 $('#meet-search').addEventListener('input', renderMeetings);
 $('#add-btn').addEventListener('click', () => openEditor());
 $('#cancel-btn').addEventListener('click', () => $('#editor').close());
+$('#f-kind').addEventListener('change', syncHappenedLabel);
 
 $('#editor-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -107,6 +194,8 @@ $('#editor-form').addEventListener('submit', async (e) => {
     title: $('#f-title').value.trim(),
     date: $('#f-date').value,
     time: $('#f-time').value || null,
+    kind: $('#f-kind').value || 'overleg',
+    location: $('#f-location').value.trim(),
     agenda: $('#f-agenda').value.trim(),
     happened: $('#f-happened').value.trim(),
     actions: $('#f-actions').value.trim(),
@@ -139,3 +228,6 @@ onRealtime('triageve_meetings', () => loadMeetings());
 actions.renderMeetings = renderMeetings;
 actions.openEditor = openEditor;
 actions.formatMeetingDate = formatMeetingDate;
+actions.meetingToIcs = meetingToIcs;
+actions.downloadIcs = downloadIcs;
+actions.KINDS = KINDS;

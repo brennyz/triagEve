@@ -34,7 +34,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
 }
 
-window.triageve = { store, switchTab, start, preview };
+window.triageve = { store, switchTab, start, preview, actions };
 
 (async () => {
   if (preview) {

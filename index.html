@@ -177,6 +177,17 @@
         </div>
       </div>
 
+      <label for="f-kind">Soort</label>
+      <select id="f-kind">
+        <option value="overleg">Overleg</option>
+        <option value="afspraak">Afspraak arts / ziekenhuis</option>
+        <option value="bezoek">Bezoek</option>
+        <option value="overig">Overig</option>
+      </select>
+
+      <label for="f-location">Locatie</label>
+      <input id="f-location" placeholder="Bijv. huisartsenpraktijk">
+
       <label>Wie zijn erbij?</label>
       <div class="checks">
         <label><input type="checkbox" name="who" value="Jacky"> Jacky</label>
@@ -187,7 +198,7 @@
       <label for="f-agenda">Agenda / bespreekpunten</label>
       <textarea id="f-agenda" rows="3" placeholder="Wat willen we bespreken?"></textarea>
 
-      <label for="f-happened">Wat is er gebeurd?</label>
+      <label for="f-happened" id="f-happened-label">Wat is er gebeurd?</label>
       <textarea id="f-happened" rows="4" placeholder="Wat is er besproken / besloten?"></textarea>
 
       <label for="f-actions">Actiepunten (1 per regel)</label>
