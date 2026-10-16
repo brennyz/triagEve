@@ -90,7 +90,9 @@ Elke fase heeft acceptatiecriteria (AC). Pas afvinken als alle AC kloppen.
 - `scripts/set-github-secrets.ps1` – zet de geheimen uit `.env.local` als GitHub secrets.
 
 **Nodig van Bren (vraag dit eerst, in één bericht, met deze uitleg):**
-Maak `C:\Users\bzijf\TriageEve\.env.local` (kopie van `.env.example`) en vul in:
+Vraag Bren om op zijn pc `TriageEve\.env.local` te maken (kopie van `.env.example`) en te vullen.
+Dat bestand staat niet in de repo. Jij leest het alleen als je op zijn pc draait. In de cloud
+vraag je de waarden en zet je de publishable key in `config.js`. Vul in:
 1. `SUPABASE_PROJECT_REF` – uit de project-URL `https://<ref>.supabase.co`.
 2. `SUPABASE_DB_PASSWORD` – het database-wachtwoord van het project (Bren heeft dit al ingesteld).
 3. `SUPABASE_ACCESS_TOKEN` – supabase.com → avatar rechtsboven → Account → Access Tokens → Generate.
