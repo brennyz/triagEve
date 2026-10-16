@@ -32,6 +32,8 @@ const store = {
   tasks: [],
   editingTaskId: null,
   taskFilter: 'all',
+  checkins: [],
+  measurements: [],
 };
 
 const loaders = [];

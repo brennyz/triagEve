@@ -14,6 +14,7 @@ const TITLES = {
   nood: 'Noodkaart',
   print: 'Overzicht voor arts',
   wishes: 'Wensen van Eef',
+  measure: 'Metingen',
 };
 
 const BOTTOM = ['home', 'chat', 'diary', 'meet', 'more'];
@@ -39,6 +40,7 @@ export function switchTab(tab) {
   if (tab === 'tasks') actions.renderTasks?.();
   if (tab === 'print') actions.renderPrint?.();
   if (tab === 'wishes') actions.renderEef?.();
+  if (tab === 'measure') actions.renderMeasures?.();
 }
 
 $$('.nav-btn').forEach((b) => b.addEventListener('click', () => switchTab(b.dataset.tab)));

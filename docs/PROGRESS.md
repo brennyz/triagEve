@@ -29,6 +29,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017110000_medicatie.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017120000_taken.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017130000_dagboek.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017140000_wensen.sql` – klaar in repo; wacht op GitHub secrets
 
 ## Open vragen voor Bren
 - GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open

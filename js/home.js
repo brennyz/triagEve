@@ -1,5 +1,18 @@
 import { $, store, esc, localDate, actions, onAfterLoad } from './core.js';
 
+function statusCard() {
+  const c = (store.checkins || [])[0];
+  const meta = actions.STATUS?.[c?.status] || { label: 'Nog geen status', cls: 'status-none' };
+  const when = c ? `${c.author} · ${new Date(c.created_at).toLocaleString('nl-NL')}` : 'Nog niet doorgegeven';
+  return `
+    <article class="card status-card ${meta.cls}">
+      <p class="status-kicker">Hoe gaat het met Eef?</p>
+      <p class="status-big">${esc(meta.label)}</p>
+      <p class="item-who">${esc(when)}</p>
+      <button type="button" class="primary" id="status-open">Status doorgeven</button>
+    </article>`;
+}
+
 function clip(text, n = 140) {
   const t = String(text || '').trim();
   if (t.length <= n) return t;
@@ -58,6 +71,7 @@ export function renderHome() {
       <summary>We doen dit samen, mét Eef</summary>
       <p>Bespreek met haar wat hier komt te staan. De app is om samen te zorgen, niet om over haar heen te praten.</p>
     </details>
+    ${statusCard()}
     <button type="button" class="emergency-btn" data-go="nood" aria-label="Noodkaart">Noodkaart</button>
     <article class="card home-card">
       <h2>Komende afspraken</h2>
@@ -78,5 +92,11 @@ export function renderHome() {
     </article>
   `;
 }
+
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'status-open') {
+    $('#status-dialog')?.showModal();
+  }
+});
 
 onAfterLoad(renderHome);

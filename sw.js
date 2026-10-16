@@ -1,4 +1,4 @@
-const CACHE = 'triageve-v11';
+const CACHE = 'triageve-v12';
 const ASSETS = [
   './',
   'index.html',
@@ -18,6 +18,7 @@ const ASSETS = [
   'js/meds.js',
   'js/tasks.js',
   'js/print.js',
+  'js/checkins.js',
   'vendor/supabase.js',
   'manifest.webmanifest',
   'robots.txt',

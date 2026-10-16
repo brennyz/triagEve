@@ -425,6 +425,21 @@ dialog h2 { margin-top: 0; }
 .together p { margin: 8px 0 0; color: var(--muted); }
 #print-btn { margin: 8px 0 16px; min-height: 44px; }
 #wishes-form .primary { margin-top: 12px; min-height: 44px; }
+.status-card { text-align: center; margin-bottom: 12px; }
+.status-kicker { margin: 0; color: var(--muted); font-size: 0.85rem; }
+.status-big { font-size: 1.8rem; font-weight: 800; margin: 4px 0; }
+.status-good { background: #d9f7e3; }
+.status-ok { background: #ffe9c7; }
+.status-bad { background: #ffd0d4; }
+.status-none { background: var(--bg); }
+.status-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
+.status-btns button { min-height: 52px; font-weight: 800; border-radius: 12px; }
+@media (prefers-color-scheme: dark) {
+  .status-good { background: #1c3d2a; }
+  .status-ok { background: #3d3018; }
+  .status-bad { background: #3d1c22; }
+}
+#measure-form .primary { margin-top: 12px; min-height: 44px; }
 .print-head h1 { font-size: 1.3rem; margin: 0 0 4px; }
 .print-section { margin: 16px 0; break-inside: avoid; }
 .print-section h2 { font-size: 1.05rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }

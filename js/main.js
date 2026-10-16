@@ -12,6 +12,7 @@ import './contacts.js';
 import './meds.js';
 import './tasks.js';
 import './print.js';
+import './checkins.js';
 
 async function start() {
   $('#login-view').hidden = true;

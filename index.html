@@ -135,6 +135,7 @@
           <button type="button" class="menu-item" data-go="contacts">Contacten</button>
           <button type="button" class="menu-item" data-go="print">Overzicht voor arts</button>
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
+          <button type="button" class="menu-item" data-go="measure">Metingen</button>
           <button type="button" class="menu-item danger" id="logout-btn-more">Uitloggen</button>
         </nav>
       </div>
@@ -187,6 +188,30 @@
         <div id="contact-list" class="list"></div>
       </div>
       <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
+    </div>
+    <div id="tab-measure" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <form id="measure-form" class="card">
+          <label for="ms-kind">Soort</label>
+          <select id="ms-kind">
+            <option>bloeddruk</option>
+            <option>gewicht</option>
+            <option>temperatuur</option>
+            <option>suiker</option>
+            <option>pijn 0-10</option>
+            <option>overig</option>
+          </select>
+          <label for="ms-value">Waarde *</label>
+          <input id="ms-value" required placeholder="bijv. 120/80 of 36.8">
+          <label for="ms-note">Notitie</label>
+          <input id="ms-note">
+          <label for="ms-when">Gemeten om</label>
+          <input id="ms-when" type="datetime-local">
+          <button type="submit" class="primary">Opslaan</button>
+        </form>
+        <div id="measure-list" class="list"></div>
+      </div>
     </div>
     <div id="tab-wishes" class="tab-panel" hidden>
       <div class="scroll">
@@ -281,6 +306,21 @@
         <button type="button" id="cancel-btn" class="ghost">Annuleren</button>
         <button type="submit" class="primary">Opslaan</button>
       </div>
+    </form>
+  </dialog>
+
+  <dialog id="status-dialog">
+    <form id="status-form">
+      <h2>Status doorgeven</h2>
+      <p class="notice">Bij acuut gevaar: bel 112. Twijfel? Bel de huisarts of huisartsenpost.</p>
+      <label for="status-note">Korte notitie (mag leeg)</label>
+      <textarea id="status-note" rows="2"></textarea>
+      <div class="status-btns">
+        <button type="submit" class="status-good" data-status="goed">Goed</button>
+        <button type="submit" class="status-ok" data-status="matig">Matig</button>
+        <button type="submit" class="status-bad" data-status="zorgelijk">Zorgelijk</button>
+      </div>
+      <button type="button" id="status-cancel" class="ghost">Annuleren</button>
     </form>
   </dialog>
 
