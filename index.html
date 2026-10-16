@@ -148,8 +148,15 @@
     <div id="tab-tasks" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
-        <p class="empty">Nog geen taken.</p>
+        <p class="item-meta" id="task-tally"></p>
+        <div class="chips" id="task-chips">
+          <button class="chip active" data-filter="all">Alles</button>
+          <button class="chip" data-filter="mine">Van mij</button>
+          <button class="chip" data-filter="done">Klaar</button>
+        </div>
+        <div id="task-list" class="list"></div>
       </div>
+      <button id="add-task" class="fab" title="Nieuwe taak" aria-label="Nieuwe taak">+</button>
     </div>
     <div id="tab-contacts" class="tab-panel" hidden>
       <div class="scroll">
@@ -219,11 +226,34 @@
 
       <label for="f-actions">Actiepunten (1 per regel)</label>
       <textarea id="f-actions" rows="3" placeholder="Bren: ...&#10;Paps: ..."></textarea>
+      <button type="button" id="make-tasks" class="ghost">Maak taken van actiepunten</button>
 
       <div class="dialog-buttons">
         <button type="button" id="delete-btn" class="danger" hidden>Verwijderen</button>
         <span class="spacer"></span>
         <button type="button" id="cancel-btn" class="ghost">Annuleren</button>
+        <button type="submit" class="primary">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="task-editor">
+    <form id="task-form" method="dialog">
+      <h2 id="task-title">Nieuwe taak</h2>
+      <label for="t-title">Taak *</label>
+      <input id="t-title" required>
+      <label for="t-assignee">Wie doet het?</label>
+      <select id="t-assignee">
+        <option value="Jacky">Jacky</option>
+        <option value="Paps">Paps</option>
+        <option value="Bren">Bren</option>
+      </select>
+      <label for="t-due">Uiterlijk</label>
+      <input id="t-due" type="date">
+      <div class="dialog-buttons">
+        <button type="button" id="task-delete" class="danger" hidden>Verwijderen</button>
+        <span class="spacer"></span>
+        <button type="button" id="task-cancel" class="ghost">Annuleren</button>
         <button type="submit" class="primary">Opslaan</button>
       </div>
     </form>

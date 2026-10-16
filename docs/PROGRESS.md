@@ -10,7 +10,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 4 – Agenda: afspraken + overleggen (+ .ics) (2026-10-16) – soort/locatie, label per soort, `.ics` download. Bestaande items = overleg. Migratie `20261016190000_agenda.sql` (wacht op secrets). Getest in preview: labels, locatie, ICS-inhoud, formulierlabel bij afspraak.
 - [x] Fase 5 – Over Eef + Noodkaart + Contacten (2026-10-16) – profielvelden, contacten met tel:, noodkaart (112, huisarts, noodcontacten, teksten). Migratie `20261017100000_eef.sql`. Getest in preview 390×844. RLS-test wacht op secrets.
 - [x] Fase 6 – Medicatie (2026-10-16) – huidige/gestopt, stoppen, dagboekregel bij wijziging, disclaimer. Migratie `20261017110000_medicatie.sql`. Live-sync wacht op secrets; UI in preview getest.
-- [ ] Fase 7 – Taken
+- [x] Fase 7 – Taken (2026-10-16) – afvinken, filters, te laat rood, taken uit actiepunten, Home toont open taken. Migratie `20261017120000_taken.sql`. Preview: toggle + parse + Home. Live-sync wacht op secrets.
 - [ ] Fase 8 – Dagboek verbeteren
 - [ ] Fase 9 – Overzicht voor arts (print/PDF)
 - [ ] Fase 10 – Regie en wensen van Eef
@@ -26,6 +26,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261016180000_init.sql` – goedgekeurd om te draaien; wacht op GitHub secrets (fase 1)
 - [ ] `20261016190000_agenda.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017100000_eef.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017110000_medicatie.sql` – klaar in repo; wacht op GitHub secrets
 
 ## Open vragen voor Bren
 - GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open

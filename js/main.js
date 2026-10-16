@@ -10,6 +10,7 @@ import './home.js';
 import './eef.js';
 import './contacts.js';
 import './meds.js';
+import './tasks.js';
 
 async function start() {
   $('#login-view').hidden = true;

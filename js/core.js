@@ -28,6 +28,9 @@ const store = {
   editingContactId: null,
   medications: [],
   editingMedId: null,
+  tasks: [],
+  editingTaskId: null,
+  taskFilter: 'all',
 };
 
 const loaders = [];

@@ -409,3 +409,12 @@ dialog h2 { margin-top: 0; }
 .section-title { font-size: 1.05rem; margin: 16px 0 8px; }
 .stopped-box { margin-top: 16px; }
 .stopped-box summary { font-weight: 700; cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.task-card { display: flex; align-items: flex-start; gap: 8px; cursor: default; }
+.task-check { display: flex; gap: 10px; align-items: flex-start; flex: 1; margin: 0; font-weight: 500; }
+.task-check input { width: 22px; height: 22px; margin-top: 2px; flex-shrink: 0; }
+.task-check span { display: flex; flex-direction: column; gap: 2px; }
+.task-card.done strong { text-decoration: line-through; color: var(--muted); }
+.task-card.late { border-color: var(--danger); }
+.task-card.late .item-who { color: var(--danger); font-weight: 700; }
+.task-edit { min-height: 44px; }
+#make-tasks { margin-top: 8px; min-height: 44px; }
