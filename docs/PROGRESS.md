@@ -13,7 +13,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 7 – Taken (2026-10-16) – afvinken, filters, te laat rood, taken uit actiepunten, Home toont open taken. Migratie `20261017120000_taken.sql`. Preview: toggle + parse + Home. Live-sync wacht op secrets.
 - [x] Fase 8 – Dagboek verbeteren (2026-10-16) – categorieën, belangrijk, filters, tijdstempel + bewerkt op, belangrijk bovenaan Home. Oude stukjes = algemeen. Migratie `20261017130000_dagboek.sql`.
 - [x] Fase 9 – Overzicht voor arts (print/PDF) (2026-10-16) – printpagina met Over Eef, medicatie, belangrijk dagboek (30 d), afspraken, noodcontacten; print-CSS verbergt nav. `window.print()` knop. Chrome print-voorbeeld niet live gedraaid zonder printer-UI; CSS gecontroleerd.
-- [ ] Fase 10 – Regie en wensen van Eef
+- [x] Fase 10 – Regie en wensen van Eef (2026-10-16) – scherm Wensen van Eef, Home-tekstblok inklapbaar, geen BSN/codes. Migratie `20261017140000_wensen.sql`.
 - [ ] Fase 11 – Dagstatus en metingen
 - [ ] Fase 12 – Meldingen (push)
 - [ ] Fase 13 – Geschiedenis, prullenbak, wie-deed-wat

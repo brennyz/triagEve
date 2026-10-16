@@ -134,6 +134,7 @@
           <button type="button" class="menu-item" data-go="tasks">Taken</button>
           <button type="button" class="menu-item" data-go="contacts">Contacten</button>
           <button type="button" class="menu-item" data-go="print">Overzicht voor arts</button>
+          <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
           <button type="button" class="menu-item danger" id="logout-btn-more">Uitloggen</button>
         </nav>
       </div>
@@ -186,6 +187,23 @@
         <div id="contact-list" class="list"></div>
       </div>
       <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
+    </div>
+    <div id="tab-wishes" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="notice">Alleen wat Eef zelf belangrijk vindt. Geen BSN, DigiD, pincodes of kopieën van papieren – alleen waar die liggen.</p>
+        <form id="wishes-form" class="card">
+          <label for="w-wishes">Wat Eef zelf belangrijk vindt</label>
+          <textarea id="w-wishes" rows="4" placeholder="Eten, bezoek, zorg, dagritme: wat ze wel en niet wil"></textarea>
+          <label for="w-sharing">Wat mag de familie bijhouden en delen?</label>
+          <textarea id="w-sharing" rows="3"></textarea>
+          <label for="w-rep">Wie is aanspreekpunt / vertegenwoordiger voor artsen?</label>
+          <input id="w-rep">
+          <label for="w-docs">Waar liggen belangrijke papieren?</label>
+          <textarea id="w-docs" rows="2" placeholder="Alleen de vindplaats, bijvoorbeeld: map in de kast"></textarea>
+          <button type="submit" class="primary">Opslaan</button>
+        </form>
+      </div>
     </div>
     <div id="tab-print" class="tab-panel" hidden>
       <div class="scroll">

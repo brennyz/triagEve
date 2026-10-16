@@ -54,6 +54,10 @@ export function renderHome() {
     : 'Geen nieuwe berichten';
 
   el.innerHTML = `
+    <details class="together">
+      <summary>We doen dit samen, mét Eef</summary>
+      <p>Bespreek met haar wat hier komt te staan. De app is om samen te zorgen, niet om over haar heen te praten.</p>
+    </details>
     <button type="button" class="emergency-btn" data-go="nood" aria-label="Noodkaart">Noodkaart</button>
     <article class="card home-card">
       <h2>Komende afspraken</h2>

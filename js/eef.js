@@ -25,6 +25,12 @@ export function renderEef() {
     $('#eef-important').value = p.important || '';
     $('#eef-emergency').value = p.emergency || '';
   }
+  if ($('#w-wishes')) {
+    $('#w-wishes').value = p.wishes || '';
+    $('#w-sharing').value = p.sharing || '';
+    $('#w-rep').value = p.representative || '';
+    $('#w-docs').value = p.documents || '';
+  }
   const meta = $('#eef-meta');
   if (meta) {
     meta.textContent = p.updated_at
@@ -62,6 +68,10 @@ $('#eef-form')?.addEventListener('submit', async (e) => {
     summary: $('#eef-summary').value.trim(),
     important: $('#eef-important').value.trim(),
     emergency: $('#eef-emergency').value.trim(),
+    wishes: $('#w-wishes')?.value.trim() || '',
+    sharing: $('#w-sharing')?.value.trim() || '',
+    representative: $('#w-rep')?.value.trim() || '',
+    documents: $('#w-docs')?.value.trim() || '',
     updated_by: store.me,
     updated_at: new Date().toISOString(),
   };
@@ -71,6 +81,11 @@ $('#eef-form')?.addEventListener('submit', async (e) => {
 });
 
 onLoad(loadProfile);
+$('#wishes-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('#eef-form')?.requestSubmit();
+});
+
 onRealtime('triageve_profile', () => loadProfile());
 actions.renderNood = renderNood;
 actions.renderEef = renderEef;

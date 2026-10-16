@@ -420,7 +420,11 @@ dialog h2 { margin-top: 0; }
 .task-card.late .item-who { color: var(--danger); font-weight: 700; }
 .task-edit { min-height: 44px; }
 #make-tasks { margin-top: 8px; min-height: 44px; }
+.together { margin-bottom: 12px; font-size: 0.92rem; }
+.together summary { cursor: pointer; font-weight: 600; min-height: 36px; }
+.together p { margin: 8px 0 0; color: var(--muted); }
 #print-btn { margin: 8px 0 16px; min-height: 44px; }
+#wishes-form .primary { margin-top: 12px; min-height: 44px; }
 .print-head h1 { font-size: 1.3rem; margin: 0 0 4px; }
 .print-section { margin: 16px 0; break-inside: avoid; }
 .print-section h2 { font-size: 1.05rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
