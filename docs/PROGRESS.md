@@ -19,7 +19,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 13 – Geschiedenis, prullenbak, wie-deed-wat (2026-10-16) – zachte delete, prullenbak + terugzetten 30 d, geschiedenis Medicatie/Over Eef, trigger `triageve_log`, purge in keepalive. Migratie `20261017170000_history.sql`. Preview: verwijderen → prullenbak → terugzetten.
 - [x] Fase 14 – Offline, back-up, toegankelijkheid (2026-10-16) – outbox + "wacht op verbinding", concepten chat/dagboek, `backup.yml` (wacht op `BACKUP_PASSPHRASE`), JSON-export, grote tekst 125%, aria-labels, focus. Preview: draft, offline-queue, grote tekst. Back-up-workflow groen vereist secret.
 - [x] Fase 15 – Zorg voor de zorgers (2026-10-16) – Home “deze week bij Eef”, opentaken-teller per persoon, Hulp & steun. Nummers: 112; Mantelzorglijn 030-7606055 (mantelzorg.nl, 2026-10-16); 113 en 0800-0113 (113.nl, 2026-10-16). Huisartsenpost via Contacten.
-- [ ] Fase 16 – Eindtest, handleiding, oplevering
+- [x] Fase 16 – Eindtest, handleiding, oplevering (2026-10-16) – `docs/HANDLEIDING.md`, README bijgewerkt, `ZORG_CHECKLIST` nagelopen, CACHE v17. Lokale UI-rooktest (preview) zonder consolefouten. Live e2e + PWA-op-telefoon + `[TEST]`-opruim in Supabase wachten op fase 1 (geen secrets). GitHub Pages na push controleren.
 - [ ] Fase 17 – E-mail naar bzijffers@gmail.com en stoppen
 
 ## Database-migraties (uitgevoerd door workflow `supabase.yml`)
