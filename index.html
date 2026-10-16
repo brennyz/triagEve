@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#6d4aff">
+  <meta name="description" content="Contact, dagboek en overleg voor Jacky, Paps en Bren">
+  <title>triagEve</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Login -->
+  <section id="login-view" class="view">
+    <div class="card login-card">
+      <img src="icons/icon.svg" alt="" class="logo">
+      <h1>triagEve</h1>
+      <p class="muted">Chat, dagboek &amp; overleg</p>
+      <p id="config-warning" class="error" hidden>
+        De app is nog niet gekoppeld aan Supabase. Vul <code>config.js</code> in.
+      </p>
+      <form id="login-form">
+        <label>Wie ben je?</label>
+        <div class="user-picker">
+          <button type="button" class="user-btn" data-user="Jacky">Jacky</button>
+          <button type="button" class="user-btn" data-user="Paps">Paps</button>
+          <button type="button" class="user-btn" data-user="Bren">Bren</button>
+        </div>
+        <label for="password">Wachtwoord</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <p id="login-error" class="error" hidden></p>
+        <button type="submit" class="primary" id="login-btn">Inloggen</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- App -->
+  <section id="app-view" class="view" hidden>
+    <header class="topbar">
+      <h1 id="page-title">Chat</h1>
+      <div class="topbar-right">
+        <span id="conn" class="dot" title="Verbinding"></span>
+        <span id="current-user" class="pill"></span>
+        <button id="logout-btn" class="ghost">Uitloggen</button>
+      </div>
+    </header>
+
+    <!-- Chat -->
+    <div id="tab-chat" class="tab-panel">
+      <div id="messages" class="messages"></div>
+      <form id="chat-form" class="composer">
+        <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
+        <button type="submit" class="primary send" title="Versturen">&#10148;</button>
+      </form>
+    </div>
+
+    <!-- Dagboek -->
+    <div id="tab-diary" class="tab-panel" hidden>
+      <div class="scroll">
+        <form id="diary-form" class="card diary-compose">
+          <label for="diary-input" id="diary-label">Wat is er gebeurd?</label>
+          <textarea id="diary-input" rows="4" placeholder="Schrijf hier je dagboek..." maxlength="20000"></textarea>
+          <div class="dialog-buttons">
+            <button type="button" id="diary-delete" class="danger" hidden>Verwijderen</button>
+            <span class="spacer"></span>
+            <button type="button" id="diary-cancel" class="ghost" hidden>Annuleren</button>
+            <button type="submit" class="primary" id="diary-save">Opslaan</button>
+          </div>
+        </form>
+        <div class="chips" id="diary-chips">
+          <button class="chip active" data-who="">Iedereen</button>
+          <button class="chip" data-who="Jacky">Jacky</button>
+          <button class="chip" data-who="Paps">Paps</button>
+          <button class="chip" data-who="Bren">Bren</button>
+        </div>
+        <input id="diary-search" type="search" placeholder="Zoeken in dagboek...">
+        <div id="diary-list" class="list"></div>
+      </div>
+    </div>
+
+    <!-- Overleg -->
+    <div id="tab-meet" class="tab-panel" hidden>
+      <div class="scroll">
+        <nav class="tabs">
+          <button class="tab active" data-filter="upcoming">Komend</button>
+          <button class="tab" data-filter="past">Gebeurd</button>
+          <button class="tab" data-filter="all">Alles</button>
+        </nav>
+        <input id="meet-search" type="search" placeholder="Zoeken...">
+        <div id="meet-list" class="list"></div>
+      </div>
+      <button id="add-btn" class="fab" title="Nieuw overleg">+</button>
+    </div>
+
+    <nav class="bottomnav">
+      <button class="nav-btn active" data-tab="chat">&#128172;<span>Chat</span><b class="badge-count" id="chat-badge" hidden></b></button>
+      <button class="nav-btn" data-tab="diary">&#128214;<span>Dagboek</span></button>
+      <button class="nav-btn" data-tab="meet">&#128197;<span>Overleg</span></button>
+    </nav>
+  </section>
+
+  <!-- Overleg editor -->
+  <dialog id="editor">
+    <form id="editor-form" method="dialog">
+      <h2 id="editor-title">Nieuw overleg</h2>
+      <label for="f-title">Onderwerp *</label>
+      <input id="f-title" required>
+
+      <div class="row">
+        <div>
+          <label for="f-date">Datum *</label>
+          <input id="f-date" type="date" required>
+        </div>
+        <div>
+          <label for="f-time">Tijd</label>
+          <input id="f-time" type="time">
+        </div>
+      </div>
+
+      <label>Wie zijn erbij?</label>
+      <div class="checks">
+        <label><input type="checkbox" name="who" value="Jacky"> Jacky</label>
+        <label><input type="checkbox" name="who" value="Paps"> Paps</label>
+        <label><input type="checkbox" name="who" value="Bren"> Bren</label>
+      </div>
+
+      <label for="f-agenda">Agenda / bespreekpunten</label>
+      <textarea id="f-agenda" rows="3" placeholder="Wat willen we bespreken?"></textarea>
+
+      <label for="f-happened">Wat is er gebeurd?</label>
+      <textarea id="f-happened" rows="4" placeholder="Wat is er besproken / besloten?"></textarea>
+
+      <label for="f-actions">Actiepunten (1 per regel)</label>
+      <textarea id="f-actions" rows="3" placeholder="Bren: ...&#10;Paps: ..."></textarea>
+
+      <div class="dialog-buttons">
+        <button type="button" id="delete-btn" class="danger" hidden>Verwijderen</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancel-btn" class="ghost">Annuleren</button>
+        <button type="submit" class="primary">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="vendor/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
