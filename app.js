@@ -1,5 +1,7 @@
 const USERS = ['Jacky', 'Paps', 'Bren'];
 const NAME_KEY = 'triageve.user';
+const ACTIVITY_KEY = 'triageve.lastActivity';
+const MAX_IDLE_MS = 14 * 24 * 60 * 60 * 1000;
 const CFG = window.TRIAGEVE_CONFIG || {};
 const configured = Boolean(CFG.SUPABASE_URL && !CFG.SUPABASE_URL.includes('JOUW-PROJECT'));
 const db = configured ? supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY) : null;
@@ -95,15 +97,36 @@ $('#login-form').addEventListener('submit', async (e) => {
   error.hidden = true;
   me = selectedUser;
   localStorage.setItem(NAME_KEY, me);
+  touchActivity();
   start();
 });
 
-$('#logout-btn').addEventListener('click', async () => {
-  if (channel) await db.removeChannel(channel);
+async function doLogout(msg) {
+  if (channel && db) await db.removeChannel(channel);
   channel = null;
-  await db.auth.signOut();
+  if (db) await db.auth.signOut();
   localStorage.removeItem(NAME_KEY);
+  localStorage.removeItem(ACTIVITY_KEY);
+  me = null;
   showLogin();
+  if (msg) toast(msg);
+}
+
+function touchActivity() {
+  if (me) localStorage.setItem(ACTIVITY_KEY, String(Date.now()));
+}
+
+function idleExpired() {
+  const raw = localStorage.getItem(ACTIVITY_KEY);
+  if (!raw) return false;
+  const t = Number(raw);
+  return !Number.isFinite(t) || (Date.now() - t > MAX_IDLE_MS);
+}
+
+$('#logout-btn').addEventListener('click', () => doLogout());
+
+['click', 'keydown', 'touchstart'].forEach((ev) => {
+  document.addEventListener(ev, touchActivity, { passive: true });
 });
 
 /* ---------- App shell ---------- */
@@ -156,11 +179,15 @@ function subscribe() {
 
 // Phones pause background tabs, so catch up when the app comes back.
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && me && !$('#app-view').hidden) {
-    loadMessages();
-    loadDiary();
-    loadMeetings();
+  if (document.visibilityState !== 'visible' || !me || $('#app-view').hidden) return;
+  if (idleExpired()) {
+    doLogout('Je bent uitgelogd na 14 dagen zonder gebruik.');
+    return;
   }
+  touchActivity();
+  loadMessages();
+  loadDiary();
+  loadMeetings();
 });
 
 /* ---------- Chat ---------- */
@@ -487,7 +514,13 @@ if ('serviceWorker' in navigator) {
   db.auth.onAuthStateChange((event) => {
     if (event === 'SIGNED_OUT') showLogin();
   });
+  if (idleExpired()) {
+    await doLogout('Je bent uitgelogd na 14 dagen zonder gebruik.');
+    return;
+  }
   const { data: { session } } = await db.auth.getSession();
-  if (session && USERS.includes(me)) start();
-  else showLogin();
+  if (session && USERS.includes(me)) {
+    touchActivity();
+    start();
+  } else showLogin();
 })();

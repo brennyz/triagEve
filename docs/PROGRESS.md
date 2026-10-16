@@ -5,7 +5,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 
 - [x] Fase 0 – Basis: PWA, login, chat, dagboek, overleg, migraties, workflows, GitHub Pages live (2026-10-16) – nog niet getest tegen echte Supabase
 - [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-16) – wacht op GitHub secrets en publishable key; migratie `20261016180000_init.sql` mag draaien zodra secrets er zijn; signups blijven AAN (onbekend of het project alleen voor triagEve is); Hoorspel-koppeling koppelt Bren later zelf los. Geen geheimen in de repo.
-- [ ] Fase 2 – Beveiliging en privacy
+- [x] Fase 2 – Beveiliging en privacy (2026-10-16) – auto-uitloggen na 14 dagen, robots/noindex, CSP (`*.supabase.co` tot project-ref bekend is), Privacy-sectie in README. Regio DB onbekend (wacht op fase 1). Wachtwoordkeuze nog open. E2e-inlog wacht op secrets; `node --check` + login-scherm + robots.txt gecontroleerd. `git log` bevat geen echte service-keys (wel het woord `service_role` in docs/vendor).
 - [ ] Fase 3 – Navigatie + Home-overzicht
 - [ ] Fase 4 – Agenda: afspraken + overleggen (+ .ics)
 - [ ] Fase 5 – Over Eef + Noodkaart + Contacten
