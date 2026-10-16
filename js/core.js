@@ -78,10 +78,25 @@ function toast(msg) {
   toastTimer = setTimeout(() => { el.hidden = true; }, 3500);
 }
 
+function familyMessage(error) {
+  const msg = error?.message || '';
+  const code = error?.code || '';
+  if (code === 'PGRST205' || code === '42P01' || /schema cache|does not exist/i.test(msg)) {
+    return 'Nog niet ingesteld: de beheerder moet eerst de setup afronden.';
+  }
+  if (!navigator.onLine || /failed to fetch|networkerror|offline|load failed/i.test(msg)) {
+    return 'Geen verbinding. Probeer het opnieuw.';
+  }
+  if (code === '42501' || /permission denied|jwt/i.test(msg)) {
+    return 'Geen toegang. Log opnieuw in.';
+  }
+  return 'Er ging iets mis. Probeer het opnieuw.';
+}
+
 function check(error, what) {
   if (!error) return false;
   console.error(what, error);
-  toast(`${what} mislukt: ${error.message}`);
+  toast(`${what} mislukt. ${familyMessage(error)}`);
   return true;
 }
 

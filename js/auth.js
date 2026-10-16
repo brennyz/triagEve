@@ -40,6 +40,30 @@ $$('.user-btn').forEach((btn) => {
   });
 });
 
+const SETUP_HINT = 'Nog niet ingesteld: de beheerder moet eerst de setup afronden.';
+
+function isNetwork(err) {
+  return !navigator.onLine || /failed to fetch|networkerror|offline|load failed/i.test(err?.message || '');
+}
+
+function isBadPassword(err) {
+  const blob = `${err?.message || ''} ${err?.code || ''}`.toLowerCase();
+  return /invalid_credentials|invalid login|invalid_grant/.test(blob);
+}
+
+async function backendReady() {
+  try {
+    const { error } = await db.from('triageve_messages').select('id').limit(1);
+    if (!error) return 'ready';
+    const blob = `${error.code || ''} ${error.message || ''}`;
+    if (error.code === 'PGRST205' || error.code === '42P01' || /schema cache|does not exist/i.test(blob)) return 'missing';
+    if (error.code === '42501' || /permission|jwt/i.test(blob)) return 'ready';
+    return 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
 $('#login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const error = $('#login-error');
@@ -48,12 +72,24 @@ $('#login-form').addEventListener('submit', async (e) => {
   if (!USERS.includes(store.selectedUser)) return fail('Kies eerst wie je bent.');
 
   $('#login-btn').disabled = true;
-  const { error: authError } = await db.auth.signInWithPassword({
-    email: CFG.TEAM_EMAIL,
-    password: $('#password').value,
-  });
+  let authError;
+  try {
+    const res = await db.auth.signInWithPassword({
+      email: CFG.TEAM_EMAIL,
+      password: $('#password').value,
+    });
+    authError = res.error;
+  } catch (err) {
+    authError = err;
+  }
   $('#login-btn').disabled = false;
-  if (authError) return fail('Wachtwoord klopt niet.');
+  if (authError) {
+    if (isNetwork(authError)) return fail('Geen verbinding. Probeer het opnieuw.');
+    const state = await backendReady();
+    if (state === 'missing') return fail(SETUP_HINT);
+    if (isBadPassword(authError)) return fail('Wachtwoord klopt niet.');
+    return fail('Inloggen lukt nu niet. Probeer het opnieuw.');
+  }
 
   error.hidden = true;
   store.me = store.selectedUser;

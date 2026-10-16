@@ -2,7 +2,7 @@ name: Supabase database
 
 # Voert alle migraties in supabase/migrations automatisch uit, maakt het team-account aan
 # (als het nog niet bestaat) en test dat niemand zonder inlog bij de gegevens kan.
-# Benodigde repository secrets (eenmalig, via scripts/set-github-secrets.ps1):
+# Benodigde repository secrets (eenmalig, via scripts/setup.ps1):
 #   SUPABASE_ACCESS_TOKEN, SUPABASE_DB_PASSWORD, SUPABASE_PROJECT_REF,
 #   SUPABASE_SERVICE_ROLE_KEY, TRIAGEVE_TEAM_PASSWORD
 

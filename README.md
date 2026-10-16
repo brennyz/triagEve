@@ -34,6 +34,8 @@ triagEve bewaart informatie over welzijn en zorg. Dat zijn bijzondere persoonsge
   gegevens staan in de Supabase-database, niet in deze repo.
 - **Wie erbij kan:** alleen Jacky, Paps en Bren, met het gedeelde team-wachtwoord. De
   database laat via Row Level Security alleen het account `team@triageve.app` toe.
+  De gekozen naam bij “Wie ben je?” wordt bij elk stuk bewaard. Iedereen kan elke
+  naam aanklikken; het is geen apart account per persoon.
 - **Niet in de app:** BSN, DigiD, pincodes, bankgegevens of scans van documenten.
 - **Regio van de database:** nog niet vastgelegd (wacht op de Supabase-koppeling in fase 1).
   Een regio in de EU heeft de voorkeur. Bren noteert de regio hier zodra het project
@@ -45,10 +47,11 @@ Database-wijzigingen staan in `supabase/migrations/`. De GitHub Action `supabase
 elke push uit, maakt het team-account aan en test dat niemand zonder inlog bij de gegevens kan.
 `keepalive.yml` voorkomt dat het gratis Supabase-project pauzeert.
 
-Eenmalig, zie `SETUP.md`:
-1. Kopieer `.env.example` naar `.env.local` en vul de 5 waarden in (wordt nooit gecommit).
-2. `powershell -ExecutionPolicy Bypass -File scripts/set-github-secrets.ps1`
-3. Start de workflow `supabase.yml`. De URL en publishable key staan al in `config.js`.
+Eenmalig, op de Windows-pc (zie `SETUP.md`):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1
+```
 
 ## Voor AI-agents
 

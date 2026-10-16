@@ -11,7 +11,9 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="triagEve">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -32,11 +34,16 @@
           <button type="button" class="user-btn" data-user="Paps">Paps</button>
           <button type="button" class="user-btn" data-user="Bren">Bren</button>
         </div>
+        <p class="muted login-hint">Je naam wordt bewaard bij wat je opslaat.</p>
+        <label class="sr-only" for="login-email">Account</label>
+        <input id="login-email" class="sr-only" name="username" type="email" autocomplete="username" value="team@triageve.app" readonly tabindex="-1">
         <label for="password">Wachtwoord</label>
         <input id="password" type="password" autocomplete="current-password" required>
         <p id="login-error" class="error" hidden></p>
         <button type="submit" class="primary" id="login-btn">Inloggen</button>
       </form>
+      <a class="emergency-call" href="tel:112">Bij nood: bel 112</a>
+      <p class="muted login-note">Huisarts en bijzonderheden staan in de app, na inloggen.</p>
     </div>
   </section>
 

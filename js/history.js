@@ -15,6 +15,19 @@ const TRASH_TABLES = [
   ['triageve_tasks', 'Taken', loadTasks],
 ];
 
+const ACTION_LABEL = { insert: 'Nieuw', update: 'Gewijzigd', delete: 'Weggehaald' };
+const TABLE_LABEL = {
+  triageve_messages: 'Chat',
+  triageve_diary: 'Dagboek',
+  triageve_meetings: 'Agenda',
+  triageve_profile: 'Over Eef',
+  triageve_contacts: 'Contacten',
+  triageve_medications: 'Medicatie',
+  triageve_tasks: 'Taken',
+  triageve_checkins: 'Hoe gaat het',
+  triageve_measurements: 'Metingen',
+};
+
 function labelOf(table, row) {
   return row.title || row.name || row.body || row.summary || `#${row.id}`;
 }
@@ -107,16 +120,16 @@ export function renderHistory() {
   if (!el) return;
   const rows = store.historyRows || [];
   if (!rows.length) {
-    el.innerHTML = '<p class="empty">Nog geen geschiedenis (verschijnt na wijzigingen in de database).</p>';
+    el.innerHTML = '<p class="empty">Nog geen wijzigingen.</p>';
     return;
   }
   el.innerHTML = rows.map((h) => `
     <article class="card">
       <div class="item-head">
-        <strong>${esc(h.action)}</strong>
+        <strong>${esc(ACTION_LABEL[String(h.action || '').toLowerCase()] || 'Wijziging')}</strong>
         <span class="item-date">${esc(fmtStamp(h.changed_at))}</span>
       </div>
-      <p class="item-who">${esc(h.changed_by || '?')} · ${esc(h.table_name)} #${esc(h.row_id)}</p>
+      <p class="item-who">${esc(h.changed_by || '?')} · ${esc(TABLE_LABEL[h.table_name] || 'Onderdeel')}</p>
     </article>
   `).join('');
 }

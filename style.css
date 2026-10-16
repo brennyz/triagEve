@@ -2,7 +2,7 @@
   --bg: #f4f2fb;
   --card: #ffffff;
   --text: #1d1b2c;
-  --muted: #6f6a85;
+  --muted: #4a4560;
   --primary: #6d4aff;
   --primary-dark: #5532e6;
   --bubble-other: #ffffff;
@@ -16,7 +16,7 @@
     --bg: #14121f;
     --card: #1f1c2e;
     --text: #eeeaf8;
-    --muted: #a19bb8;
+    --muted: #c8c2dc;
     --bubble-other: #2a2640;
     --border: #322d47;
   }
@@ -31,9 +31,22 @@ html, body {
   color: var(--text);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 [hidden] { display: none !important; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* ---------- Login ---------- */
 
@@ -43,6 +56,7 @@ html, body {
   align-items: center;
   justify-content: center;
   padding: 24px;
+  overflow-y: auto;
 }
 
 .card {
@@ -57,6 +71,9 @@ html, body {
 .logo { width: 72px; height: 72px; }
 h1 { margin: 8px 0 4px; }
 .muted { color: var(--muted); margin-top: 0; }
+.login-hint { font-size: 0.9rem; margin: 8px 0 0; }
+.login-note { font-size: 0.9rem; margin: 4px 0 0; }
+.login-card .emergency-call { margin-top: 18px; }
 .error { color: var(--danger); margin: 8px 0 0; }
 
 label { display: block; font-weight: 600; margin: 14px 0 6px; font-size: 0.92rem; }
@@ -69,10 +86,14 @@ input, textarea, select {
   background: var(--bg);
   color: var(--text);
   font: inherit;
+  font-size: max(16px, 1rem);
 }
 textarea { resize: vertical; }
 input:focus, textarea:focus, select:focus { outline: 2px solid var(--primary); border-color: transparent; }
 
+button, .chip, .tab, .user-btn, summary {
+  min-height: 44px;
+}
 button {
   font: inherit;
   border: none;
@@ -110,14 +131,24 @@ button:disabled { opacity: 0.6; cursor: wait; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+  gap: 8px;
+  min-width: 0;
+  padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
   background: var(--primary);
   color: white;
   flex-shrink: 0;
 }
-.topbar h1 { font-size: 1.25rem; margin: 0; }
-.topbar-right { display: flex; align-items: center; gap: 8px; }
-.topbar .ghost { color: white; padding: 6px 8px; }
+.topbar h1 {
+  font-size: 1.15rem;
+  margin: 0;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.topbar-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; min-width: 0; }
+.topbar .ghost { color: white; padding: 8px 10px; }
 .pill { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 999px; font-size: 0.9rem; }
 .dot { width: 9px; height: 9px; border-radius: 50%; background: #ffb4b4; }
 .dot.online { background: #6dffa8; }
@@ -161,7 +192,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
   font-size: 1.2rem;
   border-radius: 0;
 }
-.nav-btn span { font-size: 0.68rem; font-weight: 600; }
+.nav-btn span { font-size: 0.75rem; font-weight: 600; }
 .nav-btn.active { color: var(--primary); }
 .badge-count {
   position: absolute;
@@ -217,7 +248,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
 }
 .bubble-author { font-size: 0.78rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
 .bubble-body { white-space: pre-wrap; overflow-wrap: anywhere; }
-.bubble-time { font-size: 0.68rem; opacity: 0.7; text-align: right; margin-top: 2px; }
+.bubble-time { font-size: 0.75rem; text-align: right; margin-top: 2px; color: var(--muted); }
+.mine .bubble-time { color: #fff; }
 
 .composer {
   display: flex;
@@ -240,7 +272,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
   border: 1px solid var(--border);
   color: var(--muted);
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 8px 14px;
   font-weight: 600;
   font-size: 0.88rem;
 }
@@ -262,9 +294,9 @@ button:disabled { opacity: 0.6; cursor: wait; }
 
 .item { cursor: pointer; }
 .item:hover { border-color: var(--primary); }
-.item-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
-.item-title { font-weight: 700; font-size: 1.05rem; margin: 0; }
-.item-date { color: var(--primary); font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
+.item-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.item-title { font-weight: 700; font-size: 1.05rem; margin: 0; overflow-wrap: anywhere; }
+.item-date { color: var(--primary); font-weight: 600; font-size: 0.85rem; }
 .item-who { color: var(--muted); font-size: 0.85rem; margin: 4px 0 0; }
 .kind-label { margin: 6px 0 0; font-size: 0.85rem; font-weight: 600; color: var(--primary); }
 .ics-btn { margin-top: 10px; min-height: 44px; padding-left: 0; }
@@ -272,7 +304,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .item-section h4 { margin: 0 0 4px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
 .item-section p { margin: 0; white-space: pre-wrap; }
 .item-section ul { margin: 0; padding-left: 20px; }
-.item-meta { margin-top: 10px; font-size: 0.75rem; color: var(--muted); }
+.item-meta { margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
 .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: #ffe7b3; color: #7a5200; margin-left: 6px; }
 
 .fab {
@@ -293,6 +325,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
 dialog {
   width: min(560px, 94vw);
   max-height: 92dvh;
+  overflow: auto;
   border: none;
   border-radius: var(--radius);
   background: var(--card);
@@ -304,8 +337,8 @@ dialog h2 { margin-top: 0; }
 
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .checks { display: flex; gap: 16px; flex-wrap: wrap; }
-.checks label { font-weight: 500; margin: 0; display: flex; align-items: center; gap: 6px; }
-.checks input { width: auto; }
+.checks label { font-weight: 500; margin: 0; display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.checks input { width: 24px; height: 24px; }
 
 .dialog-buttons { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .spacer { flex: 1; }
@@ -394,8 +427,8 @@ dialog h2 { margin-top: 0; }
 .nood-scroll h3 { margin: 12px 0 6px; font-size: 0.95rem; }
 .nood-block { text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-top: 10px; }
 .nood-block p { margin: 0; white-space: pre-wrap; }
-.check-line { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-.check-line input { width: auto; }
+.check-line { display: flex; align-items: center; gap: 8px; font-weight: 600; min-height: 44px; }
+.check-line input { width: 24px; height: 24px; }
 .danger-badge { background: #ffd0d4; color: #8a1020; }
 #eef-form .primary { margin-top: 12px; min-height: 44px; }
 .notice {
@@ -412,8 +445,8 @@ dialog h2 { margin-top: 0; }
 .stopped-box { margin-top: 16px; }
 .stopped-box summary { font-weight: 700; cursor: pointer; min-height: 44px; display: flex; align-items: center; }
 .task-card { display: flex; align-items: flex-start; gap: 8px; cursor: default; }
-.task-check { display: flex; gap: 10px; align-items: flex-start; flex: 1; margin: 0; font-weight: 500; }
-.task-check input { width: 22px; height: 22px; margin-top: 2px; flex-shrink: 0; }
+.task-check { display: flex; gap: 10px; align-items: flex-start; flex: 1; margin: 0; font-weight: 500; min-height: 44px; }
+.task-check input { width: 24px; height: 24px; margin-top: 2px; flex-shrink: 0; }
 .task-check span { display: flex; flex-direction: column; gap: 2px; }
 .task-card.done strong { text-decoration: line-through; color: var(--muted); }
 .task-card.late { border-color: var(--danger); }
@@ -421,7 +454,7 @@ dialog h2 { margin-top: 0; }
 .task-edit { min-height: 44px; }
 #make-tasks { margin-top: 8px; min-height: 44px; }
 .together { margin-bottom: 12px; font-size: 0.92rem; }
-.together summary { cursor: pointer; font-weight: 600; min-height: 36px; }
+.together summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 .together p { margin: 8px 0 0; color: var(--muted); }
 #print-btn { margin: 8px 0 16px; min-height: 44px; }
 #wishes-form .primary { margin-top: 12px; min-height: 44px; }
