@@ -4,7 +4,7 @@ Bijwerken na elke fase: `- [x] Fase N – naam (JJJJ-MM-DD) – korte notitie`.
 Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 
 - [x] Fase 0 – Basis: PWA, login, chat, dagboek, overleg, migraties, workflows, GitHub Pages live (2026-10-16) – nog niet getest tegen echte Supabase
-- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend
+- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-16) – wacht op GitHub secrets en publishable key; migratie `20261016180000_init.sql` mag draaien zodra secrets er zijn; signups blijven AAN (onbekend of het project alleen voor triagEve is); Hoorspel-koppeling koppelt Bren later zelf los. Geen geheimen in de repo.
 - [ ] Fase 2 – Beveiliging en privacy
 - [ ] Fase 3 – Navigatie + Home-overzicht
 - [ ] Fase 4 – Agenda: afspraken + overleggen (+ .ics)
@@ -23,13 +23,17 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] Fase 17 – E-mail naar bzijffers@gmail.com en stoppen
 
 ## Database-migraties (uitgevoerd door workflow `supabase.yml`)
-- [ ] `20261016180000_init.sql` – wacht op GitHub secrets (fase 1)
+- [ ] `20261016180000_init.sql` – goedgekeurd om te draaien; wacht op GitHub secrets (fase 1)
 
 ## Open vragen voor Bren
-- `.env.local` invullen (5 waarden, zie `.env.example`) + publishable key noemen
-- Is het Supabase-project alleen voor triagEve? (dan signups uit)
-- Supabase GitHub-koppeling naar `Hoorspel` loskoppelen
-- Wachtwoord: huidige houden of sterker? (fase 2)
+- GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open
+- Wachtwoord: huidige houden of sterker? (fase 2; aanrader: 4+ woorden, bijv. `Eef-Thee-Tuin-2026`)
+
+## Beantwoord door Bren (2026-10-16)
+- Geheimen en publishable key zijn nu niet beschikbaar; nooit in de repo zetten
+- Signups blijven AAN (niet uitzetten; onbekend of het project alleen voor triagEve is)
+- Hoorspel GitHub-koppeling: Bren koppelt later zelf los
+- Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
 - 2026-10-16: Geen Supabase access token of DB-wachtwoord gevonden in andere projectmappen.
