@@ -1,4 +1,4 @@
-import { $, store, esc, localDate, actions, onAfterLoad } from './core.js';
+import { $, store, esc, localDate, actions, onAfterLoad, alive } from './core.js';
 
 function statusCard() {
   const c = (store.checkins || [])[0];
@@ -24,14 +24,14 @@ export function renderHome() {
   if (!el) return;
   const today = localDate();
 
-  const upcoming = [...store.meetings]
+  const upcoming = alive(store.meetings)
     .filter((m) => m.date >= today)
     .sort((a, b) => `${a.date}T${a.time || '00:00'}`.localeCompare(`${b.date}T${b.time || '00:00'}`))
     .slice(0, 3);
 
-  const openTasks = (store.tasks || []).filter((t) => !t.done).slice(0, 5);
-  const importantDiary = store.diary.filter((d) => d.important);
-  const otherDiary = store.diary.filter((d) => !d.important);
+  const openTasks = alive(store.tasks).filter((t) => !t.done).slice(0, 5);
+  const importantDiary = alive(store.diary).filter((d) => d.important);
+  const otherDiary = alive(store.diary).filter((d) => !d.important);
   const diaryBits = [...importantDiary, ...otherDiary].slice(0, 3);
   const unread = store.unread || 0;
 

@@ -34,6 +34,9 @@ const store = {
   taskFilter: 'all',
   checkins: [],
   measurements: [],
+  trash: [],
+  historyRows: [],
+  historyTable: '',
 };
 
 const loaders = [];
@@ -86,9 +89,19 @@ function alive(rows) {
   return (rows || []).filter((r) => !r.deleted_at);
 }
 
+async function softDelete(table, id) {
+  if (!db) return { error: null };
+  return db.from(table).update({ deleted_at: new Date().toISOString() }).eq('id', id);
+}
+
+async function restoreRow(table, id) {
+  if (!db) return { error: null };
+  return db.from(table).update({ deleted_at: null }).eq('id', id);
+}
+
 export {
   USERS, NAME_KEY, ACTIVITY_KEY, MAX_IDLE_MS, CFG, configured, preview, db,
   $, $$, store, loaders, realtime, afterLoad, actions,
   onLoad, onAfterLoad, onRealtime, esc, localDate, fmtTime, fmtDay, fmtStamp,
-  dayLabel, toast, check, alive,
+  dayLabel, toast, check, alive, softDelete, restoreRow,
 };

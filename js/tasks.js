@@ -1,5 +1,5 @@
 import {
-  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, localDate, USERS, toast,
+  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, localDate, USERS, toast, softDelete,
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
@@ -25,13 +25,13 @@ export function renderTasks() {
   const list = $('#task-list');
   if (!list) return;
   const f = store.taskFilter || 'all';
-  let items = store.tasks || [];
+  let items = alive(store.tasks);
   if (f === 'mine') items = items.filter((t) => t.assignee === store.me);
   if (f === 'done') items = items.filter((t) => t.done);
   items = [...items].sort((a, b) => Number(a.done) - Number(b.done) || String(a.due_date || '9999').localeCompare(String(b.due_date || '9999')));
 
   const counts = USERS.map((u) => {
-    const n = (store.tasks || []).filter((t) => !t.done && t.assignee === u).length;
+    const n = alive(store.tasks).filter((t) => !t.done && t.assignee === u).length;
     return `${u}: ${n}`;
   });
 
@@ -143,13 +143,14 @@ $('#task-form')?.addEventListener('submit', async (e) => {
 $('#task-delete')?.addEventListener('click', async () => {
   if (!store.editingTaskId || !confirm('Deze taak verwijderen?')) return;
   if (!db) {
-    store.tasks = store.tasks.filter((t) => t.id !== store.editingTaskId);
+    const t = store.tasks.find((x) => x.id === store.editingTaskId);
+    if (t) t.deleted_at = new Date().toISOString();
     $('#task-editor').close();
     renderTasks();
     renderHome();
     return;
   }
-  const { error } = await db.from('triageve_tasks').delete().eq('id', store.editingTaskId);
+  const { error } = await softDelete('triageve_tasks', store.editingTaskId);
   if (check(error, 'Verwijderen')) return;
   $('#task-editor').close();
   loadTasks();

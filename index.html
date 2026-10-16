@@ -137,6 +137,7 @@
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
           <button type="button" class="menu-item" data-go="measure">Metingen</button>
           <button type="button" class="menu-item" data-go="push">Meldingen aan</button>
+          <button type="button" class="menu-item" data-go="trash">Prullenbak</button>
           <button type="button" class="menu-item danger" id="logout-btn-more">Uitloggen</button>
         </nav>
       </div>
@@ -153,7 +154,10 @@
           <label for="eef-emergency">In geval van nood</label>
           <textarea id="eef-emergency" rows="3" placeholder="Wat te doen" maxlength="20000"></textarea>
           <p class="item-meta" id="eef-meta">Nog niet bijgewerkt.</p>
-          <button type="submit" class="primary">Opslaan</button>
+          <div class="dialog-buttons">
+            <button type="submit" class="primary">Opslaan</button>
+            <button type="button" class="ghost" data-go="history" data-history="triageve_profile">Geschiedenis</button>
+          </div>
         </form>
       </div>
     </div>
@@ -161,6 +165,7 @@
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
         <p class="notice">Dit is een overzicht voor de familie. Volg altijd het advies van de arts/apotheek.</p>
+        <button type="button" class="ghost" data-go="history" data-history="triageve_medications">Geschiedenis</button>
         <h2 class="section-title">Huidige medicatie</h2>
         <div id="meds-current" class="list"></div>
         <details class="stopped-box">
@@ -189,6 +194,19 @@
         <div id="contact-list" class="list"></div>
       </div>
       <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
+    </div>
+    <div id="tab-trash" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="muted">Verwijderde dingen blijven 30 dagen staan. Daarna gaan ze definitief weg.</p>
+        <div id="trash-list" class="list"></div>
+      </div>
+    </div>
+    <div id="tab-history" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <div id="history-list" class="list"></div>
+      </div>
     </div>
     <div id="tab-push" class="tab-panel" hidden>
       <div class="scroll">

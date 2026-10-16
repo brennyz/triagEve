@@ -1,5 +1,5 @@
 import {
-  $, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions,
+  $, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive,
 } from './core.js';
 import { renderHome } from './home.js';
 
@@ -43,7 +43,7 @@ export function renderNood() {
   const el = $('#nood-body');
   if (!el) return;
   const p = store.profile || {};
-  const contacts = [...(store.contacts || [])].sort((a, b) => Number(b.is_emergency) - Number(a.is_emergency));
+  const contacts = alive(store.contacts).sort((a, b) => Number(b.is_emergency) - Number(a.is_emergency));
   const huisarts = contacts.filter((c) => /huisarts/i.test(c.role || ''));
   const nood = contacts.filter((c) => c.is_emergency);
 

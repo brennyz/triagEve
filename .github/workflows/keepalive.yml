@@ -25,3 +25,21 @@ jobs:
             -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
           echo "HTTP $code"
           [ "$code" -lt 500 ]
+
+  purge:
+    runs-on: ubuntu-latest
+    env:
+      SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prullenbak ouder dan 30 dagen leegmaken
+        run: |
+          URL=$(grep -oP "SUPABASE_URL:\s*'\K[^']+" config.js)
+          if echo "$URL" | grep -q "JOUW"; then echo "Nog niet gekoppeld."; exit 0; fi
+          if [ -z "$SERVICE_KEY" ]; then echo "Geen service key; purge overgeslagen."; exit 0; fi
+          since=$(date -u -d '30 days ago' +%Y-%m-%dT%H:%M:%SZ)
+          for t in triageve_diary triageve_meetings triageve_contacts triageve_medications triageve_tasks; do
+            curl -s -X DELETE "$URL/rest/v1/$t?deleted_at=lt.$since" \
+              -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY"
+            echo " purged $t"
+          done

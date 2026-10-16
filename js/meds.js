@@ -1,5 +1,5 @@
 import {
-  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, localDate,
+  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, localDate, softDelete,
 } from './core.js';
 import { loadDiary } from './diary.js';
 
@@ -23,7 +23,7 @@ export function renderMeds() {
   const current = $('#meds-current');
   const stopped = $('#meds-stopped');
   if (!current) return;
-  const all = store.medications || [];
+  const all = alive(store.medications);
   const active = all.filter((m) => m.active);
   const done = all.filter((m) => !m.active);
 
@@ -123,7 +123,7 @@ $('#med-delete')?.addEventListener('click', async () => {
   if (!store.editingMedId || !confirm('Deze medicatie verwijderen?')) return;
   if (!db) return;
   const m = store.medications.find((x) => x.id === store.editingMedId);
-  const { error } = await db.from('triageve_medications').delete().eq('id', store.editingMedId);
+  const { error } = await softDelete('triageve_medications', store.editingMedId);
   if (check(error, 'Verwijderen')) return;
   $('#med-editor').close();
   await diaryNote(m?.name || 'medicatie', 'verwijderd');

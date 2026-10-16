@@ -1,5 +1,5 @@
 import {
-  $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, dayLabel, actions, alive,
+  $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, dayLabel, actions, alive, softDelete,
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
@@ -35,7 +35,7 @@ function formCategory() {
 
 export function renderDiary() {
   const q = $('#diary-search').value.trim().toLowerCase();
-  const items = store.diary.filter((d) =>
+  const items = alive(store.diary).filter((d) =>
     (!store.diaryWho || d.author === store.diaryWho)
     && (!store.diaryCategory || (d.category || 'algemeen') === store.diaryCategory)
     && (!q || d.body.toLowerCase().includes(q) || catLabel(d.category).toLowerCase().includes(q)));
@@ -141,13 +141,14 @@ $('#diary-cancel').addEventListener('click', resetDiaryForm);
 $('#diary-delete').addEventListener('click', async () => {
   if (!store.editingDiaryId || !confirm('Dit stukje verwijderen?')) return;
   if (!db) {
-    store.diary = store.diary.filter((d) => d.id !== store.editingDiaryId);
+    const d = store.diary.find((x) => x.id === store.editingDiaryId);
+    if (d) d.deleted_at = new Date().toISOString();
     resetDiaryForm();
     renderDiary();
     renderHome();
     return;
   }
-  const { error } = await db.from('triageve_diary').delete().eq('id', store.editingDiaryId);
+  const { error } = await softDelete('triageve_diary', store.editingDiaryId);
   if (check(error, 'Verwijderen')) return;
   resetDiaryForm();
   loadDiary();

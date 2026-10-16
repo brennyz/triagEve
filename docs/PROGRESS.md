@@ -31,10 +31,12 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017130000_dagboek.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017140000_wensen.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017150000_checkins.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017160000_push.sql` – klaar in repo; wacht op GitHub secrets
 
 ## Open vragen voor Bren
 - GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open
 - Wachtwoord: huidige houden of sterker? (fase 2; aanrader: 4+ woorden, bijv. `Eef-Thee-Tuin-2026`)
+- Fase 12: VAPID-sleutels genereren en `VAPID_PRIVATE_KEY` als GitHub secret zetten (publieke sleutel in `config.js`)
 
 ## Beantwoord door Bren (2026-10-16)
 - Geheimen en publishable key zijn nu niet beschikbaar; nooit in de repo zetten

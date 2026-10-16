@@ -1,5 +1,5 @@
 import {
-  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive,
+  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, softDelete,
 } from './core.js';
 import { renderHome } from './home.js';
 import { renderNood } from './eef.js';
@@ -22,7 +22,7 @@ export async function loadContacts() {
 export function renderContacts() {
   const list = $('#contact-list');
   if (!list) return;
-  const items = [...(store.contacts || [])].sort((a, b) => Number(b.is_emergency) - Number(a.is_emergency) || a.name.localeCompare(b.name, 'nl'));
+  const items = alive(store.contacts).sort((a, b) => Number(b.is_emergency) - Number(a.is_emergency) || a.name.localeCompare(b.name, 'nl'));
   if (!items.length) {
     list.innerHTML = '<p class="empty">Nog geen contacten. Tik op + om er een toe te voegen.</p>';
     return;
@@ -87,7 +87,7 @@ $('#contact-form')?.addEventListener('submit', async (e) => {
 $('#contact-delete')?.addEventListener('click', async () => {
   if (!store.editingContactId || !confirm('Dit contact verwijderen?')) return;
   if (!db) return;
-  const { error } = await db.from('triageve_contacts').delete().eq('id', store.editingContactId);
+  const { error } = await softDelete('triageve_contacts', store.editingContactId);
   if (check(error, 'Verwijderen')) return;
   $('#contact-editor').close();
   loadContacts();

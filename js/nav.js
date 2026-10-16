@@ -16,6 +16,8 @@ const TITLES = {
   wishes: 'Wensen van Eef',
   measure: 'Metingen',
   push: 'Meldingen',
+  trash: 'Prullenbak',
+  history: 'Geschiedenis',
 };
 
 const BOTTOM = ['home', 'chat', 'diary', 'meet', 'more'];
@@ -42,6 +44,8 @@ export function switchTab(tab) {
   if (tab === 'print') actions.renderPrint?.();
   if (tab === 'wishes') actions.renderEef?.();
   if (tab === 'measure') actions.renderMeasures?.();
+  if (tab === 'trash') actions.loadTrash?.();
+  if (tab === 'history') actions.renderHistory?.();
 }
 
 $$('.nav-btn').forEach((b) => b.addEventListener('click', () => switchTab(b.dataset.tab)));
@@ -50,6 +54,7 @@ document.addEventListener('click', (e) => {
   const go = e.target.closest('[data-go]');
   if (go) {
     e.preventDefault();
+    if (go.dataset.history) actions.loadHistory?.(go.dataset.history);
     switchTab(go.dataset.go);
   }
 });

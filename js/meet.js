@@ -1,5 +1,5 @@
 import {
-  $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, actions, alive,
+  $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, actions, alive, softDelete,
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
@@ -97,7 +97,7 @@ function syncHappenedLabel() {
 export function renderMeetings() {
   const today = localDate();
   const q = $('#meet-search').value.trim().toLowerCase();
-  let items = store.meetings;
+  let items = alive(store.meetings);
 
   if (store.meetFilter === 'upcoming') items = items.filter((m) => m.date >= today);
   if (store.meetFilter === 'past') items = items.filter((m) => m.date < today);
@@ -219,7 +219,7 @@ $('#editor-form').addEventListener('submit', async (e) => {
 $('#delete-btn').addEventListener('click', async () => {
   if (!store.editingMeetingId || !confirm('Dit item verwijderen?')) return;
   if (!db) return;
-  const { error } = await db.from('triageve_meetings').delete().eq('id', store.editingMeetingId);
+  const { error } = await softDelete('triageve_meetings', store.editingMeetingId);
   if (check(error, 'Verwijderen')) return;
   $('#editor').close();
   loadMeetings();

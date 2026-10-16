@@ -1,4 +1,4 @@
-import { $, store, esc, localDate, fmtStamp, actions } from './core.js';
+import { $, store, esc, localDate, fmtStamp, actions, alive } from './core.js';
 
 function daysAgo(n) {
   const d = new Date();
@@ -10,14 +10,14 @@ export function renderPrint() {
   const el = $('#print-root');
   if (!el) return;
   const p = store.profile || {};
-  const meds = (store.medications || []).filter((m) => m.active);
+  const meds = alive(store.medications).filter((m) => m.active);
   const since = daysAgo(30);
-  const diary = (store.diary || []).filter((d) => d.important && new Date(d.created_at) >= since);
+  const diary = alive(store.diary).filter((d) => d.important && new Date(d.created_at) >= since);
   const today = localDate();
-  const meets = [...(store.meetings || [])]
+  const meets = alive(store.meetings)
     .filter((m) => m.date >= today)
     .sort((a, b) => `${a.date}T${a.time || '00:00'}`.localeCompare(`${b.date}T${b.time || '00:00'}`));
-  const contacts = (store.contacts || []).filter((c) => c.is_emergency || /huisarts/i.test(c.role || ''));
+  const contacts = alive(store.contacts).filter((c) => c.is_emergency || /huisarts/i.test(c.role || ''));
 
   const block = (title, inner) => `
     <section class="print-section">

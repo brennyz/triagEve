@@ -14,6 +14,7 @@ import './tasks.js';
 import './print.js';
 import './checkins.js';
 import './push.js';
+import './history.js';
 
 async function start() {
   $('#login-view').hidden = true;
