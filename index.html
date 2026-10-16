@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <meta name="theme-color" content="#6d4aff">
+  <meta name="theme-color" content="#5c3d82">
   <meta name="description" content="Contact, dagboek en agenda voor Jacky, Paps en Bren">
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://slddtxwbufoadmvdconz.supabase.co wss://slddtxwbufoadmvdconz.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
@@ -68,7 +68,7 @@
       <div id="messages" class="messages"></div>
       <form id="chat-form" class="composer">
         <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
-        <button type="submit" class="primary send" title="Versturen" aria-label="Versturen">&#10148;</button>
+        <button type="submit" class="primary send" title="Versturen" aria-label="Versturen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </form>
     </div>
 
@@ -299,11 +299,11 @@
     </div>
 
     <nav class="bottomnav">
-      <button class="nav-btn active" data-tab="home" aria-label="Home">&#127968;<span>Home</span></button>
-      <button class="nav-btn" data-tab="chat" aria-label="Chat">&#128172;<span>Chat</span><b class="badge-count" id="chat-badge" hidden></b></button>
-      <button class="nav-btn" data-tab="diary" aria-label="Dagboek">&#128214;<span>Dagboek</span></button>
-      <button class="nav-btn" data-tab="meet" aria-label="Agenda">&#128197;<span>Agenda</span></button>
-      <button class="nav-btn" data-tab="more" aria-label="Meer">&#8943;<span>Meer</span></button>
+      <button class="nav-btn active" data-tab="home" aria-label="Home"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><span>Home</span></button>
+      <button class="nav-btn" data-tab="chat" aria-label="Chat"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17.5 4 20V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>Chat</span><b class="badge-count" id="chat-badge" hidden></b></button>
+      <button class="nav-btn" data-tab="diary" aria-label="Dagboek"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5h10a2 2 0 0 1 2 2V20H8a3 3 0 0 0-3 3V6.5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 4.5v14.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span>Dagboek</span></button>
+      <button class="nav-btn" data-tab="meet" aria-label="Agenda"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.5v3M16 3.5v3M4 10h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Agenda</span></button>
+      <button class="nav-btn" data-tab="more" aria-label="Meer"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="18" cy="12" r="1.5" fill="currentColor"/></svg><span>Meer</span></button>
     </nav>
   </section>
 
