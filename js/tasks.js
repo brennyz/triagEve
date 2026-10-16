@@ -2,6 +2,7 @@ import {
   $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, localDate, USERS, toast,
 } from './core.js';
 import { renderHome } from './home.js';
+import { pingNotify } from './push.js';
 
 export async function loadTasks() {
   if (!db) {
@@ -135,6 +136,7 @@ $('#task-form')?.addEventListener('submit', async (e) => {
     : await db.from('triageve_tasks').insert({ ...data, created_by: store.me });
   if (check(error, 'Opslaan')) return;
   $('#task-editor').close();
+  pingNotify('task');
   loadTasks();
 });
 
@@ -191,6 +193,7 @@ export async function tasksFromActions(text) {
   })));
   if (check(error, 'Taken maken')) return 0;
   toast(`${rows.length} taak/taken gemaakt.`);
+  pingNotify('task');
   loadTasks();
   return rows.length;
 }

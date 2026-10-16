@@ -2,6 +2,7 @@ import {
   $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtTime, fmtStamp, dayLabel, actions,
 } from './core.js';
 import { renderHome } from './home.js';
+import { pingNotify } from './push.js';
 
 export async function loadMessages() {
   if (!db) {
@@ -105,6 +106,7 @@ $('#chat-form').addEventListener('submit', async (e) => {
     return;
   }
   addMessage(data);
+  pingNotify('chat');
 });
 
 onLoad(loadMessages);

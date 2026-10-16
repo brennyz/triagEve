@@ -14,8 +14,8 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 8 – Dagboek verbeteren (2026-10-16) – categorieën, belangrijk, filters, tijdstempel + bewerkt op, belangrijk bovenaan Home. Oude stukjes = algemeen. Migratie `20261017130000_dagboek.sql`.
 - [x] Fase 9 – Overzicht voor arts (print/PDF) (2026-10-16) – printpagina met Over Eef, medicatie, belangrijk dagboek (30 d), afspraken, noodcontacten; print-CSS verbergt nav. `window.print()` knop. Chrome print-voorbeeld niet live gedraaid zonder printer-UI; CSS gecontroleerd.
 - [x] Fase 10 – Regie en wensen van Eef (2026-10-16) – scherm Wensen van Eef, Home-tekstblok inklapbaar, geen BSN/codes. Migratie `20261017140000_wensen.sql`.
-- [ ] Fase 11 – Dagstatus en metingen
-- [ ] Fase 12 – Meldingen (push)
+- [x] Fase 11 – Dagstatus en metingen (2026-10-16) – status op Home (kleur), doorgeven, zorgelijk → dagboek belangrijk, metingen-lijst. Migratie `20261017150000_checkins.sql`. Preview getest; live 3s-sync wacht op secrets.
+- [x] Fase 12 – Meldingen (push) (2026-10-16) – tabel, edge function `notify`, sw push/click, Meer → Meldingen. Geen medische details in de tekst. **Wacht op Bren:** `npx web-push generate-vapid-keys`, publieke sleutel in `config.js`, `VAPID_PRIVATE_KEY` als GitHub secret. Echte push-AC (Android <10s) kan niet zonder die sleutels.
 - [ ] Fase 13 – Geschiedenis, prullenbak, wie-deed-wat
 - [ ] Fase 14 – Offline, back-up, toegankelijkheid
 - [ ] Fase 15 – Zorg voor de zorgers
@@ -30,6 +30,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017120000_taken.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017130000_dagboek.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017140000_wensen.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017150000_checkins.sql` – klaar in repo; wacht op GitHub secrets
 
 ## Open vragen voor Bren
 - GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open

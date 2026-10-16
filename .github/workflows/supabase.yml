@@ -11,6 +11,7 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/**'
+      - 'supabase/functions/**'
       - '.github/workflows/supabase.yml'
       - 'config.js'
   workflow_dispatch:
@@ -31,6 +32,7 @@ jobs:
       PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
       SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       TEAM_PASSWORD: ${{ secrets.TRIAGEVE_TEAM_PASSWORD }}
+      VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -102,3 +104,14 @@ jobs:
           curl -s -X DELETE "$URL/triageve_messages?id=eq.$id" \
             -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" > /dev/null
           exit $fail
+
+      - name: Edge function notify + VAPID-secret
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          supabase functions deploy notify --project-ref "$PROJECT_REF" || echo "::warning::Function deploy mislukt (kan wachten tot fase 12 secrets er zijn)."
+          PUB=$(grep -oP "VAPID_PUBLIC_KEY:\s*'\K[^']+" config.js || true)
+          if [ -n "$VAPID_PRIVATE_KEY" ] && [ -n "$PUB" ]; then
+            supabase secrets set "VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY" "VAPID_PUBLIC_KEY=$PUB" --project-ref "$PROJECT_REF"
+          else
+            echo "::warning::VAPID_PRIVATE_KEY of publieke sleutel ontbreekt; push wacht op Bren."
+          fi

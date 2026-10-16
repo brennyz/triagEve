@@ -3,6 +3,7 @@ import {
 } from './core.js';
 import { renderHome } from './home.js';
 import { loadDiary } from './diary.js';
+import { pingNotify } from './push.js';
 
 export const MEASURE_KINDS = ['bloeddruk', 'gewicht', 'temperatuur', 'suiker', 'pijn 0-10', 'overig'];
 export const STATUS = {
@@ -87,6 +88,7 @@ export async function submitStatus(status, note) {
     });
     if (check(dErr, 'Dagboekregel')) return;
     loadDiary();
+    pingNotify('status');
   }
   toast('Status doorgegeven.');
   loadCheckins();

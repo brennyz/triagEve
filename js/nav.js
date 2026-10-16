@@ -15,6 +15,7 @@ const TITLES = {
   print: 'Overzicht voor arts',
   wishes: 'Wensen van Eef',
   measure: 'Metingen',
+  push: 'Meldingen',
 };
 
 const BOTTOM = ['home', 'chat', 'diary', 'meet', 'more'];

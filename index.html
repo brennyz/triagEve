@@ -136,6 +136,7 @@
           <button type="button" class="menu-item" data-go="print">Overzicht voor arts</button>
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
           <button type="button" class="menu-item" data-go="measure">Metingen</button>
+          <button type="button" class="menu-item" data-go="push">Meldingen aan</button>
           <button type="button" class="menu-item danger" id="logout-btn-more">Uitloggen</button>
         </nav>
       </div>
@@ -188,6 +189,18 @@
         <div id="contact-list" class="list"></div>
       </div>
       <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
+    </div>
+    <div id="tab-push" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p>Krijg een korte melding als iemand anders iets nieuws zet. Op het vergrendelscherm staan geen medische details.</p>
+        <p class="muted">Werkt in Chrome op Android en op de computer. Op iPhone alleen als triagEve op het beginscherm staat (iOS 16.4 of nieuwer).</p>
+        <p id="push-status" class="item-meta">Nog niet ingesteld.</p>
+        <div class="dialog-buttons">
+          <button type="button" id="push-on" class="primary">Meldingen aan</button>
+          <button type="button" id="push-off" class="ghost">Uitzetten</button>
+        </div>
+      </div>
     </div>
     <div id="tab-measure" class="tab-panel" hidden>
       <div class="scroll">

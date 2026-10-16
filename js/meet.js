@@ -2,6 +2,7 @@ import {
   $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, actions, alive,
 } from './core.js';
 import { renderHome } from './home.js';
+import { pingNotify } from './push.js';
 
 export const KINDS = {
   overleg: { label: 'Overleg', icon: '💬' },
@@ -211,6 +212,7 @@ $('#editor-form').addEventListener('submit', async (e) => {
     : await db.from('triageve_meetings').insert({ ...data, created_by: store.me });
   if (check(error, 'Opslaan')) return;
   $('#editor').close();
+  pingNotify('meeting');
   loadMeetings();
 });
 

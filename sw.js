@@ -1,4 +1,4 @@
-const CACHE = 'triageve-v12';
+const CACHE = 'triageve-v13';
 const ASSETS = [
   './',
   'index.html',
@@ -19,6 +19,7 @@ const ASSETS = [
   'js/tasks.js',
   'js/print.js',
   'js/checkins.js',
+  'js/push.js',
   'vendor/supabase.js',
   'manifest.webmanifest',
   'robots.txt',
@@ -52,4 +53,29 @@ self.addEventListener('fetch', (e) => {
       })
       .catch(() => caches.match(e.request))
   );
+});
+
+self.addEventListener('push', (e) => {
+  let data = { title: 'triagEve', body: 'Nieuw in de app', tab: 'home' };
+  try { if (e.data) data = { ...data, ...e.data.json() }; } catch { /* ignore */ }
+  e.waitUntil(self.registration.showNotification(data.title || 'triagEve', {
+    body: data.body || '',
+    data: { tab: data.tab || 'home' },
+  }));
+});
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const tab = e.notification.data?.tab || 'home';
+  const url = new URL(`./?tab=${tab}`, self.registration.scope).href;
+  e.waitUntil((async () => {
+    const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of list) {
+      if ('focus' in c) {
+        c.postMessage({ type: 'open-tab', tab });
+        return c.focus();
+      }
+    }
+    return self.clients.openWindow(url);
+  })());
 });

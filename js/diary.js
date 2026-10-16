@@ -2,6 +2,7 @@ import {
   $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, dayLabel, actions, alive,
 } from './core.js';
 import { renderHome } from './home.js';
+import { pingNotify } from './push.js';
 
 export const DIARY_CATEGORIES = [
   ['algemeen', 'Algemeen'],
@@ -130,6 +131,7 @@ $('#diary-form').addEventListener('submit', async (e) => {
     ? await db.from('triageve_diary').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', store.editingDiaryId)
     : await db.from('triageve_diary').insert({ author: store.me, ...payload });
   if (check(error, 'Opslaan')) return;
+  if (payload.important) pingNotify('diary');
   resetDiaryForm();
   loadDiary();
 });

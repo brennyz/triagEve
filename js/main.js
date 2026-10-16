@@ -13,12 +13,14 @@ import './meds.js';
 import './tasks.js';
 import './print.js';
 import './checkins.js';
+import './push.js';
 
 async function start() {
   $('#login-view').hidden = true;
   $('#app-view').hidden = false;
   $('#current-user').textContent = store.me;
-  store.activeTab = store.activeTab || 'home';
+  const tabQ = new URLSearchParams(location.search).get('tab');
+  store.activeTab = tabQ || store.activeTab || 'home';
   switchTab(store.activeTab);
   await reloadAll();
   subscribe();
@@ -41,6 +43,9 @@ if ('serviceWorker' in navigator) {
 }
 
 window.triageve = { store, switchTab, start, preview, actions };
+navigator.serviceWorker?.addEventListener('message', (e) => {
+  if (e.data?.type === 'open-tab' && e.data.tab) switchTab(e.data.tab);
+});
 
 (async () => {
   if (preview) {

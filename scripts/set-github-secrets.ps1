@@ -14,9 +14,18 @@ foreach ($line in Get-Content $envFile) {
 
 $names = 'SUPABASE_ACCESS_TOKEN', 'SUPABASE_DB_PASSWORD', 'SUPABASE_PROJECT_REF',
          'SUPABASE_SERVICE_ROLE_KEY', 'TRIAGEVE_TEAM_PASSWORD'
+$optional = 'VAPID_PRIVATE_KEY', 'BACKUP_PASSPHRASE'
 foreach ($n in $names) {
   if (-not $values[$n]) { throw "$n ontbreekt in .env.local" }
   $values[$n] | gh secret set $n -R brennyz/triagEve
   Write-Host "OK  $n"
+}
+foreach ($n in $optional) {
+  if ($values[$n]) {
+    $values[$n] | gh secret set $n -R brennyz/triagEve
+    Write-Host "OK  $n"
+  } else {
+    Write-Host "skip $n (niet ingevuld)"
+  }
 }
 Write-Host "Klaar. Start de database-workflow met: gh workflow run supabase.yml -R brennyz/triagEve"
