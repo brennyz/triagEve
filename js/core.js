@@ -20,6 +20,7 @@ const store = {
   diary: [],
   meetings: [],
   diaryWho: '',
+  diaryCategory: '',
   editingDiaryId: null,
   meetFilter: 'upcoming',
   editingMeetingId: null,

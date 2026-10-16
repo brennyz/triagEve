@@ -71,6 +71,7 @@ async function diaryNote(name, what) {
   const { error } = await db.from('triageve_diary').insert({
     author: store.me,
     body: `Medicatie gewijzigd: ${name} – ${what}`,
+    category: 'medicatie',
   });
   if (check(error, 'Dagboekregel')) return;
   loadDiary();

@@ -17,7 +17,9 @@ export function renderHome() {
     .slice(0, 3);
 
   const openTasks = (store.tasks || []).filter((t) => !t.done).slice(0, 5);
-  const diaryBits = [...store.diary].slice(0, 3);
+  const importantDiary = store.diary.filter((d) => d.important);
+  const otherDiary = store.diary.filter((d) => !d.important);
+  const diaryBits = [...importantDiary, ...otherDiary].slice(0, 3);
   const unread = store.unread || 0;
 
   const meetHtml = upcoming.length
@@ -42,7 +44,7 @@ export function renderHome() {
 
   const diaryHtml = diaryBits.length
     ? diaryBits.map((d) => `<button type="button" class="home-row" data-go="diary">
-        <strong>${esc(d.author)}</strong>
+        <strong>${esc(d.author)}${d.important ? ' · belangrijk' : ''}</strong>
         <span>${esc(clip(d.body))}</span>
       </button>`).join('')
     : '<p class="empty-inline">Nog geen dagboekstukjes.</p>';

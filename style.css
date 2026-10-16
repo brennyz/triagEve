@@ -248,6 +248,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
 
 .list { display: grid; gap: 10px; }
 .list-day { margin: 10px 0 0; font-size: 0.85rem; color: var(--muted); text-transform: capitalize; }
+.chip-label { margin: 10px 0 4px; font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.entry.important { border-color: #e6a817; }
 .entry.editable { cursor: pointer; }
 .entry.editable:hover { border-color: var(--primary); }
 .entry-body { margin: 8px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }

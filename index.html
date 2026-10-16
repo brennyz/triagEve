@@ -72,6 +72,17 @@
         <form id="diary-form" class="card diary-compose">
           <label for="diary-input" id="diary-label">Wat is er gebeurd?</label>
           <textarea id="diary-input" rows="4" placeholder="Schrijf hier je dagboek..." maxlength="20000"></textarea>
+          <p class="chip-label">Categorie</p>
+          <div class="chips" id="diary-cat-chips">
+            <button type="button" class="chip active" data-cat="algemeen">Algemeen</button>
+            <button type="button" class="chip" data-cat="gezondheid">Gezondheid</button>
+            <button type="button" class="chip" data-cat="stemming">Stemming</button>
+            <button type="button" class="chip" data-cat="eten">Eten</button>
+            <button type="button" class="chip" data-cat="slaap">Slaap</button>
+            <button type="button" class="chip" data-cat="medicatie">Medicatie</button>
+            <button type="button" class="chip" data-cat="incident">Incident</button>
+          </div>
+          <label class="check-line"><input id="diary-important" type="checkbox"> Belangrijk</label>
           <div class="dialog-buttons">
             <button type="button" id="diary-delete" class="danger" hidden>Verwijderen</button>
             <span class="spacer"></span>
@@ -84,6 +95,16 @@
           <button class="chip" data-who="Jacky">Jacky</button>
           <button class="chip" data-who="Paps">Paps</button>
           <button class="chip" data-who="Bren">Bren</button>
+        </div>
+        <div class="chips" id="diary-filter-cats">
+          <button class="chip active" data-cat="">Alle categorieën</button>
+          <button class="chip" data-cat="algemeen">Algemeen</button>
+          <button class="chip" data-cat="gezondheid">Gezondheid</button>
+          <button class="chip" data-cat="stemming">Stemming</button>
+          <button class="chip" data-cat="eten">Eten</button>
+          <button class="chip" data-cat="slaap">Slaap</button>
+          <button class="chip" data-cat="medicatie">Medicatie</button>
+          <button class="chip" data-cat="incident">Incident</button>
         </div>
         <input id="diary-search" type="search" placeholder="Zoeken in dagboek...">
         <div id="diary-list" class="list"></div>
