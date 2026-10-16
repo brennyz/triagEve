@@ -12,6 +12,7 @@ const TITLES = {
   tasks: 'Taken',
   contacts: 'Contacten',
   nood: 'Noodkaart',
+  print: 'Overzicht voor arts',
 };
 
 const BOTTOM = ['home', 'chat', 'diary', 'meet', 'more'];
@@ -35,6 +36,7 @@ export function switchTab(tab) {
   if (tab === 'nood') actions.renderNood?.();
   if (tab === 'meds') actions.renderMeds?.();
   if (tab === 'tasks') actions.renderTasks?.();
+  if (tab === 'print') actions.renderPrint?.();
 }
 
 $$('.nav-btn').forEach((b) => b.addEventListener('click', () => switchTab(b.dataset.tab)));

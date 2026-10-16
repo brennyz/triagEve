@@ -12,7 +12,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 6 – Medicatie (2026-10-16) – huidige/gestopt, stoppen, dagboekregel bij wijziging, disclaimer. Migratie `20261017110000_medicatie.sql`. Live-sync wacht op secrets; UI in preview getest.
 - [x] Fase 7 – Taken (2026-10-16) – afvinken, filters, te laat rood, taken uit actiepunten, Home toont open taken. Migratie `20261017120000_taken.sql`. Preview: toggle + parse + Home. Live-sync wacht op secrets.
 - [x] Fase 8 – Dagboek verbeteren (2026-10-16) – categorieën, belangrijk, filters, tijdstempel + bewerkt op, belangrijk bovenaan Home. Oude stukjes = algemeen. Migratie `20261017130000_dagboek.sql`.
-- [ ] Fase 9 – Overzicht voor arts (print/PDF)
+- [x] Fase 9 – Overzicht voor arts (print/PDF) (2026-10-16) – printpagina met Over Eef, medicatie, belangrijk dagboek (30 d), afspraken, noodcontacten; print-CSS verbergt nav. `window.print()` knop. Chrome print-voorbeeld niet live gedraaid zonder printer-UI; CSS gecontroleerd.
 - [ ] Fase 10 – Regie en wensen van Eef
 - [ ] Fase 11 – Dagstatus en metingen
 - [ ] Fase 12 – Meldingen (push)
@@ -28,6 +28,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017100000_eef.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017110000_medicatie.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017120000_taken.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017130000_dagboek.sql` – klaar in repo; wacht op GitHub secrets
 
 ## Open vragen voor Bren
 - GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open

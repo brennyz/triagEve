@@ -420,3 +420,20 @@ dialog h2 { margin-top: 0; }
 .task-card.late .item-who { color: var(--danger); font-weight: 700; }
 .task-edit { min-height: 44px; }
 #make-tasks { margin-top: 8px; min-height: 44px; }
+#print-btn { margin: 8px 0 16px; min-height: 44px; }
+.print-head h1 { font-size: 1.3rem; margin: 0 0 4px; }
+.print-section { margin: 16px 0; break-inside: avoid; }
+.print-section h2 { font-size: 1.05rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.print-section h3 { font-size: 0.9rem; margin: 10px 0 4px; }
+.print-section p, .print-section li { white-space: pre-wrap; }
+
+@media print {
+  :root { --bg: #fff; --text: #000; --card: #fff; --border: #ccc; --muted: #333; --primary: #000; }
+  body, html, #app-view { height: auto !important; background: #fff; color: #000; }
+  .topbar, .bottomnav, .no-print, .fab, dialog, .toast { display: none !important; }
+  .tab-panel { display: none !important; overflow: visible !important; height: auto !important; }
+  #tab-print:not([hidden]) { display: block !important; }
+  .scroll { padding: 0; max-width: none; overflow: visible; }
+  #print-root { font-size: 11pt; }
+  a { color: #000; text-decoration: none; }
+}

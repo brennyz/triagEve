@@ -133,6 +133,7 @@
           <button type="button" class="menu-item" data-go="meds">Medicatie</button>
           <button type="button" class="menu-item" data-go="tasks">Taken</button>
           <button type="button" class="menu-item" data-go="contacts">Contacten</button>
+          <button type="button" class="menu-item" data-go="print">Overzicht voor arts</button>
           <button type="button" class="menu-item danger" id="logout-btn-more">Uitloggen</button>
         </nav>
       </div>
@@ -185,6 +186,13 @@
         <div id="contact-list" class="list"></div>
       </div>
       <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
+    </div>
+    <div id="tab-print" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
+        <button type="button" id="print-btn" class="primary no-print">Printen / Opslaan als PDF</button>
+        <div id="print-root"></div>
+      </div>
     </div>
     <div id="tab-nood" class="tab-panel" hidden>
       <div class="scroll nood-scroll">
