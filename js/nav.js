@@ -18,6 +18,7 @@ const TITLES = {
   push: 'Meldingen',
   trash: 'Prullenbak',
   history: 'Geschiedenis',
+  help: 'Hulp & steun',
 };
 
 const BOTTOM = ['home', 'chat', 'diary', 'meet', 'more'];
@@ -46,6 +47,7 @@ export function switchTab(tab) {
   if (tab === 'measure') actions.renderMeasures?.();
   if (tab === 'trash') actions.loadTrash?.();
   if (tab === 'history') actions.renderHistory?.();
+  if (tab === 'help') actions.renderHelp?.();
 }
 
 $$('.nav-btn').forEach((b) => b.addEventListener('click', () => switchTab(b.dataset.tab)));

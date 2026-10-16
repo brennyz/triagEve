@@ -373,6 +373,7 @@ dialog h2 { margin-top: 0; }
   font-weight: 600;
 }
 .menu-item.danger { color: var(--danger); }
+a.menu-item { display: block; text-decoration: none; }
 .back { margin-bottom: 8px; min-height: 44px; padding-left: 0; }
 
 .nood-scroll { text-align: center; }

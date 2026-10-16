@@ -6,8 +6,7 @@
   <meta name="theme-color" content="#6d4aff">
   <meta name="description" content="Contact, dagboek en agenda voor Jacky, Paps en Bren">
   <meta name="robots" content="noindex, nofollow">
-  <!-- CSP: *.supabase.co tot het echte project-ref bekend is (fase 1); daarna aanscherpen. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://slddtxwbufoadmvdconz.supabase.co wss://slddtxwbufoadmvdconz.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>triagEve</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -137,6 +136,7 @@
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
           <button type="button" class="menu-item" data-go="measure">Metingen</button>
           <button type="button" class="menu-item" data-go="push">Meldingen aan</button>
+          <button type="button" class="menu-item" data-go="help">Hulp &amp; steun</button>
           <button type="button" class="menu-item" data-go="trash">Prullenbak</button>
           <button type="button" class="menu-item" id="export-btn">Alles downloaden</button>
           <button type="button" class="menu-item" id="large-text-btn">Grote tekst aan</button>
@@ -268,6 +268,19 @@
         <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
         <button type="button" id="print-btn" class="primary no-print">Printen / Opslaan als PDF</button>
         <div id="print-root"></div>
+      </div>
+    </div>
+    <div id="tab-help" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="notice">De app vervangt geen arts, geen alarmknop en geen 112.</p>
+        <a class="emergency-call" href="tel:112">112 · acuut gevaar</a>
+        <a class="emergency-call small" href="tel:113">113 · zelfmoordpreventie, gratis</a>
+        <a class="emergency-call small" href="tel:08000113">0800-0113 · dezelfde hulplijn, gratis</a>
+        <a class="menu-item" href="tel:0307606055">Mantelzorglijn 030 760 60 55<span class="item-who">ma–do 10–16, vr 10–13</span></a>
+        <p class="muted">Bron: 113.nl en mantelzorg.nl, gecontroleerd op 16 oktober 2026.</p>
+        <h2 class="section-title">Huisarts en huisartsenpost</h2>
+        <div id="help-extra"></div>
       </div>
     </div>
     <div id="tab-nood" class="tab-panel" hidden>

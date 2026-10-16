@@ -39,9 +39,9 @@ geregeld wordt. Grok: vink in fase 16 elk punt af of schrijf erachter waarom nie
 ## E. Samenwerken en de zorgers zelf
 - [x] Chat, dagboek, overleg met tijdstempels.
 - [ ] Taken met wie-doet-wat en deadlines (fase 7).
-- [ ] Verdeling zichtbaar: bezoeken deze week, open taken per persoon (fase 15).
-- [ ] Hulp & steun-nummers voor de mantelzorgers (fase 15).
+- [x] Verdeling zichtbaar: bezoeken deze week, open taken per persoon (fase 15).
+- [x] Hulp & steun-nummers voor de mantelzorgers (fase 15; 113.nl en mantelzorg.nl, 2026-10-16).
 
 ## F. Toegankelijkheid
 - [ ] Grote tekst, grote knoppen, eenvoudige taal (fase 14).
-- [ ] Handleiding voor Jacky en Paps (fase 16).
+- [x] Handleiding voor Jacky en Paps (`docs/HANDLEIDING.md`).

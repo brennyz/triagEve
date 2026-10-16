@@ -66,6 +66,25 @@ export function renderHome() {
     ? `${unread} nieuw${unread === 1 ? ' bericht' : 'e berichten'}`
     : 'Geen nieuwe berichten';
 
+  const weekStart = new Date();
+  weekStart.setHours(12, 0, 0, 0);
+  weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 7);
+  const from = localDate(weekStart);
+  const until = localDate(weekEnd);
+  const visits = alive(store.meetings)
+    .filter((m) => m.kind === 'bezoek' && m.date >= from && m.date < until);
+  const visitHtml = visits.length
+    ? visits.map((m) => {
+      const who = (m.who || []).length ? m.who.join(', ') : 'nog niemand';
+      return `<button type="button" class="home-row" data-go="meet">
+        <strong>${esc(m.title)}</strong>
+        <span>${esc(m.date)}${m.time ? ` · ${esc(String(m.time).slice(0, 5))}` : ''} · ${esc(who)}</span>
+      </button>`;
+    }).join('')
+    : '<p class="empty-inline">Deze week staat er nog geen bezoek.</p>';
+
   el.innerHTML = `
     <details class="together">
       <summary>We doen dit samen, mét Eef</summary>
@@ -73,6 +92,10 @@ export function renderHome() {
     </details>
     ${statusCard()}
     <button type="button" class="emergency-btn" data-go="nood" aria-label="Noodkaart">Noodkaart</button>
+    <article class="card home-card">
+      <h2>Deze week bij Eef</h2>
+      ${visitHtml}
+    </article>
     <article class="card home-card">
       <h2>Komende afspraken</h2>
       ${meetHtml}

@@ -4,7 +4,7 @@ Bijwerken na elke fase: `- [x] Fase N – naam (JJJJ-MM-DD) – korte notitie`.
 Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 
 - [x] Fase 0 – Basis: PWA, login, chat, dagboek, overleg, migraties, workflows, GitHub Pages live (2026-10-16) – nog niet getest tegen echte Supabase
-- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-16) – wacht op GitHub secrets en publishable key; migratie `20261016180000_init.sql` mag draaien zodra secrets er zijn; signups blijven AAN (onbekend of het project alleen voor triagEve is); Hoorspel-koppeling koppelt Bren later zelf los. Geen geheimen in de repo.
+- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-16) – publishable key en URL staan in `config.js` (project `slddtxwbufoadmvdconz`). GitHub-secrets zijn nog leeg, dus de migraties draaien nog niet. Signups blijven AAN. Hoorspel koppelt Bren later zelf los. Geen wachtwoord of service-key in de repo.
 - [x] Fase 2 – Beveiliging en privacy (2026-10-16) – auto-uitloggen na 14 dagen, robots/noindex, CSP (`*.supabase.co` tot project-ref bekend is), Privacy-sectie in README. Regio DB onbekend (wacht op fase 1). Wachtwoordkeuze nog open. E2e-inlog wacht op secrets; `node --check` + login-scherm + robots.txt gecontroleerd. `git log` bevat geen echte service-keys (wel het woord `service_role` in docs/vendor).
 - [x] Fase 3 – Navigatie + Home-overzicht (2026-10-16) – nav Home/Chat/Dagboek/Agenda/Meer, Home met lege-teksten, Noodkaart-knop (112). Code gesplitst naar `js/*.js`. Getest zonder Supabase via `?preview=1` in Chrome 390×844 en desktop; geen JS-fouten. Live e2e wacht op fase 1.
 - [x] Fase 4 – Agenda: afspraken + overleggen (+ .ics) (2026-10-16) – soort/locatie, label per soort, `.ics` download. Bestaande items = overleg. Migratie `20261016190000_agenda.sql` (wacht op secrets). Getest in preview: labels, locatie, ICS-inhoud, formulierlabel bij afspraak.
@@ -18,8 +18,8 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [x] Fase 12 – Meldingen (push) (2026-10-16) – tabel, edge function `notify`, sw push/click, Meer → Meldingen. Geen medische details in de tekst. **Wacht op Bren:** `npx web-push generate-vapid-keys`, publieke sleutel in `config.js`, `VAPID_PRIVATE_KEY` als GitHub secret. Echte push-AC (Android <10s) kan niet zonder die sleutels.
 - [x] Fase 13 – Geschiedenis, prullenbak, wie-deed-wat (2026-10-16) – zachte delete, prullenbak + terugzetten 30 d, geschiedenis Medicatie/Over Eef, trigger `triageve_log`, purge in keepalive. Migratie `20261017170000_history.sql`. Preview: verwijderen → prullenbak → terugzetten.
 - [x] Fase 14 – Offline, back-up, toegankelijkheid (2026-10-16) – outbox + "wacht op verbinding", concepten chat/dagboek, `backup.yml` (wacht op `BACKUP_PASSPHRASE`), JSON-export, grote tekst 125%, aria-labels, focus. Preview: draft, offline-queue, grote tekst. Back-up-workflow groen vereist secret.
-- [ ] Fase 15 – Zorg voor de zorgers
-- [ ] Fase 16 – Eindtest, handleiding, oplevering
+- [x] Fase 15 – Zorg voor de zorgers (2026-10-16) – Home toont bezoeken deze week; taken hebben al een teller per persoon; Hulp & steun met 112, 113, 0800-0113 (113.nl, gratis, dag en nacht) en Mantelzorglijn 030 760 60 55, ma–do 10–16, vr 10–13 (mantelzorg.nl). Huisartsenpost vult de familie zelf bij Contacten.
+- [ ] Fase 16 – Eindtest, handleiding, oplevering (2026-10-16) – `docs/HANDLEIDING.md` staat. Live inloggen en twee browsers tegelijk wachten op fase 1.
 - [ ] Fase 17 – E-mail naar bzijffers@gmail.com en stoppen
 
 ## Database-migraties (uitgevoerd door workflow `supabase.yml`)
@@ -33,9 +33,10 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017150000_checkins.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017160000_push.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017170000_history.sql` – klaar in repo; wacht op GitHub secrets
+- [ ] `20261017180000_grants.sql` – geeft authenticated lees/schrijfrechten; anon blijft buiten. Lokaal gedraaid, op Supabase nog niet.
 
 ## Open vragen voor Bren
-- GitHub secrets (5 waarden uit `.env.example`) + publishable key noemen – zonder dit blijven fase 1 en inloggen open
+- GitHub secrets (5 waarden uit `.env.example` en `SETUP.md`). De publishable key staat al in `config.js`. Zonder de secrets blijven fase 1 en inloggen open.
 - Wachtwoord: huidige houden of sterker? (fase 2; aanrader: 4+ woorden, bijv. `Eef-Thee-Tuin-2026`)
 - Fase 12: VAPID-sleutels genereren en `VAPID_PRIVATE_KEY` als GitHub secret zetten (publieke sleutel in `config.js`)
 - Fase 14: `BACKUP_PASSPHRASE` kiezen, in wachtwoordmanager bewaren, en als GitHub secret zetten
@@ -49,3 +50,5 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 ## Notities
 - 2026-10-16: Geen Supabase access token of DB-wachtwoord gevonden in andere projectmappen.
   Service-role keys daar horen bij andere projecten (`ajoitfflpmjemrrmbsew`, `vdkwomhhqvdpnkfvhvkz`).
+- 2026-10-16: De publishable key uit de opdracht staat in `config.js`. Dat is geen geheim.
+  De vijf GitHub-secrets zijn nog leeg (workflow-run 38944109052). Auth-instellingen zijn niet gewijzigd.

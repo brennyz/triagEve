@@ -5,6 +5,9 @@ en live gesynchroniseerd. Te openen in Chrome en te installeren als app (PWA).
 
 **Website:** https://brennyz.github.io/triagEve/
 
+Handleiding voor Jacky en Paps: `docs/HANDLEIDING.md`.
+Database nog niet gekoppeld? Volg `SETUP.md`.
+
 ## Onderdelen
 
 - **Chat** – live berichten met tijd en datum
