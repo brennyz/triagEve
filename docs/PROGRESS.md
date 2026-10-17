@@ -48,6 +48,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Agenda heeft een dagweergave. Events zijn dezelfde gedeelde afspraken: iedereen ziet ze en kan ze wijzigen, met een waarschuwing op het scherm en in het formulier. Meer → Tijdlijn uitdraaien maakt een print/pdf van dagboek, agenda en status. Geen nieuwe tabel.
 - 2026-10-16: Geen Supabase access token of DB-wachtwoord gevonden in andere projectmappen.
   Service-role keys daar horen bij andere projecten (`ajoitfflpmjemrrmbsew`, `vdkwomhhqvdpnkfvhvkz`).
 - 2026-10-16: De publishable key uit de opdracht staat in `config.js`. Dat is geen geheim.

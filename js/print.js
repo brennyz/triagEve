@@ -1,4 +1,6 @@
 import { $, store, esc, localDate, fmtStamp, actions, alive } from './core.js';
+import { KINDS } from './meet.js';
+import { STATUS } from './checkins.js';
 
 function daysAgo(n) {
   const d = new Date();
@@ -50,6 +52,77 @@ export function renderPrint() {
   `;
 }
 
+function timelineEvents() {
+  const rows = [];
+  for (const d of alive(store.diary)) {
+    rows.push({
+      date: localDate(new Date(d.created_at)),
+      sort: d.created_at,
+      kind: 'Dagboek',
+      title: `${d.author || '?'}${d.important ? ' · belangrijk' : ''}`,
+      body: d.body || '',
+    });
+  }
+  for (const m of alive(store.meetings)) {
+    const kind = (KINDS[m.kind] || KINDS.overleg).label;
+    const bits = [m.time, m.location, m.agenda, m.happened].filter(Boolean);
+    rows.push({
+      date: m.date,
+      sort: `${m.date}T${m.time || '00:00'}:00`,
+      kind,
+      title: m.title || 'Afspraak',
+      body: bits.join('\n'),
+    });
+  }
+  for (const c of store.checkins || []) {
+    const label = STATUS[c.status]?.label || c.status || '';
+    rows.push({
+      date: localDate(new Date(c.created_at)),
+      sort: c.created_at,
+      kind: 'Hoe gaat het',
+      title: `${c.author || '?'} · ${label}`,
+      body: c.note || '',
+    });
+  }
+  return rows.sort((a, b) => String(a.sort).localeCompare(String(b.sort)));
+}
+
+export function renderTimeline() {
+  const el = $('#timeline-root');
+  if (!el) return;
+  const rows = timelineEvents();
+  const days = [];
+  for (const row of rows) {
+    let day = days.find((d) => d.date === row.date);
+    if (!day) {
+      day = { date: row.date, rows: [] };
+      days.push(day);
+    }
+    day.rows.push(row);
+  }
+  const body = days.length
+    ? days.map((day) => `
+      <section class="print-section">
+        <h2>${esc(new Date(`${day.date}T12:00:00`).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }))}</h2>
+        ${day.rows.map((row) => `
+          <h3>${esc(row.kind)} · ${esc(row.title)}</h3>
+          ${row.body ? `<p>${esc(row.body)}</p>` : ''}
+        `).join('')}
+      </section>`).join('')
+    : '<p>Nog niks om uit te draaien. Dagboek, agenda en status verschijnen hier.</p>';
+
+  el.innerHTML = `
+    <header class="print-head">
+      <h1>triagEve – tijdlijn</h1>
+      <p>Uitdraai op ${esc(fmtStamp(new Date().toISOString()))}${store.me ? ` door ${esc(store.me)}` : ''}</p>
+      <p class="notice">Let op: Jacky, Paps en Bren zien deze gegevens en kunnen ze wijzigen. Dit is een momentopname.</p>
+    </header>
+    ${body}
+  `;
+}
+
 $('#print-btn')?.addEventListener('click', () => window.print());
+$('#timeline-print')?.addEventListener('click', () => window.print());
 
 actions.renderPrint = renderPrint;
+actions.renderTimeline = renderTimeline;

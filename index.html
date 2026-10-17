@@ -120,11 +120,21 @@
     <!-- Agenda -->
     <div id="tab-meet" class="tab-panel" hidden>
       <div class="scroll">
+        <p class="notice">Let op: Jacky, Paps en Bren zien alles in de agenda en kunnen het wijzigen.</p>
         <nav class="tabs">
           <button class="tab active" data-filter="upcoming">Komend</button>
           <button class="tab" data-filter="past">Gebeurd</button>
           <button class="tab" data-filter="all">Alles</button>
+          <button class="tab" data-filter="day">Dag</button>
         </nav>
+        <div id="day-tools" hidden>
+          <div class="day-nav">
+            <button type="button" id="day-prev" class="ghost" aria-label="Vorige week">←</button>
+            <input id="day-jump" type="date" aria-label="Kies een dag">
+            <button type="button" id="day-next" class="ghost" aria-label="Volgende week">→</button>
+          </div>
+          <div id="day-picks" class="day-picks"></div>
+        </div>
         <input id="meet-search" type="search" placeholder="Zoeken...">
         <div id="meet-list" class="list"></div>
       </div>
@@ -140,6 +150,7 @@
           <button type="button" class="menu-item" data-go="tasks">Taken</button>
           <button type="button" class="menu-item" data-go="contacts">Contacten</button>
           <button type="button" class="menu-item" data-go="print">Overzicht voor arts</button>
+          <button type="button" class="menu-item" data-go="timeline">Tijdlijn uitdraaien</button>
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
           <button type="button" class="menu-item" data-go="measure">Metingen</button>
           <button type="button" class="menu-item" data-go="push">Meldingen aan</button>
@@ -290,6 +301,13 @@
         <div id="print-root"></div>
       </div>
     </div>
+    <div id="tab-timeline" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
+        <button type="button" id="timeline-print" class="primary no-print">Printen / Opslaan als PDF</button>
+        <div id="timeline-root"></div>
+      </div>
+    </div>
     <div id="tab-nood" class="tab-panel" hidden>
       <div class="scroll nood-scroll">
         <button type="button" class="ghost back" data-go="home">← Home</button>
@@ -311,6 +329,7 @@
   <dialog id="editor">
     <form id="editor-form" method="dialog">
       <h2 id="editor-title">Nieuwe afspraak</h2>
+      <p class="notice">Let op: na opslaan zien Jacky, Paps en Bren dit, en kunnen zij het wijzigen.</p>
       <label for="f-title">Onderwerp *</label>
       <input id="f-title" required>
 

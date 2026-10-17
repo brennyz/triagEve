@@ -27,7 +27,8 @@ Onderaan vijf knoppen:
 - **Home** – overzicht: hoe het met Eef gaat, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Rode knop **Noodkaart** (112 en noodnummers).
 - **Chat** – berichten naar elkaar, met tijd.
 - **Dagboek** – wat er gebeurd is. Je kunt een categorie kiezen en “Belangrijk” aanvinken. Schrijf feitelijk en respectvol.
-- **Agenda** – overleg, doktersafspraak, bezoek of overig. Achteraf invullen wat er is gezegd. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.
+- **Agenda** – overleg, doktersafspraak, bezoek of overig. Tik op **Dag** om events van één dag te zien of te wijzigen. Iedereen ziet ze en kan ze aanpassen. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.
+- **Tijdlijn uitdraaien** (onder Meer) – dagboek, agenda en status op een rij. Daarna **Printen / Opslaan als PDF**.
 - **Meer** – Over Eef, medicatie, taken, contacten, overzicht voor de arts, wensen van Eef, metingen, meldingen, prullenbak, downloaden, grote tekst, hulp & steun, uitloggen.
 
 We doen dit **samen, mét Eef**. Bespreek met haar wat erin komt.

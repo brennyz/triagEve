@@ -23,6 +23,7 @@ const store = {
   diaryCategory: '',
   editingDiaryId: null,
   meetFilter: 'upcoming',
+  meetDay: '',
   editingMeetingId: null,
   profile: null,
   contacts: [],
@@ -57,6 +58,7 @@ function esc(str) {
 function localDate(d = new Date()) {
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 }
+store.meetDay = localDate();
 
 const fmtTime = (ts) => new Date(ts).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
 const fmtDay = (ts) => new Date(ts).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });

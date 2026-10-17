@@ -99,8 +99,12 @@ export function renderMeetings() {
   const q = $('#meet-search').value.trim().toLowerCase();
   let items = alive(store.meetings);
 
+  const dayTools = $('#day-tools');
+  if (dayTools) dayTools.hidden = store.meetFilter !== 'day';
+  if (store.meetFilter === 'day') renderDayPicks();
   if (store.meetFilter === 'upcoming') items = items.filter((m) => m.date >= today);
   if (store.meetFilter === 'past') items = items.filter((m) => m.date < today);
+  if (store.meetFilter === 'day') items = items.filter((m) => m.date === store.meetDay);
   if (q) {
     items = items.filter((m) =>
       [m.title, m.kind, kindMeta(m.kind).label, m.location, m.agenda, m.happened, m.actions, (m.who || []).join(' ')]
@@ -120,6 +124,7 @@ export function renderMeetings() {
       upcoming: 'Geen komende afspraken. Tik op + om er een te plannen.',
       past: 'Nog niks gebeurd.',
       all: 'Nog geen afspraken. Tik op + om te beginnen.',
+      day: 'Nog niks op deze dag. Tik op + om een event te zetten.',
     }[store.meetFilter];
     list.innerHTML = `<p class="empty">${q ? 'Niks gevonden.' : msg}</p>`;
     return;
@@ -162,9 +167,9 @@ function openEditor(id = null) {
   const m = id ? store.meetings.find((x) => x.id === id) : null;
   $('#editor-title').textContent = m ? 'Afspraak bewerken' : 'Nieuwe afspraak';
   $('#f-title').value = m?.title || '';
-  $('#f-date').value = m?.date || localDate();
+  $('#f-date').value = m?.date || (store.meetFilter === 'day' ? store.meetDay : localDate());
   $('#f-time').value = m?.time || '';
-  $('#f-kind').value = m?.kind || 'overleg';
+  $('#f-kind').value = m?.kind || (store.meetFilter === 'day' && !m ? 'overig' : 'overleg');
   $('#f-location').value = m?.location || '';
   $('#f-agenda').value = m?.agenda || '';
   $('#f-happened').value = m?.happened || '';
@@ -185,6 +190,43 @@ $$('#tab-meet .tab').forEach((tab) => {
 });
 
 $('#meet-search').addEventListener('input', renderMeetings);
+function shiftDay(days) {
+  const d = new Date(`${store.meetDay}T12:00:00`);
+  d.setDate(d.getDate() + days);
+  store.meetDay = localDate(d);
+  renderMeetings();
+}
+
+function renderDayPicks() {
+  const box = $('#day-picks');
+  const jump = $('#day-jump');
+  if (!box) return;
+  if (jump) jump.value = store.meetDay;
+  const start = new Date(`${store.meetDay}T12:00:00`);
+  start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  box.innerHTML = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    const key = localDate(d);
+    const name = d.toLocaleDateString('nl-NL', { weekday: 'short' }).replace('.', '');
+    return `<button type="button" class="day-pick ${key === store.meetDay ? 'active' : ''}" data-day="${key}"><span>${esc(name)}</span>${d.getDate()}</button>`;
+  }).join('');
+}
+
+$('#day-picks')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-day]');
+  if (!btn) return;
+  store.meetDay = btn.dataset.day;
+  renderMeetings();
+});
+$('#day-prev')?.addEventListener('click', () => shiftDay(-7));
+$('#day-next')?.addEventListener('click', () => shiftDay(7));
+$('#day-jump')?.addEventListener('change', () => {
+  if (!$('#day-jump').value) return;
+  store.meetDay = $('#day-jump').value;
+  renderMeetings();
+});
+
 $('#add-btn').addEventListener('click', () => openEditor());
 $('#cancel-btn').addEventListener('click', () => $('#editor').close());
 $('#f-kind').addEventListener('change', syncHappenedLabel);

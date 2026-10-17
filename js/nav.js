@@ -13,6 +13,7 @@ const TITLES = {
   contacts: 'Contacten',
   nood: 'Noodkaart',
   print: 'Overzicht voor arts',
+  timeline: 'Tijdlijn',
   wishes: 'Wensen van Eef',
   measure: 'Metingen',
   push: 'Meldingen',
@@ -43,6 +44,7 @@ export function switchTab(tab) {
   if (tab === 'meds') actions.renderMeds?.();
   if (tab === 'tasks') actions.renderTasks?.();
   if (tab === 'print') actions.renderPrint?.();
+  if (tab === 'timeline') actions.renderTimeline?.();
   if (tab === 'wishes') actions.renderEef?.();
   if (tab === 'measure') actions.renderMeasures?.();
   if (tab === 'trash') actions.loadTrash?.();
