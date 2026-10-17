@@ -105,6 +105,8 @@
             <button type="submit" class="primary" id="diary-save">Opslaan</button>
           </div>
         </form>
+        <input id="diary-search" type="search" placeholder="Zoeken op tekst, naam of categorie">
+        <p id="diary-search-note" class="item-meta"></p>
         <div class="chips" id="diary-chips">
           <button class="chip active" data-who="">Iedereen</button>
           <button class="chip" data-who="Jacky">Jacky</button>
@@ -121,7 +123,6 @@
           <button class="chip" data-cat="medicatie">Medicatie</button>
           <button class="chip" data-cat="incident">Incident</button>
         </div>
-        <input id="diary-search" type="search" placeholder="Zoeken in dagboek...">
         <div id="diary-list" class="list"></div>
       </div>
     </div>
@@ -129,25 +130,26 @@
     <!-- Agenda -->
     <div id="tab-meet" class="tab-panel" hidden>
       <div class="scroll">
-        <p class="notice">Let op: Jacky, Paps en Bren zien alles in de agenda en kunnen het wijzigen.</p>
-        <nav class="tabs">
-          <button class="tab active" data-filter="upcoming">Komend</button>
-          <button class="tab" data-filter="past">Gebeurd</button>
-          <button class="tab" data-filter="all">Alles</button>
-          <button class="tab" data-filter="day">Dag</button>
-        </nav>
-        <div id="day-tools" hidden>
-          <div class="day-nav">
-            <button type="button" id="day-prev" class="ghost" aria-label="Vorige week">←</button>
-            <input id="day-jump" type="date" aria-label="Kies een dag">
-            <button type="button" id="day-next" class="ghost" aria-label="Volgende week">→</button>
+        <div class="cal">
+          <div class="cal-head">
+            <button type="button" id="cal-prev" class="ghost" aria-label="Vorige maand">‹</button>
+            <h2 id="cal-title">Agenda</h2>
+            <button type="button" id="cal-next" class="ghost" aria-label="Volgende maand">›</button>
           </div>
-          <div id="day-picks" class="day-picks"></div>
+          <label class="cal-jump">Ga naar een dag
+            <input id="day-jump" type="date" aria-label="Ga naar een dag">
+          </label>
+          <div class="cal-dows" aria-hidden="true"><span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span></div>
+          <div id="cal-grid" class="cal-grid"></div>
         </div>
-        <input id="meet-search" type="search" placeholder="Zoeken...">
+        <div class="meet-toolbar">
+          <button type="button" id="meet-scope" class="ghost">Hele maand</button>
+          <button type="button" id="add-btn" class="primary">Nieuwe afspraak</button>
+        </div>
+        <input id="meet-search" type="search" placeholder="Zoeken in de agenda...">
+        <h2 id="meet-heading" class="section-title"></h2>
         <div id="meet-list" class="list"></div>
       </div>
-      <button id="add-btn" class="fab" title="Nieuwe afspraak" aria-label="Nieuwe afspraak">+</button>
     </div>
 
     <!-- Meer -->
@@ -226,7 +228,9 @@
         <p class="muted">Paps is hoofdcontact. Jacky en Bren zijn secundair. Dit komt op de pdf.</p>
         <div id="family-cards" class="list"></div>
         <h2 class="section-title">Zorgverleners</h2>
+        <p class="muted">Tik een rol, of voeg iemand toe en vul meteen het nummer in.</p>
         <div class="chips" id="role-chips"></div>
+        <button type="button" id="add-contact-inline" class="primary contact-add">Zorgverlener toevoegen</button>
         <div id="contact-list" class="list"></div>
       </div>
       <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
@@ -373,9 +377,13 @@
       <label for="f-location">Locatie</label>
       <input id="f-location" placeholder="Bijv. huisartsenpraktijk">
 
-      <label>Wie zijn erbij?</label>
+      <label for="who-new">Wie zijn erbij?</label>
       <div class="checks" id="who-box"></div>
-      <button type="button" id="who-add" class="ghost">Iemand toevoegen</button>
+      <div class="who-add-row">
+        <input id="who-new" maxlength="80" placeholder="Naam, bijvoorbeeld Marianne">
+        <button type="button" id="who-add" class="primary">Zet erbij</button>
+      </div>
+      <button type="button" id="who-save-contact" class="ghost">Bewaar als contact, met telefoon</button>
 
       <label for="f-agenda">Agenda / bespreekpunten</label>
       <textarea id="f-agenda" rows="3" placeholder="Wat willen we bespreken?"></textarea>
@@ -477,12 +485,12 @@
       <h2 id="contact-title">Nieuw contact</h2>
       <label for="c-name">Naam *</label>
       <input id="c-name" required>
+      <label for="c-phone">Telefoon</label>
+      <input id="c-phone" type="tel" autocomplete="tel" placeholder="06 …">
       <label for="c-role">Rol</label>
       <select id="c-role"></select>
       <label for="c-org">Praktijk of organisatie</label>
       <input id="c-org" placeholder="Naam van de praktijk">
-      <label for="c-phone">Telefoon</label>
-      <input id="c-phone" type="tel" autocomplete="tel">
       <label for="c-email">E-mail</label>
       <input id="c-email" type="email" autocomplete="email">
       <label for="c-address">Adres</label>

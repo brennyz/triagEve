@@ -206,12 +206,19 @@ function extraPlaces(profile = store.profile || {}) {
   return [...new Set(list.map((name) => String(name || '').trim()).filter(Boolean))];
 }
 
-function stayButton() {
-  return `<button type="button" class="pencil stay-edit" aria-label="Plek van Eef wijzigen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5V20h3.5L18.8 8.7l-3.5-3.5L4 16.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.8 6.7l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>`;
+function stayMark(home) {
+  if (home) {
+    return `<span class="house" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M8 30 32 10l24 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M16 28v22h32V28" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M28 50V36h8v14" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg><span>Eef</span></span>`;
+  }
+  return `<span class="house pin" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 8a16 16 0 0 0-16 16c0 12 16 32 16 32s16-20 16-32A16 16 0 0 0 32 8z" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="32" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="3"/></svg></span>`;
 }
 
 function stayHtml() {
-  return `<div class="stay-line"><span>${esc(stayPhrase())}</span>${stayButton()}</div>`;
+  const stay = String(store.profile?.stay || '').trim();
+  const home = stay === 'thuis';
+  const title = home ? 'Thuis' : (stay ? stayPhrase().replace(/^Eef is (in |)/, '') : 'Plek kiezen');
+  const sub = home ? 'Eef is thuis' : 'Tik om te wijzigen';
+  return `<button type="button" class="stay-tile stay-edit" aria-label="Plek van Eef wijzigen">${stayMark(home)}<span class="stay-copy"><strong>${esc(title)}</strong><span>${esc(sub)}</span></span></button>`;
 }
 
 function renderStayChoices() {

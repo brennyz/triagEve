@@ -53,7 +53,7 @@ function familyCard(name, rank, label) {
   return `
     <button type="button" class="home-row family-card" data-family="${esc(name)}" data-rank="${rank}">
       <strong>${esc(name)} · ${esc(label)}</strong>
-      <span>${esc(bits || 'Telefoon en e-mail nog invullen')}</span>
+      <span>${esc(bits || 'Tik en vul het telefoonnummer in')}</span>
     </button>`;
 }
 
@@ -117,6 +117,7 @@ function openContact(id = null, preset = {}) {
   }
   $('#contact-delete').hidden = !c;
   $('#contact-editor').showModal();
+  if (!c?.phone) setTimeout(() => $('#c-phone')?.focus(), 40);
 }
 
 function rememberLocal(data) {
@@ -147,6 +148,7 @@ $('#role-chips')?.addEventListener('click', (e) => {
 });
 
 $('#add-contact')?.addEventListener('click', () => openContact(null, { circle: 'zorg', role: 'Overig' }));
+$('#add-contact-inline')?.addEventListener('click', () => openContact(null, { circle: 'zorg', role: 'Overig' }));
 $('#contact-cancel')?.addEventListener('click', () => {
   store.attachWho = false;
   $('#contact-editor').close();

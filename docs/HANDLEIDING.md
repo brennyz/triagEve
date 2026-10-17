@@ -26,16 +26,14 @@ Bren geeft elk zijn eigen wachtwoord. Deel het niet in een openbare app-groep.
 
 Onderaan vijf knoppen:
 
-- **Home** – bovenaan waar Eef is: thuis, in Assen (opvang), of een plek die je zelf toevoegt. Het potloodje wijzigt dat. Verder: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. **Waar** staat standaard op thuis (ook in bed, tuin, onderweg of bij de arts). **Bezig met** is rusten, eten, bezoek, lopen, toilet of slapen. Daarna alleen wat opviel, bijvoorbeeld een slechte nacht. Moment kan Nu zijn, of een afspraak van vandaag. Rode knop **Noodkaart** (112 en noodnummers).
-- **Chat** – berichten naar elkaar, met tijd.
-- **Dagboek** – wat er gebeurd is. Je kunt een categorie kiezen en “Belangrijk” aanvinken. Schrijf feitelijk en respectvol.
-- **Agenda** – overleg, doktersafspraak, bezoek of overig. Tik op **Dag** om events van één dag te zien of te wijzigen. Vink aan wie erbij is: Jacky, Paps, Bren en de zorgverleners. **Iemand toevoegen** bewaart een nieuw contact en zet die meteen aan. Iedereen ziet de afspraak en kan hem aanpassen. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.
-- **Contacten** (onder Meer) – bovenaan jullie drie. Paps is hoofdcontact, Jacky en Bren zijn secundair. Vul telefoon, e-mail en adres in. Daaronder de zorgverleners: tik op Huisarts, Psychiater, Psycholoog, Apotheek of Thuiszorg en vul praktijk, telefoon, adres en wanneer ze bereikbaar zijn.
+- **Home** – bovenaan een tegel: een huisje met Eef erin als ze thuis is. Tik erop om Assen of een andere plek te kiezen. Daarna: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. **Noodkaart** staat onder de status.
+- **Chat** – berichten naar elkaar, met naam en tijd. Jacky is warmbruin, Paps groenblauw, Bren paars.
+- **Dagboek** – wat er gebeurd is. Zoeken kijkt in de tekst, de naam en de categorie. Je kunt een categorie kiezen en “Belangrijk” aanvinken.
+- **Agenda** – een kalender. Tik een dag, of **Hele maand** om door te scrollen. **Nieuwe afspraak** staat onder de kalender. Vink aan wie erbij is, of typ een naam en tik **Zet erbij**. **Bewaar als contact** vraagt ook het telefoonnummer.
+- **Contacten** (onder Meer) – bovenaan jullie drie. Tik op je naam en vul meteen het telefoonnummer in. Daaronder de zorgverleners: tik op Huisarts, Psychiater, Psycholoog, Apotheek of Thuiszorg, of op **Zorgverlener toevoegen**.
 - **PDF voor dienstverlener** (onder Meer) – één tik, daarna **Printen / Opslaan als PDF**. Paps staat als hoofdcontact, Jacky en Bren als secundair, plus de zorgverleners, medicatie, status en komende afspraken.
 - **Tijdlijn uitdraaien** (onder Meer) – dagboek, agenda en status op een rij. Daarna **Printen / Opslaan als PDF**.
 - **Meer** – Over Eef, medicatie, taken, contacten, pdf voor de dienstverlener, wensen van Eef, metingen, meldingen, prullenbak, downloaden, grote tekst, hulp & steun, uitloggen.
-
-We doen dit **samen, mét Eef**. Bespreek met haar wat erin komt.
 
 ## Als iets niet werkt
 

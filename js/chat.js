@@ -46,8 +46,9 @@ export function renderChat() {
       lastDay = day;
     }
     const mine = m.author === store.me;
+    const who = { jacky: 'who-jacky', paps: 'who-paps', pap: 'who-paps', bren: 'who-bren', brendon: 'who-bren' }[String(m.author || '').toLowerCase()] || 'who-other';
     html += `
-      <div class="bubble-row ${mine ? 'mine' : ''}">
+      <div class="bubble-row ${mine ? 'mine' : ''} ${who}">
         <div class="bubble" title="${esc(fmtStamp(m.created_at))}">
           <div class="bubble-author">${esc(m.author || 'Onbekend')}</div>
           <div class="bubble-body">${esc(m.body)}</div>

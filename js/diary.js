@@ -34,11 +34,15 @@ function formCategory() {
 }
 
 export function renderDiary() {
-  const q = $('#diary-search').value.trim().toLowerCase();
-  const items = alive(store.diary).filter((d) =>
-    (!store.diaryWho || d.author === store.diaryWho)
-    && (!store.diaryCategory || (d.category || 'algemeen') === store.diaryCategory)
-    && (!q || d.body.toLowerCase().includes(q) || catLabel(d.category).toLowerCase().includes(q)));
+  const q = ($('#diary-search')?.value || '').trim().toLowerCase();
+  const items = alive(store.diary).filter((d) => {
+    const blob = `${d.author || ''} ${d.body || ''} ${catLabel(d.category)}`.toLowerCase();
+    return (!store.diaryWho || d.author === store.diaryWho)
+      && (!store.diaryCategory || (d.category || 'algemeen') === store.diaryCategory)
+      && (!q || blob.includes(q));
+  });
+  const note = $('#diary-search-note');
+  if (note) note.textContent = q ? `${items.length} gevonden` : '';
 
   const list = $('#diary-list');
   if (!items.length) {
