@@ -1,4 +1,4 @@
-const CACHE = 'triageve-v28';
+const CACHE = 'triageve-v29';
 const ASSETS = [
   './',
   'index.html',

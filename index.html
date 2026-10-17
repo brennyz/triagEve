@@ -21,29 +21,38 @@
   <!-- Login -->
   <section id="login-view" class="view">
     <div class="card login-card">
-      <img src="icons/icon.svg" alt="" class="logo">
-      <h1>triagEve</h1>
-      <p class="muted">Samen voor Eef · chat, dagboek &amp; agenda</p>
+      <div class="login-brand">
+        <img src="icons/icon.svg" alt="" class="logo">
+        <div>
+          <h1>triagEve</h1>
+          <p class="muted">Samen voor Eef</p>
+        </div>
+      </div>
       <p id="config-warning" class="error" hidden>
         De app is nog niet gekoppeld aan Supabase. Vul <code>config.js</code> in.
       </p>
       <form id="login-form">
-        <label>Wie ben je?</label>
-        <div class="user-picker">
-          <button type="button" class="user-btn" data-user="Jacky" aria-pressed="false">Jacky</button>
-          <button type="button" class="user-btn" data-user="Paps" aria-pressed="false">Paps</button>
-          <button type="button" class="user-btn" data-user="Bren" aria-pressed="false">Bren</button>
+        <h2 id="login-greet" class="login-greet">Wie ben je?</h2>
+        <div class="user-picker" role="group" aria-labelledby="login-greet">
+          <button type="button" class="user-btn" data-user="Jacky" aria-pressed="false"><span class="avatar" aria-hidden="true">J</span>Jacky</button>
+          <button type="button" class="user-btn" data-user="Paps" aria-pressed="false"><span class="avatar" aria-hidden="true">P</span>Paps</button>
+          <button type="button" class="user-btn" data-user="Bren" aria-pressed="false"><span class="avatar" aria-hidden="true">B</span>Bren</button>
         </div>
-        <p id="login-hint" class="muted login-hint">Kies je naam. Dit toestel onthoudt dat. Daarna alleen je eigen wachtwoord.</p>
+        <p id="login-hint" class="muted login-hint">Kies je naam. Dit toestel onthoudt dat.</p>
         <label class="sr-only" for="login-email">Account</label>
         <input id="login-email" class="sr-only" name="username" type="email" autocomplete="username" value="" readonly tabindex="-1">
         <label for="password">Wachtwoord</label>
-        <input id="password" type="password" autocomplete="current-password" required>
-        <p id="login-error" class="error" hidden></p>
+        <div class="password-wrap">
+          <input id="password" type="password" autocomplete="current-password" required>
+          <button type="button" id="password-toggle" class="password-toggle" aria-label="Wachtwoord tonen" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+        </div>
+        <p id="login-error" class="error" role="alert" hidden></p>
         <button type="submit" class="primary" id="login-btn">Inloggen</button>
       </form>
-      <a class="emergency-call" href="tel:112">Bij nood: bel 112</a>
-      <p class="muted login-note">Huisarts en bijzonderheden staan in de app, na inloggen.</p>
+      <div class="login-foot">
+        <a class="emergency-call small" href="tel:112">Bij nood: bel 112</a>
+        <p class="muted login-note">Huisarts en noodkaart staan in de app.</p>
+      </div>
     </div>
   </section>
 

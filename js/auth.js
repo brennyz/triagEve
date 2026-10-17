@@ -13,18 +13,36 @@ function applyPerson(name) {
   });
   const mail = $('#login-email');
   if (mail) mail.value = known ? emailFor(known) : '';
+  const greet = $('#login-greet');
+  if (greet) greet.textContent = known ? `Hoi ${known}` : 'Wie ben je?';
   const hint = $('#login-hint');
   if (hint) {
     hint.textContent = known
-      ? `${known}, alleen je wachtwoord. Iemand anders? Tik een andere naam.`
-      : 'Kies je naam. Dit toestel onthoudt dat. Daarna alleen je eigen wachtwoord.';
+      ? 'Typ je wachtwoord. Iemand anders? Tik een andere naam.'
+      : 'Kies je naam. Dit toestel onthoudt dat.';
   }
 }
+
+function setPasswordVisible(visible) {
+  const input = $('#password');
+  const toggle = $('#password-toggle');
+  if (!input || !toggle) return;
+  input.type = visible ? 'text' : 'password';
+  toggle.setAttribute('aria-pressed', visible ? 'true' : 'false');
+  toggle.setAttribute('aria-label', visible ? 'Wachtwoord verbergen' : 'Wachtwoord tonen');
+}
+
+$('#password-toggle')?.addEventListener('click', () => {
+  setPasswordVisible($('#password').type === 'password');
+  $('#password').focus();
+});
 
 export function showLogin() {
   $('#app-view').hidden = true;
   $('#login-view').hidden = false;
   $('#password').value = '';
+  setPasswordVisible(false);
+  $('#login-error').hidden = true;
   $('#config-warning').hidden = configured;
   applyPerson(localStorage.getItem(NAME_KEY));
   if (store.selectedUser) $('#password').focus();
@@ -55,6 +73,7 @@ $$('.user-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
     applyPerson(btn.dataset.user);
     localStorage.setItem(NAME_KEY, btn.dataset.user);
+    $('#login-error').hidden = true;
     $('#password').focus();
   });
 });
@@ -92,6 +111,7 @@ $('#login-form').addEventListener('submit', async (e) => {
   if (!USERS.includes(store.selectedUser) || !email) return fail('Kies eerst wie je bent.');
 
   $('#login-btn').disabled = true;
+  $('#login-btn').textContent = 'Even geduld…';
   let authError;
   let session;
   try {
@@ -105,6 +125,7 @@ $('#login-form').addEventListener('submit', async (e) => {
     authError = err;
   }
   $('#login-btn').disabled = false;
+  $('#login-btn').textContent = 'Inloggen';
   if (authError) {
     if (isNetwork(authError)) return fail('Geen verbinding. Probeer het opnieuw.');
     const state = await backendReady();
