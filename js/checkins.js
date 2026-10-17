@@ -12,40 +12,76 @@ export const STATUS = {
   zorgelijk: { label: 'Zorgelijk', cls: 'status-bad' },
 };
 
-export const TRAITS = [
-  ['sleep', 'Nacht', [['', 'niet gezegd'], ['goed', 'goed geslapen'], ['onrustig', 'onrustige nacht'], ['slecht', 'slechte nacht']]],
-  ['mood', 'Stemming', [['', 'niet gezegd'], ['rustig', 'rustig'], ['somber', 'somber'], ['onrustig', 'onrustig']]],
-  ['food', 'Eten', [['', 'niet gezegd'], ['goed', 'goed gegeten'], ['weinig', 'weinig gegeten'], ['niet', 'niet gegeten']]],
-  ['pain', 'Pijn', [['', 'niet gezegd'], ['geen', 'geen pijn'], ['beetje', 'een beetje pijn'], ['duidelijk', 'duidelijke pijn']]],
-  ['clarity', 'Helder', [['', 'niet gezegd'], ['helder', 'helder'], ['verward', 'verward'], ['suf', 'suf']]],
+export const CONTEXT = [
+  ['place', 'Waar', [['thuis', 'thuis'], ['bed', 'in bed'], ['tuin', 'in de tuin'], ['onderweg', 'onderweg'], ['arts', 'bij de arts'], ['anders', 'ergens anders']], 'thuis'],
+  ['activity', 'Bezig met', [['', 'niet gezegd'], ['rusten', 'rusten'], ['eten', 'eten of drinken'], ['bezoek', 'bezoek'], ['lopen', 'lopen'], ['toilet', 'naar het toilet'], ['slapen', 'slapen']], ''],
 ];
+
+export const TRAITS = [
+  ['sleep', 'Nacht', [['', 'niet gezegd'], ['goed', 'goed geslapen'], ['onrustig', 'onrustige nacht'], ['slecht', 'slechte nacht']], ''],
+  ['mood', 'Stemming', [['', 'niet gezegd'], ['rustig', 'rustig'], ['somber', 'somber'], ['onrustig', 'onrustig']], ''],
+  ['food', 'Eten', [['', 'niet gezegd'], ['goed', 'goed gegeten'], ['weinig', 'weinig gegeten'], ['niet', 'niet gegeten']], ''],
+  ['pain', 'Pijn', [['', 'niet gezegd'], ['geen', 'geen pijn'], ['beetje', 'een beetje pijn'], ['duidelijk', 'duidelijke pijn']], ''],
+  ['clarity', 'Helder', [['', 'niet gezegd'], ['helder', 'helder'], ['verward', 'verward'], ['suf', 'suf']], ''],
+];
+
+const STATUS_FIELDS = [...CONTEXT, ...TRAITS];
 
 export function traitPhrase(row) {
   if (!row) return '';
-  return TRAITS.map(([key, , options]) => {
+  return STATUS_FIELDS.map(([key, , options]) => {
     const hit = options.find(([value]) => value && value === row[key]);
     return hit ? hit[1] : '';
   }).filter(Boolean).join(' · ');
 }
 
-function mountTraits() {
-  const el = $('#status-traits');
-  if (!el || el.dataset.ready) return;
-  el.innerHTML = TRAITS.map(([key, label, options]) => `
+function fieldHtml([key, label, options]) {
+  return `
     <label for="status-${key}">${esc(label)}</label>
     <select id="status-${key}">
       ${options.map(([value, text]) => `<option value="${esc(value)}">${esc(text)}</option>`).join('')}
-    </select>`).join('');
-  el.dataset.ready = '1';
+    </select>`;
+}
+
+function mountTraits() {
+  const context = $('#status-context');
+  const traits = $('#status-traits');
+  if (!context || !traits || context.dataset.ready) return;
+  context.innerHTML = CONTEXT.map(fieldHtml).join('');
+  traits.innerHTML = TRAITS.map(fieldHtml).join('');
+  context.dataset.ready = '1';
+  $('#status-place')?.addEventListener('change', () => { $('#status-place').dataset.touched = '1'; });
+  $('#status-moment')?.addEventListener('change', () => {
+    const place = $('#status-place');
+    if (!place || place.dataset.touched) return;
+    place.value = guessPlace(selectedMeeting());
+  });
+}
+
+function selectedMeeting() {
+  const id = $('#status-moment')?.value;
+  if (!id) return null;
+  return alive(store.meetings).find((m) => String(m.id) === String(id)) || null;
+}
+
+function guessPlace(meeting) {
+  const blob = `${meeting?.location || ''} ${meeting?.title || ''}`.toLowerCase();
+  if (/bed/.test(blob)) return 'bed';
+  if (/tuin/.test(blob)) return 'tuin';
+  if (/arts|ziekenhuis|praktijk/.test(blob)) return 'arts';
+  if (/onderweg|rit|taxi|auto/.test(blob)) return 'onderweg';
+  return 'thuis';
 }
 
 export function openStatus(meetingId = null) {
   mountTraits();
   const note = $('#status-note');
   if (note) note.value = '';
-  for (const [key] of TRAITS) {
+  const place = $('#status-place');
+  if (place) place.dataset.touched = '';
+  for (const [key, , , fallback] of STATUS_FIELDS) {
     const field = $(`#status-${key}`);
-    if (field) field.value = '';
+    if (field) field.value = fallback;
   }
   const today = localDate();
   const items = alive(store.meetings)
@@ -60,6 +96,7 @@ export function openStatus(meetingId = null) {
     const wanted = meetingId && items.some((m) => Number(m.id) === Number(meetingId)) ? String(meetingId) : '';
     moment.value = wanted;
   }
+  if (place) place.value = guessPlace(selectedMeeting());
   $('#status-dialog')?.showModal();
 }
 
@@ -114,9 +151,10 @@ function readTraits() {
   const extra = {
     meeting_id: $('#status-moment')?.value ? Number($('#status-moment').value) : null,
   };
-  for (const [key, , options] of TRAITS) {
+  for (const [key, , options, fallback] of STATUS_FIELDS) {
     const value = $(`#status-${key}`)?.value || '';
-    extra[key] = options.some(([code]) => code && code === value) ? value : null;
+    const known = options.some(([code]) => code === value);
+    extra[key] = known && value ? value : (key === 'place' ? fallback : null);
   }
   return extra;
 }
@@ -132,6 +170,8 @@ export async function submitStatus(status, note, extra = {}) {
     status,
     note: note || null,
     meeting_id: extra.meeting_id || null,
+    place: extra.place || null,
+    activity: extra.activity || null,
     sleep: extra.sleep || null,
     mood: extra.mood || null,
     food: extra.food || null,
