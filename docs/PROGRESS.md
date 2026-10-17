@@ -54,6 +54,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Plek opslaan gaf 400. De geschiedenis-trigger las een kolom die het profiel niet heeft. Migratie `20261017250000_log.sql`. Chat-meldingen worden pas aangeroepen als de VAPID-sleutel er is.
 - 2026-10-17: Alle migraties staan op Supabase (run 39024235511). Regio eu-west-1. Inlogscherm strakker: tegels met beginletter, "Hoi Jacky", wachtwoord tonen. Rondgang langs alle 18 schermen op 390 en 320: geen fouten. Oracle: geen gegevens gevonden, dus niets verhuisd.
 - 2026-10-17: Workflow 39023366966 bereikt de pooler niet: het token mist Connection Pooling → Read. Verder geen dashboard-werk. Zie `docs/PC.md`.
 - 2026-10-17: Het inlogscherm onthoudt de laatst gekozen naam op dit toestel. Na uitloggen alleen het eigen wachtwoord. Een andere naam blijft één tik. Geen wijziging in Supabase.

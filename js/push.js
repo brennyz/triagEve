@@ -10,7 +10,9 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 export async function pingNotify(kind, author = store.me) {
-  if (!db) return;
+  // Zonder VAPID-sleutel is de functie er niet. Aanroepen geeft alleen een rode CORS-fout,
+  // ook op localhost. Het bericht zelf is dan al opgeslagen.
+  if (!db || !CFG.VAPID_PUBLIC_KEY) return;
   try {
     await db.functions.invoke('notify', { body: { kind, author } });
   } catch (e) {

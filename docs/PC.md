@@ -49,3 +49,4 @@ Het script vraagt alleen wat nog niet in `.env.local` staat. Typen is onzichtbaa
 - De site staat op GitHub Pages.
 - De app heeft drie aparte logins. Het toestel onthoudt wie er inlogt, daarna alleen het eigen wachtwoord.
 - Alle migraties tot en met `20261017240000_plek.sql` staan op Supabase.
+- `20261017250000_log.sql` herstelt opslaan van de plek. Die draait mee bij de push. Geen extra stap.
