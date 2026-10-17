@@ -461,14 +461,30 @@ a[href^="tel:"]:not(.emergency-call) {
 .item-meta { margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
 .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: #ffe7b3; color: #7a5200; margin-left: 6px; }
 
-.meet-split { display: grid; gap: 12px; }
-.meet-main { min-width: 0; }
-.cal-side { order: -1; }
 .meet-tabs { margin-top: 0; }
+#tab-meet .cal { flex-shrink: 0; margin: 8px 16px 0; }
+#tab-meet .cal.is-away { display: none; }
+.install-bar {
+  position: fixed;
+  z-index: 40;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+}
+body:has(#app-view:not([hidden])) .install-bar { bottom: calc(78px + env(safe-area-inset-bottom)); }
+.install-bar p { margin: 0 0 8px; }
+.install-actions { display: flex; gap: 8px; }
+.install-actions .primary, .install-actions .ghost { min-height: 44px; }
 .meet-tabs .tab { min-height: 44px; font-size: 0.92rem; padding: 8px 4px; }
 #add-btn { width: 100%; margin: 8px 0; }
 #meet-search { width: 100%; margin: 0 0 8px; }
-.meet-main .section-title { margin-top: 0; }
+#meet-heading { margin-top: 4px; }
 .cal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 8px 8px 10px; margin: 0; }
 .cal-head { display: flex; align-items: center; gap: 4px; }
 .cal-head h2 { flex: 1; margin: 0; text-align: center; font-size: 1rem; text-transform: capitalize; }
@@ -496,10 +512,6 @@ a[href^="tel:"]:not(.emergency-call) {
 .cal-day.on { background: var(--btn); color: var(--btn-text); }
 .cal-day.on i { color: inherit; }
 .cal-empty { min-height: 44px; }
-@media (min-width: 800px) {
-  .meet-split { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
-  .cal-side { order: 0; position: sticky; top: 0; }
-}
 .chip-row { flex-wrap: nowrap; overflow-x: auto; margin-top: 8px; padding-bottom: 2px; }
 .chip-row .chip { flex: 0 0 auto; }
 .menu-label { margin: 16px 4px 0; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }

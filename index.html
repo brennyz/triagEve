@@ -18,6 +18,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <aside id="install-bar" class="install-bar" hidden>
+    <p id="install-text"></p>
+    <div class="install-actions">
+      <button type="button" id="install-go" class="primary">Opslaan</button>
+      <button type="button" id="install-later" class="ghost">Niet nu</button>
+    </div>
+  </aside>
   <!-- Login -->
   <section id="login-view" class="view">
     <div class="card login-card">
@@ -129,7 +136,17 @@
 
     <!-- Agenda -->
     <div id="tab-meet" class="tab-panel" hidden>
-      <div class="scroll">
+      <aside id="cal-panel" class="cal">
+        <div class="cal-head">
+          <button type="button" id="cal-prev" class="ghost" aria-label="Vorige maand">‹</button>
+          <h2 id="cal-title">Agenda</h2>
+          <button type="button" id="cal-next" class="ghost" aria-label="Volgende maand">›</button>
+          <input id="day-jump" type="date" aria-label="Ga naar een dag">
+        </div>
+        <div class="cal-dows" aria-hidden="true"><span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span></div>
+        <div id="cal-grid" class="cal-grid"></div>
+      </aside>
+      <div class="scroll" id="meet-scroll">
         <div class="tabs" id="meet-tabs">
           <button type="button" class="tab" data-meet="upcoming">Aankomend</button>
           <button type="button" class="tab active" data-meet="current">Huidig</button>
@@ -137,22 +154,8 @@
         </div>
         <button type="button" id="add-btn" class="primary">Nieuwe afspraak</button>
         <input id="meet-search" type="search" placeholder="Zoeken in de agenda">
-        <div class="meet-split">
-          <div class="meet-main">
-            <h2 id="meet-heading" class="section-title"></h2>
-            <div id="meet-list" class="list"></div>
-          </div>
-          <aside class="cal cal-side">
-            <div class="cal-head">
-              <button type="button" id="cal-prev" class="ghost" aria-label="Vorige maand">‹</button>
-              <h2 id="cal-title">Agenda</h2>
-              <button type="button" id="cal-next" class="ghost" aria-label="Volgende maand">›</button>
-              <input id="day-jump" type="date" aria-label="Ga naar een dag">
-            </div>
-            <div class="cal-dows" aria-hidden="true"><span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span></div>
-            <div id="cal-grid" class="cal-grid"></div>
-          </aside>
-        </div>
+        <h2 id="meet-heading" class="section-title"></h2>
+        <div id="meet-list" class="list"></div>
       </div>
     </div>
 

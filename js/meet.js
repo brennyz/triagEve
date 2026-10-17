@@ -278,10 +278,38 @@ function openEditor(id = null) {
 }
 
 $('#meet-search')?.addEventListener('input', renderMeetings);
+function setCalendar(open) {
+  $('#cal-panel')?.classList.toggle('is-away', !open);
+}
+
+let meetPulled = false;
+const meetScroll = $('#meet-scroll');
+meetScroll?.addEventListener('scroll', () => {
+  if (meetScroll.scrollTop > 16) {
+    meetPulled = true;
+    setCalendar(false);
+  } else if (meetPulled) {
+    meetPulled = false;
+    setCalendar(true);
+  }
+}, { passive: true });
+meetScroll?.addEventListener('wheel', (e) => {
+  if (meetScroll.scrollTop <= 0 && e.deltaY < 0) setCalendar(true);
+}, { passive: true });
+let meetTouchY = 0;
+meetScroll?.addEventListener('touchstart', (e) => {
+  meetTouchY = e.touches[0]?.clientY || 0;
+}, { passive: true });
+meetScroll?.addEventListener('touchmove', (e) => {
+  const y = e.touches[0]?.clientY || 0;
+  if (meetScroll.scrollTop <= 0 && y - meetTouchY > 28) setCalendar(true);
+}, { passive: true });
+
 $('#cal-grid')?.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-day]');
   if (!btn) return;
   showDay(btn.dataset.day);
+  setCalendar(false);
 });
 $('#cal-prev')?.addEventListener('click', () => shiftMonth(-1));
 $('#cal-next')?.addEventListener('click', () => shiftMonth(1));
@@ -293,6 +321,7 @@ $('#meet-tabs')?.addEventListener('click', (e) => {
   const tab = e.target.closest('[data-meet]');
   if (!tab) return;
   store.meetFilter = tab.dataset.meet;
+  setCalendar(false);
   if (store.meetFilter === 'current') showDay(localDate());
   else renderMeetings();
 });

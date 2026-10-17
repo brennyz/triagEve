@@ -53,6 +53,63 @@ if ('serviceWorker' in navigator) {
 }
 
 window.triageve = { store, switchTab, start, preview, actions };
+
+const INSTALL_LATER = 'triageve.installLater';
+let installEvent = null;
+
+function runningAsApp() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function iosDevice() {
+  const ua = navigator.userAgent || '';
+  return /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function showInstallBar() {
+  const bar = $('#install-bar');
+  if (!bar || runningAsApp() || sessionStorage.getItem(INSTALL_LATER) === '1') return;
+  const text = $('#install-text');
+  const go = $('#install-go');
+  if (iosDevice()) {
+    text.textContent = 'Zet triagEve op je beginscherm: tik in Safari op Delen en kies Zet op beginscherm. Dan staat hij bij je apps.';
+    go.hidden = true;
+  } else {
+    text.textContent = 'Zet triagEve in je app-lade, zodat hij opent als een app.';
+    go.hidden = false;
+  }
+  bar.hidden = false;
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installEvent = e;
+  showInstallBar();
+});
+window.addEventListener('appinstalled', () => {
+  $('#install-bar').hidden = true;
+  installEvent = null;
+});
+$('#install-later')?.addEventListener('click', () => {
+  sessionStorage.setItem(INSTALL_LATER, '1');
+  $('#install-bar').hidden = true;
+});
+$('#install-go')?.addEventListener('click', async () => {
+  if (!installEvent) {
+    $('#install-text').textContent = 'Tik in Chrome op het menu en kies App installeren of Toevoegen aan startscherm.';
+    return;
+  }
+  try {
+    await installEvent.prompt();
+    const choice = await installEvent.userChoice;
+    installEvent = null;
+    if (choice?.outcome === 'accepted') $('#install-bar').hidden = true;
+  } catch {
+    installEvent = null;
+    $('#install-text').textContent = 'Tik in Chrome op het menu en kies App installeren of Toevoegen aan startscherm.';
+  }
+});
+showInstallBar();
 navigator.serviceWorker?.addEventListener('message', (e) => {
   if (e.data?.type === 'open-tab' && e.data.tab) switchTab(e.data.tab);
 });

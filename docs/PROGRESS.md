@@ -54,6 +54,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Bij openen in de browser vraagt de app om hem op de telefoon te zetten. Android krijgt de installatievraag, iPhone de stappen via Delen. In de agenda klapt de kalender weg bij Aankomend, Huidig en Eerder, en komt terug als je helemaal naar boven scrolt.
 - 2026-10-17: Home toont weer wie er is, het briefje voor de volgende en de inname. De agenda-kalender is vol breed met tikbare dagen, de lijst eronder ook. Een nieuwe afspraak begint als afspraak, met datum en tijd naast elkaar. Zoeken in het dagboek staat bovenaan. Meer is gesplitst in Elke dag en Papieren en extra.
 - 2026-10-17: Agenda toont de lijst links en een kleine kalender rechts, met Aankomend, Huidig en Eerder. De noodkaart toont de psychiater als er een nummer is. Contacten hebben Nummer invullen en Wijzigen. Home heeft een plus bij open taken.
 - 2026-10-17: Plek opslaan gaf 400. De geschiedenis-trigger las een kolom die het profiel niet heeft. Migratie `20261017250000_log.sql`. Chat-meldingen worden pas aangeroepen als de VAPID-sleutel er is.
