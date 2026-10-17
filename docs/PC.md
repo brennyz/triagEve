@@ -49,3 +49,4 @@ Regio: …
 - De site staat op GitHub Pages.
 - De app heeft drie aparte logins. De naam bij een wijziging komt uit het account, niet uit een vrije keuze.
 - Migratie `20261017200000_accounts.sql` staat in de repo en draait mee met het script hierboven.
+- Status-dropdowns (slechte nacht en de rest) zitten in de app. Migratie `20261017210000_statusmoment.sql` draait mee met hetzelfde commando. Geen extra stap.

@@ -384,16 +384,24 @@
 
   <dialog id="status-dialog">
     <form id="status-form">
-      <h2>Status doorgeven</h2>
-      <p class="notice">Bij acuut gevaar: bel 112. Twijfel? Bel de huisarts of huisartsenpost.</p>
-      <label for="status-note">Korte notitie (mag leeg)</label>
-      <textarea id="status-note" rows="2"></textarea>
-      <div class="status-btns">
-        <button type="submit" class="status-good" data-status="goed">Goed</button>
-        <button type="submit" class="status-ok" data-status="matig">Matig</button>
-        <button type="submit" class="status-bad" data-status="zorgelijk">Zorgelijk</button>
+      <div class="status-scroll">
+        <h2>Hoe gaat het?</h2>
+        <p class="notice">Bij acuut gevaar: bel 112. Twijfel? Bel de huisarts of huisartsenpost.</p>
+        <p class="muted">Kies alleen wat opviel. Dan één tik.</p>
+        <label for="status-moment">Moment</label>
+        <select id="status-moment"><option value="">Nu</option></select>
+        <div id="status-traits" class="status-fields"></div>
+        <label for="status-note">Korte notitie (mag leeg)</label>
+        <textarea id="status-note" rows="2"></textarea>
       </div>
-      <button type="button" id="status-cancel" class="ghost">Annuleren</button>
+      <div class="status-actions">
+        <div class="status-btns">
+          <button type="submit" class="status-good" data-status="goed">Goed</button>
+          <button type="submit" class="status-ok" data-status="matig">Matig</button>
+          <button type="submit" class="status-bad" data-status="zorgelijk">Zorgelijk</button>
+        </div>
+        <button type="button" id="status-cancel" class="ghost">Annuleren</button>
+      </div>
     </form>
   </dialog>
 

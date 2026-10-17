@@ -3,11 +3,18 @@ import { $, store, esc, localDate, actions, onAfterLoad, alive } from './core.js
 function statusCard() {
   const c = (store.checkins || [])[0];
   const meta = actions.STATUS?.[c?.status] || { label: 'Nog geen status', cls: 'status-none' };
-  const when = c ? `${c.author} · ${new Date(c.created_at).toLocaleString('nl-NL')}` : 'Nog niet doorgegeven';
+  const meet = c?.meeting_id
+    ? alive(store.meetings).find((m) => Number(m.id) === Number(c.meeting_id))
+    : null;
+  const when = c
+    ? `${c.author}${meet ? ` · ${meet.title}` : ''} · ${new Date(c.created_at).toLocaleString('nl-NL')}`
+    : 'Nog niet doorgegeven';
+  const traits = actions.traitPhrase?.(c) || '';
   return `
     <article class="card status-card ${meta.cls}">
       <p class="status-kicker">Hoe gaat het met Eef?</p>
       <p class="status-big">${esc(meta.label)}</p>
+      ${traits ? `<p class="status-traits">${esc(traits)}</p>` : ''}
       <p class="item-who">${esc(when)}</p>
       <button type="button" class="primary" id="status-open">Status doorgeven</button>
     </article>`;
@@ -116,9 +123,7 @@ export function renderHome() {
 }
 
 document.addEventListener('click', (e) => {
-  if (e.target.id === 'status-open') {
-    $('#status-dialog')?.showModal();
-  }
+  if (e.target.id === 'status-open') actions.openStatus?.();
 });
 
 onAfterLoad(renderHome);

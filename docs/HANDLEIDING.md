@@ -24,7 +24,7 @@ Bren geeft elk zijn eigen wachtwoord. Deel het niet in een openbare app-groep.
 
 Onderaan vijf knoppen:
 
-- **Home** – overzicht: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Rode knop **Noodkaart** (112 en noodnummers).
+- **Home** – overzicht: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. In de lijstjes zet je alleen wat opviel, bijvoorbeeld een slechte nacht. Moment kan Nu zijn, of een afspraak van vandaag. Rode knop **Noodkaart** (112 en noodnummers).
 - **Chat** – berichten naar elkaar, met tijd.
 - **Dagboek** – wat er gebeurd is. Je kunt een categorie kiezen en “Belangrijk” aanvinken. Schrijf feitelijk en respectvol.
 - **Agenda** – overleg, doktersafspraak, bezoek of overig. Tik op **Dag** om events van één dag te zien of te wijzigen. Iedereen ziet ze en kan ze aanpassen. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.

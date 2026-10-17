@@ -1,5 +1,5 @@
 import {
-  $, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, toast,
+  $, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, toast, alive, localDate,
 } from './core.js';
 import { renderHome } from './home.js';
 import { loadDiary } from './diary.js';
@@ -11,6 +11,57 @@ export const STATUS = {
   matig: { label: 'Matig', cls: 'status-ok' },
   zorgelijk: { label: 'Zorgelijk', cls: 'status-bad' },
 };
+
+export const TRAITS = [
+  ['sleep', 'Nacht', [['', 'niet gezegd'], ['goed', 'goed geslapen'], ['onrustig', 'onrustige nacht'], ['slecht', 'slechte nacht']]],
+  ['mood', 'Stemming', [['', 'niet gezegd'], ['rustig', 'rustig'], ['somber', 'somber'], ['onrustig', 'onrustig']]],
+  ['food', 'Eten', [['', 'niet gezegd'], ['goed', 'goed gegeten'], ['weinig', 'weinig gegeten'], ['niet', 'niet gegeten']]],
+  ['pain', 'Pijn', [['', 'niet gezegd'], ['geen', 'geen pijn'], ['beetje', 'een beetje pijn'], ['duidelijk', 'duidelijke pijn']]],
+  ['clarity', 'Helder', [['', 'niet gezegd'], ['helder', 'helder'], ['verward', 'verward'], ['suf', 'suf']]],
+];
+
+export function traitPhrase(row) {
+  if (!row) return '';
+  return TRAITS.map(([key, , options]) => {
+    const hit = options.find(([value]) => value && value === row[key]);
+    return hit ? hit[1] : '';
+  }).filter(Boolean).join(' · ');
+}
+
+function mountTraits() {
+  const el = $('#status-traits');
+  if (!el || el.dataset.ready) return;
+  el.innerHTML = TRAITS.map(([key, label, options]) => `
+    <label for="status-${key}">${esc(label)}</label>
+    <select id="status-${key}">
+      ${options.map(([value, text]) => `<option value="${esc(value)}">${esc(text)}</option>`).join('')}
+    </select>`).join('');
+  el.dataset.ready = '1';
+}
+
+export function openStatus(meetingId = null) {
+  mountTraits();
+  const note = $('#status-note');
+  if (note) note.value = '';
+  for (const [key] of TRAITS) {
+    const field = $(`#status-${key}`);
+    if (field) field.value = '';
+  }
+  const today = localDate();
+  const items = alive(store.meetings)
+    .filter((m) => m.date === today)
+    .sort((a, b) => String(a.time || '').localeCompare(String(b.time || '')));
+  const moment = $('#status-moment');
+  if (moment) {
+    moment.innerHTML = `<option value="">Nu</option>${items.map((m) => {
+      const time = m.time ? ` · ${String(m.time).slice(0, 5)}` : '';
+      return `<option value="${m.id}">${esc(m.title)}${esc(time)}</option>`;
+    }).join('')}`;
+    const wanted = meetingId && items.some((m) => Number(m.id) === Number(meetingId)) ? String(meetingId) : '';
+    moment.value = wanted;
+  }
+  $('#status-dialog')?.showModal();
+}
 
 export async function loadCheckins() {
   if (!db) {
@@ -59,21 +110,49 @@ export function renderMeasures() {
   }).join('') || '<p class="empty">Nog geen metingen.</p>';
 }
 
-export async function submitStatus(status, note) {
-  const row = { author: store.me, status, note: note || null };
+function readTraits() {
+  const extra = {
+    meeting_id: $('#status-moment')?.value ? Number($('#status-moment').value) : null,
+  };
+  for (const [key, , options] of TRAITS) {
+    const value = $(`#status-${key}`)?.value || '';
+    extra[key] = options.some(([code]) => code && code === value) ? value : null;
+  }
+  return extra;
+}
+
+function worryLine(note, extra) {
+  const phrase = traitPhrase(extra);
+  return `Status Eef: zorgelijk${phrase ? ` – ${phrase}` : ''}${note ? ` – ${note}` : ''}`;
+}
+
+export async function submitStatus(status, note, extra = {}) {
+  const row = {
+    author: store.me,
+    status,
+    note: note || null,
+    meeting_id: extra.meeting_id || null,
+    sleep: extra.sleep || null,
+    mood: extra.mood || null,
+    food: extra.food || null,
+    pain: extra.pain || null,
+    clarity: extra.clarity || null,
+  };
   if (!db) {
     store.checkins.unshift({ ...row, id: Date.now(), created_at: new Date().toISOString() });
     if (status === 'zorgelijk') {
       store.diary.unshift({
         id: Date.now() + 1,
         author: store.me,
-        body: `Status Eef: zorgelijk${note ? ` – ${note}` : ''}`,
+        body: worryLine(note, row),
         category: 'gezondheid',
         important: true,
         created_at: new Date().toISOString(),
       });
+      actions.renderDiary?.();
     }
     renderHome();
+    actions.renderMeetings?.();
     toast('Status doorgegeven.');
     return;
   }
@@ -82,7 +161,7 @@ export async function submitStatus(status, note) {
   if (status === 'zorgelijk') {
     const { error: dErr } = await db.from('triageve_diary').insert({
       author: store.me,
-      body: `Status Eef: zorgelijk${note ? ` – ${note}` : ''}`,
+      body: worryLine(note, row),
       category: 'gezondheid',
       important: true,
     });
@@ -92,14 +171,14 @@ export async function submitStatus(status, note) {
   }
   toast('Status doorgegeven.');
   loadCheckins();
+  actions.renderMeetings?.();
 }
 
 $('#status-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const status = e.submitter?.dataset.status;
   if (!status) return;
-  await submitStatus(status, $('#status-note').value.trim());
-  $('#status-note').value = '';
+  await submitStatus(status, $('#status-note').value.trim(), readTraits());
   $('#status-dialog').close();
 });
 $('#status-cancel')?.addEventListener('click', () => $('#status-dialog').close());
@@ -138,4 +217,7 @@ onRealtime('triageve_measurements', () => loadCheckins());
 actions.lastCheckin = lastCheckin;
 actions.renderMeasures = renderMeasures;
 actions.submitStatus = submitStatus;
+actions.openStatus = openStatus;
+actions.traitPhrase = traitPhrase;
 actions.STATUS = STATUS;
+mountTraits();

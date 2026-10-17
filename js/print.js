@@ -1,6 +1,6 @@
 import { $, store, esc, localDate, fmtStamp, actions, alive } from './core.js';
 import { KINDS } from './meet.js';
-import { STATUS } from './checkins.js';
+import { STATUS, traitPhrase } from './checkins.js';
 
 const SLOT_LABEL = { ochtend: 'ochtend', middag: 'middag', avond: 'avond', nacht: 'nacht' };
 
@@ -96,7 +96,7 @@ function timelineEvents() {
       sort: c.created_at,
       kind: 'Hoe gaat het',
       title: `${c.author || '?'} · ${label}`,
-      body: c.note || '',
+      body: [traitPhrase(c), c.note].filter(Boolean).join('\n'),
     });
   }
   return rows.sort((a, b) => String(a.sort).localeCompare(String(b.sort)));

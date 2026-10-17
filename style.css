@@ -615,6 +615,14 @@ dialog h2 { margin-top: 0; }
 .status-ok { background: #fff0d8; }
 .status-bad { background: #ffe1e4; }
 .status-none { background: var(--bg); }
+#status-dialog { display: flex; flex-direction: column; overflow: hidden; }
+#status-form { display: flex; flex-direction: column; min-height: 0; max-height: calc(92dvh - 40px); }
+.status-scroll { overflow: auto; min-height: 0; }
+.status-actions { flex: 0 0 auto; padding-top: 4px; background: var(--card); }
+.status-traits { margin: 0 0 8px; font-weight: 700; }
+.status-fields { display: grid; gap: 2px; margin-top: 4px; }
+.status-fields label { margin-top: 8px; }
+.status-for { margin-top: 8px; }
 .status-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
 .status-btns button { min-height: 52px; font-weight: 800; border-radius: 12px; }
 @media (prefers-color-scheme: dark) {

@@ -3,6 +3,7 @@ import {
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
+import { STATUS, traitPhrase } from './checkins.js';
 
 export const KINDS = {
   overleg: { label: 'Overleg', icon: '💬' },
@@ -134,6 +135,10 @@ export function renderMeetings() {
     const actionLines = (m.actions || '').split('\n').map((s) => s.trim()).filter(Boolean);
     const needsReport = m.date < today && !m.happened;
     const k = kindMeta(m.kind);
+    const linked = (store.checkins || []).find((c) => Number(c.meeting_id) === Number(m.id));
+    const eefLine = linked
+      ? `Eef: ${(STATUS[linked.status] || {}).label || linked.status}${traitPhrase(linked) ? ` · ${traitPhrase(linked)}` : ''}`
+      : '';
     return `
       <article class="card item" data-id="${m.id}">
         <div class="item-head">
@@ -141,19 +146,25 @@ export function renderMeetings() {
           <span class="item-date">${esc(formatMeetingDate(m.date, m.time))}</span>
         </div>
         <p class="kind-label">${esc(k.icon)} ${esc(k.label)}</p>
+        ${eefLine ? `<p class="status-traits">${esc(eefLine)}</p>` : ''}
         ${m.location ? `<p class="item-who">Locatie: ${esc(m.location)}</p>` : ''}
         ${m.who?.length ? `<p class="item-who">Met: ${esc(m.who.join(', '))}</p>` : ''}
         ${m.agenda ? `<div class="item-section"><h4>Agenda</h4><p>${esc(m.agenda)}</p></div>` : ''}
         ${m.happened ? `<div class="item-section"><h4>${esc(happenedHeading(m.kind))}</h4><p>${esc(m.happened)}</p></div>` : ''}
         ${actionLines.length ? `<div class="item-section"><h4>Actiepunten</h4><ul>${actionLines.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
         <div class="item-meta">Laatst bewerkt door ${esc(m.updated_by || m.created_by || '?')} · ${esc(fmtStamp(m.updated_at))}</div>
+        <button type="button" class="ghost status-for" data-status-for="${m.id}">Hoe was Eef?</button>
         <button type="button" class="ghost ics-btn" data-ics="${m.id}">Zet in mijn agenda</button>
       </article>`;
   }).join('');
 
   $$('#meet-list .item').forEach((el) => el.addEventListener('click', (e) => {
-    if (e.target.closest('[data-ics]')) return;
+    if (e.target.closest('[data-ics], [data-status-for]')) return;
     openEditor(Number(el.dataset.id));
+  }));
+  $$('#meet-list [data-status-for]').forEach((btn) => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    actions.openStatus?.(Number(btn.dataset.statusFor));
   }));
   $$('#meet-list [data-ics]').forEach((btn) => btn.addEventListener('click', (e) => {
     e.stopPropagation();
