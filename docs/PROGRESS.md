@@ -54,6 +54,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Workflow 39023366966 bereikt de pooler niet: het token mist Connection Pooling → Read. Verder geen dashboard-werk. Zie `docs/PC.md`.
 - 2026-10-17: Het inlogscherm onthoudt de laatst gekozen naam op dit toestel. Na uitloggen alleen het eigen wachtwoord. Een andere naam blijft één tik. Geen wijziging in Supabase.
 - 2026-10-17: Bovenaan Home staat waar Eef is. Thuis en Assen (opvang) staan vast. Een andere plek voeg je zelf toe. Het potloodje wijzigt het. Dezelfde regel staat op de noodkaart, bij Over Eef en op de pdf. Migratie `20261017240000_plek.sql`.
 - 2026-10-17: Contacten hebben een rol (huisarts, psychiater, psycholoog, …), praktijk, adres en bereikbaarheid. Een afspraak kan meerdere mensen hebben, ook een zorgverlener. De pdf voor een dienstverlener zet Paps als hoofdcontact en Jacky en Bren als secundair. Migratie `20261017230000_contacten.sql`.
