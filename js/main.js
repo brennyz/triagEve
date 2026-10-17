@@ -1,4 +1,4 @@
-import { $, configured, preview, db, store, USERS } from './core.js';
+import { $, configured, preview, db, store, USERS, NAME_KEY, nameForEmail } from './core.js';
 import { showLogin, doLogout, idleExpired, touchActivity } from './auth.js';
 import { switchTab } from './nav.js';
 import { subscribe, reloadAll } from './sync.js';
@@ -72,8 +72,13 @@ navigator.serviceWorker?.addEventListener('message', (e) => {
     return;
   }
   const { data: { session } } = await db.auth.getSession();
-  if (session && USERS.includes(store.me)) {
+  const person = nameForEmail(session?.user?.email);
+  if (session && person) {
+    store.me = person;
+    localStorage.setItem(NAME_KEY, person);
     touchActivity();
     await start();
+  } else if (session) {
+    await doLogout('Log opnieuw in met je eigen naam en wachtwoord.');
   } else showLogin();
 })();

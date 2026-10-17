@@ -6,6 +6,16 @@ const CFG = window.TRIAGEVE_CONFIG || {};
 const configured = Boolean(CFG.SUPABASE_URL && !CFG.SUPABASE_URL.includes('JOUW-PROJECT'));
 const preview = !configured && new URLSearchParams(location.search).has('preview');
 const db = configured ? supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY) : null;
+const ACCOUNTS = CFG.ACCOUNTS && typeof CFG.ACCOUNTS === 'object' ? CFG.ACCOUNTS : {};
+
+function emailFor(name) {
+  return ACCOUNTS[name] || '';
+}
+
+function nameForEmail(email) {
+  const want = String(email || '').toLowerCase();
+  return Object.keys(ACCOUNTS).find((name) => String(ACCOUNTS[name]).toLowerCase() === want) || '';
+}
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => root.querySelectorAll(sel);
@@ -118,7 +128,8 @@ async function restoreRow(table, id) {
 }
 
 export {
-  USERS, NAME_KEY, ACTIVITY_KEY, MAX_IDLE_MS, CFG, configured, preview, db,
+  USERS, NAME_KEY, ACTIVITY_KEY, MAX_IDLE_MS, CFG, ACCOUNTS, configured, preview, db,
+  emailFor, nameForEmail,
   $, $$, store, loaders, realtime, afterLoad, actions,
   onLoad, onAfterLoad, onRealtime, esc, localDate, fmtTime, fmtDay, fmtStamp,
   dayLabel, toast, check, alive, softDelete, restoreRow,

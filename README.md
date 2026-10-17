@@ -18,10 +18,10 @@ Handleiding voor Jacky en Paps: [`docs/HANDLEIDING.md`](docs/HANDLEIDING.md).
 ## Beveiliging
 
 - De code in deze repo is openbaar; de **gegevens staan niet in de repo** maar in Supabase.
-- Inloggen gaat via één Supabase team-account (`TEAM_EMAIL` in `config.js`). Het wachtwoord
-  staat nergens in de code; Supabase controleert het.
-- Row Level Security zorgt dat alleen dat team-account de `triageve_*` tabellen kan lezen of
-  schrijven. De publieke sleutel in `config.js` geeft zonder wachtwoord geen toegang.
+- Inloggen gaat via drie accounts (`ACCOUNTS` in `config.js`): Jacky, Paps en Bren, elk met
+  een eigen wachtwoord. De wachtwoorden staan nergens in de code.
+- Row Level Security zorgt dat alleen die drie accounts de `triageve_*` tabellen kunnen lezen
+  of schrijven. De publieke sleutel in `config.js` geeft zonder wachtwoord geen toegang.
 - Na 14 dagen zonder gebruik logt de app automatisch uit.
 - Zoekmachines: `noindex, nofollow` en `robots.txt` (`Disallow: /`).
 - Content-Security-Policy staat alleen deze site en het Supabase-domein toe.
@@ -32,10 +32,9 @@ triagEve bewaart informatie over welzijn en zorg. Dat zijn bijzondere persoonsge
 
 - **Wat waar staat:** de app-code is openbaar op GitHub. Chat, dagboek, agenda en andere
   gegevens staan in de Supabase-database, niet in deze repo.
-- **Wie erbij kan:** alleen Jacky, Paps en Bren, met het gedeelde team-wachtwoord. De
-  database laat via Row Level Security alleen het account `team@triageve.app` toe.
-  De gekozen naam bij “Wie ben je?” wordt bij elk stuk bewaard. Iedereen kan elke
-  naam aanklikken; het is geen apart account per persoon.
+- **Wie erbij kan:** alleen Jacky, Paps en Bren, elk met een eigen wachtwoord. De
+  database laat via Row Level Security alleen `jacky@triageve.app`, `paps@triageve.app`
+  en `bren@triageve.app` toe. De naam bij een wijziging komt uit het account.
 - **Niet in de app:** BSN, DigiD, pincodes, bankgegevens of scans van documenten.
 - **Regio van de database:** nog niet vastgelegd (wacht op de Supabase-koppeling in fase 1).
   Een regio in de EU heeft de voorkeur. Bren noteert de regio hier zodra het project

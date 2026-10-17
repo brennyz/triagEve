@@ -33,7 +33,9 @@ $required = @(
   @{ Name = 'SUPABASE_DB_PASSWORD'; Prompt = 'Database-wachtwoord van dit project' },
   @{ Name = 'SUPABASE_PROJECT_REF'; Prompt = "Project-ref (Enter = $defaultRef)"; Default = $defaultRef },
   @{ Name = 'SUPABASE_SERVICE_ROLE_KEY'; Prompt = 'Service role key (Project Settings, API Keys, secret)' },
-  @{ Name = 'TRIAGEVE_TEAM_PASSWORD'; Prompt = 'Teamwachtwoord voor Jacky, Paps en Bren' }
+  @{ Name = 'TRIAGEVE_JACKY_PASSWORD'; Prompt = 'Eigen wachtwoord voor Jacky (minstens 8 tekens)' },
+  @{ Name = 'TRIAGEVE_PAPS_PASSWORD'; Prompt = 'Eigen wachtwoord voor Paps (minstens 8 tekens)' },
+  @{ Name = 'TRIAGEVE_BREN_PASSWORD'; Prompt = 'Eigen wachtwoord voor Bren (minstens 8 tekens)' }
 )
 $optionalNames = @('VAPID_PRIVATE_KEY', 'VAPID_PUBLIC_KEY', 'BACKUP_PASSPHRASE')
 
@@ -54,6 +56,9 @@ foreach ($item in $required) {
     $entered = $Matches[1]
   }
   if (-not $entered) { throw "$($item.Name) is verplicht." }
+  if ($item.Name -like 'TRIAGEVE_*_PASSWORD' -and $entered.Trim().Length -lt 8) {
+    throw "$($item.Name) moet minstens 8 tekens zijn."
+  }
   if ($entered -match '[\r\n"]') { throw "$($item.Name) mag geen aanhalingstekens of nieuwe regels bevatten." }
   $values[$item.Name] = $entered.Trim()
 }
@@ -104,5 +109,6 @@ if (-not $runId) { throw 'Geen nieuwe workflow-run gevonden. Kijk bij GitHub Act
 
 Write-Host "Volg run $runId"
 Invoke-Gh run watch $runId -R $repo --exit-status
-Write-Host 'Klaar. Open https://brennyz.github.io/triagEve/ en log in.'
-Write-Host 'Bestaat het team-account al met een ander wachtwoord, dan verandert deze workflow dat niet.'
+Write-Host 'Klaar. Open https://brennyz.github.io/triagEve/ en log in met je eigen naam en wachtwoord.'
+Write-Host 'Bestaat een account al, dan verandert deze workflow het wachtwoord niet.'
+Write-Host 'Wat er daarna nog op de pc openstaat: docs/PC.md'

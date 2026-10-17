@@ -15,10 +15,10 @@ Dit is een korte uitleg. Moeilijke woorden laten we weg. Bij twijfel: pagina ver
 ## Inloggen
 
 1. Kies wie je bent: Jacky, Paps of Bren.
-2. Typ het team-wachtwoord (hetzelfde voor jullie drieën; Bren heeft het).
+2. Typ je eigen wachtwoord. Dat van de ander werkt niet.
 3. Tik op **Inloggen**.
 
-Deel het wachtwoord niet in een openbare app-groep.
+Bren geeft elk zijn eigen wachtwoord. Deel het niet in een openbare app-groep.
 
 ## Wat je ziet
 

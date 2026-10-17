@@ -1,5 +1,7 @@
 # triagEve klaarzetten
 
+Wat er op de pc nog moet gebeuren, staat in [docs/PC.md](docs/PC.md). Werk die lijst bij als er een stap af is.
+
 Eén commando op de Windows-pc van Bren. Het vraagt wat nog leeg is (wachtwoorden
 onzichtbaar), schrijft `.env.local`, zet de GitHub-secrets en wacht tot de
 database-workflow klaar is.
@@ -17,16 +19,18 @@ Het script vraagt alleen om wat nog niet in `.env.local` staat:
 | `SUPABASE_DB_PASSWORD` | het database-wachtwoord van dit project |
 | `SUPABASE_PROJECT_REF` | Enter bewaart `slddtxwbufoadmvdconz` |
 | `SUPABASE_SERVICE_ROLE_KEY` | Project Settings → API Keys → secret key |
-| `TRIAGEVE_TEAM_PASSWORD` | de zin waarmee Jacky, Paps en Bren inloggen |
+| `TRIAGEVE_JACKY_PASSWORD` | eigen wachtwoord voor Jacky |
+| `TRIAGEVE_PAPS_PASSWORD` | eigen wachtwoord voor Paps |
+| `TRIAGEVE_BREN_PASSWORD` | eigen wachtwoord voor Bren |
 
-Kies zelf een zin, bijvoorbeeld vier woorden. Diezelfde zin is het wachtwoord
-van `team@triageve.app`. De workflow maakt dat account aan als het nog niet
-bestaat. Bestaat het al, dan blijft het oude wachtwoord staan: verwijder de
-gebruiker in Authentication → Users, of zet daar hetzelfde wachtwoord, en draai
-het script opnieuw. Er is geen mailbox op dat adres, dus geen resetmail.
+Elk wachtwoord is minstens 8 tekens. De workflow maakt `jacky@triageve.app`,
+`paps@triageve.app` en `bren@triageve.app` aan als ze nog niet bestaan, en
+bevestigt ze meteen. Er is geen mailbox, dus geen resetmail. Bestaat een
+account al, dan blijft het oude wachtwoord staan. Wijzigen:
+Authentication → Users → die persoon.
 
-Daarna: open https://brennyz.github.io/triagEve/, kies je naam, typ de zin.
-Ververs één keer als je een oude pagina ziet.
+Daarna: open https://brennyz.github.io/triagEve/, kies je eigen naam en typ
+alleen jouw wachtwoord. Ververs één keer als je een oude pagina ziet.
 
 `.env.local` blijft buiten git. De publishable key in `config.js` mag openbaar zijn.
 `scripts/set-github-secrets.ps1` doet alleen de secret-stap, als `.env.local` al af is.
@@ -41,15 +45,18 @@ Ververs één keer als je een oude pagina ziet.
 
 ## Bekende beperkingen
 
-- **Eén gedeelde login.** "Wie ben je?" wordt bewaard bij chat, dagboek, agenda,
-  metingen, inname, overdracht, aanwezigheid en in de geschiedenis. Iedereen kan
-  elke naam kiezen. Dat is geen apart account en geen bewijs wie er geklikt heeft.
+- **Drie accounts.** Jacky, Paps en Bren hebben elk een eigen wachtwoord. De naam
+  bij chat, dagboek, agenda, metingen, inname, overdracht, aanwezigheid en in de
+  geschiedenis komt uit dat account. Het oude adres `team@triageve.app` kan na de
+  migratie niet meer bij de gegevens. Wie het wachtwoord van een ander weet, kan
+  nog wel als die persoon inloggen.
 - **Noodkaart.** Op het inlogscherm staat alleen 112. Huisarts en bijzonderheden
   staan pas na inloggen, zodat ze niet in de openbare site staan.
 - **Geen geheimen of medische gegevens in git.** De anon-sleutel in `config.js`
   is publiek en geeft zonder wachtwoord geen rijen. Elke `triageve_*`-tabel heeft
-  RLS voor `team@triageve.app`. De service-role key, het database-wachtwoord en
-  het teamwachtwoord horen alleen in GitHub-secrets.
+  RLS voor `jacky@triageve.app`, `paps@triageve.app` en `bren@triageve.app`. De
+  service-role key, het database-wachtwoord en de drie wachtwoorden horen alleen
+  in GitHub-secrets.
 - **Prullenbak.** Dagboek, agenda, contacten, medicatie en taken blijven 30 dagen
   terug te zetten. Chatberichten hebben geen prullenbak.
 - **Tegelijk bewerken.** De laatste opslag wint. De app voegt twee versies niet samen.

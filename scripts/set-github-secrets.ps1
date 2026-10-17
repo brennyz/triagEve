@@ -13,7 +13,8 @@ foreach ($line in Get-Content $envFile) {
 }
 
 $names = 'SUPABASE_ACCESS_TOKEN', 'SUPABASE_DB_PASSWORD', 'SUPABASE_PROJECT_REF',
-         'SUPABASE_SERVICE_ROLE_KEY', 'TRIAGEVE_TEAM_PASSWORD'
+         'SUPABASE_SERVICE_ROLE_KEY', 'TRIAGEVE_JACKY_PASSWORD', 'TRIAGEVE_PAPS_PASSWORD',
+         'TRIAGEVE_BREN_PASSWORD'
 $optional = 'VAPID_PRIVATE_KEY', 'BACKUP_PASSPHRASE'
 foreach ($n in $names) {
   if (-not $values[$n]) { throw "$n ontbreekt in .env.local" }

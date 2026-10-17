@@ -1,6 +1,6 @@
 import {
-  $, $$, USERS, NAME_KEY, ACTIVITY_KEY, MAX_IDLE_MS, CFG, configured, db, store,
-  toast, actions,
+  $, $$, USERS, NAME_KEY, ACTIVITY_KEY, MAX_IDLE_MS, configured, db, store,
+  emailFor, nameForEmail, toast, actions,
 } from './core.js';
 
 export function showLogin() {
@@ -36,6 +36,8 @@ $$('.user-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
     store.selectedUser = btn.dataset.user;
     $$('.user-btn').forEach((b) => b.classList.toggle('selected', b === btn));
+    const mail = $('#login-email');
+    if (mail) mail.value = emailFor(store.selectedUser);
     $('#password').focus();
   });
 });
@@ -69,16 +71,19 @@ $('#login-form').addEventListener('submit', async (e) => {
   const error = $('#login-error');
   const fail = (msg) => { error.textContent = msg; error.hidden = false; };
   if (!configured) return fail('De app is nog niet gekoppeld aan Supabase.');
-  if (!USERS.includes(store.selectedUser)) return fail('Kies eerst wie je bent.');
+  const email = emailFor(store.selectedUser);
+  if (!USERS.includes(store.selectedUser) || !email) return fail('Kies eerst wie je bent.');
 
   $('#login-btn').disabled = true;
   let authError;
+  let session;
   try {
     const res = await db.auth.signInWithPassword({
-      email: CFG.TEAM_EMAIL,
+      email,
       password: $('#password').value,
     });
     authError = res.error;
+    session = res.data?.session;
   } catch (err) {
     authError = err;
   }
@@ -91,8 +96,13 @@ $('#login-form').addEventListener('submit', async (e) => {
     return fail('Inloggen lukt nu niet. Probeer het opnieuw.');
   }
 
+  const person = nameForEmail(session?.user?.email);
+  if (!person) {
+    await db.auth.signOut();
+    return fail('Dit account hoort niet bij Jacky, Paps of Bren.');
+  }
   error.hidden = true;
-  store.me = store.selectedUser;
+  store.me = person;
   localStorage.setItem(NAME_KEY, store.me);
   touchActivity();
   actions.start();

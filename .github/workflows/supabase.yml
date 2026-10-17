@@ -4,7 +4,8 @@ name: Supabase database
 # (als het nog niet bestaat) en test dat niemand zonder inlog bij de gegevens kan.
 # Benodigde repository secrets (eenmalig, via scripts/setup.ps1):
 #   SUPABASE_ACCESS_TOKEN, SUPABASE_DB_PASSWORD, SUPABASE_PROJECT_REF,
-#   SUPABASE_SERVICE_ROLE_KEY, TRIAGEVE_TEAM_PASSWORD
+#   SUPABASE_SERVICE_ROLE_KEY, TRIAGEVE_JACKY_PASSWORD, TRIAGEVE_PAPS_PASSWORD,
+#   TRIAGEVE_BREN_PASSWORD
 
 on:
   push:
@@ -31,7 +32,9 @@ jobs:
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
       SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      TEAM_PASSWORD: ${{ secrets.TRIAGEVE_TEAM_PASSWORD }}
+      JACKY_PASSWORD: ${{ secrets.TRIAGEVE_JACKY_PASSWORD }}
+      PAPS_PASSWORD: ${{ secrets.TRIAGEVE_PAPS_PASSWORD }}
+      BREN_PASSWORD: ${{ secrets.TRIAGEVE_BREN_PASSWORD }}
       VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +43,7 @@ jobs:
         id: secrets
         run: |
           missing=""
-          for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF SERVICE_KEY TEAM_PASSWORD; do
+          for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF SERVICE_KEY JACKY_PASSWORD PAPS_PASSWORD BREN_PASSWORD; do
             [ -z "${!v}" ] && missing="$missing $v"
           done
           if [ -n "$missing" ]; then
@@ -61,23 +64,50 @@ jobs:
           supabase link --project-ref "$PROJECT_REF"
           supabase db push --include-all
 
-      - name: Team-account aanmaken (als het nog niet bestaat)
+      - name: Accounts van Jacky, Paps en Bren aanmaken
         if: steps.secrets.outputs.ok == 'true'
         run: |
-          TEAM_EMAIL=$(grep -oP "TEAM_EMAIL:\s*'\K[^']+" config.js)
-          body=$(jq -n --arg e "$TEAM_EMAIL" --arg p "$TEAM_PASSWORD" '{email:$e, password:$p, email_confirm:true}')
-          code=$(curl -s -o resp.json -w '%{http_code}' -X POST \
-            "https://$PROJECT_REF.supabase.co/auth/v1/admin/users" \
-            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" \
-            -H "Content-Type: application/json" -d "$body")
-          if [ "$code" = "200" ] || [ "$code" = "201" ]; then
-            echo "Team-account aangemaakt."
-          elif grep -qiE "already|exists|registered" resp.json; then
-            echo "Team-account bestond al."
-          else
-            echo "::error::Team-account aanmaken mislukt (HTTP $code)"; cat resp.json; exit 1
-          fi
-          rm -f resp.json
+          create_account() {
+            local name="$1" email="$2" pass="$3"
+            body=$(jq -n --arg e "$email" --arg p "$pass" --arg n "$name" \
+              '{email:$e, password:$p, email_confirm:true, user_metadata:{name:$n}}')
+            code=$(curl -s -o resp.json -w '%{http_code}' -X POST \
+              "https://$PROJECT_REF.supabase.co/auth/v1/admin/users" \
+              -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" \
+              -H "Content-Type: application/json" -d "$body")
+            if [ "$code" = "200" ] || [ "$code" = "201" ]; then
+              echo "Account $name aangemaakt."
+            elif grep -qiE "already|exists|registered" resp.json; then
+              echo "Account $name bestond al. Wachtwoord niet gewijzigd."
+            else
+              echo "::error::Account $name aanmaken mislukt (HTTP $code)"
+              jq -c 'del(.password)' resp.json 2>/dev/null || true
+              exit 1
+            fi
+            rm -f resp.json
+          }
+          python3 - << 'PY' > /tmp/triageve-accounts.txt
+          import re
+          text = open("config.js", encoding="utf-8").read()
+          block = re.search(r"ACCOUNTS:\s*\{([^}]+)\}", text)
+          if not block:
+              raise SystemExit("ACCOUNTS ontbreekt in config.js")
+          pairs = re.findall(r"(Jacky|Paps|Bren):\s*'([^']+)'", block.group(1))
+          if len(pairs) != 3:
+              raise SystemExit("config.js moet Jacky, Paps en Bren bevatten")
+          for name, email in pairs:
+              print(f"{name} {email}")
+          PY
+          while read -r name email; do
+            case "$name" in
+              Jacky) pass="$JACKY_PASSWORD" ;;
+              Paps) pass="$PAPS_PASSWORD" ;;
+              Bren) pass="$BREN_PASSWORD" ;;
+              *) echo "::error::Onbekende naam $name"; exit 1 ;;
+            esac
+            create_account "$name" "$email" "$pass"
+          done < /tmp/triageve-accounts.txt
+          rm -f /tmp/triageve-accounts.txt
 
       - name: Beveiligingstest (zonder inlog mag je niets zien)
         if: steps.secrets.outputs.ok == 'true'
