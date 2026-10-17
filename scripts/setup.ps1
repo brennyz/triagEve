@@ -100,7 +100,15 @@ for ($i = 0; $i -lt 40; $i++) {
   if ($LASTEXITCODE -ne 0 -or -not $raw) { continue }
   $runs = @($raw | ConvertFrom-Json)
   foreach ($run in $runs) {
-    $created = [datetimeoffset]::Parse([string]$run.createdAt)
+    try {
+      $created = [datetimeoffset]::Parse(
+        [string]$run.createdAt,
+        [System.Globalization.CultureInfo]::InvariantCulture,
+        [System.Globalization.DateTimeStyles]::RoundtripKind
+      )
+    } catch {
+      continue
+    }
     if ($created -gt $start) { $runId = $run.databaseId; break }
   }
   if ($runId) { break }

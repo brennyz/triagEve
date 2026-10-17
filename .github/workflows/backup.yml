@@ -38,7 +38,9 @@ jobs:
         if: steps.secrets.outputs.ok == 'true'
         run: |
           supabase link --project-ref "$PROJECT_REF"
-          supabase db dump --data-only --schema public -f dump.sql
+          DBURL=$(python3 scripts/pooler-url.py)
+          echo "::add-mask::$DBURL"
+          supabase db dump --data-only --schema public -f dump.sql --db-url "$DBURL"
           grep -E '^COPY public\.triageve_|^COPY public\.triageve_|CREATE TABLE public\.triageve_|ALTER TABLE public\.triageve_|COPY public.triageve' dump.sql >/dev/null || true
           # Houd alleen triageve_* copy-blokken
           awk '

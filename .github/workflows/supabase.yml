@@ -62,7 +62,10 @@ jobs:
         if: steps.secrets.outputs.ok == 'true'
         run: |
           supabase link --project-ref "$PROJECT_REF"
-          supabase db push --include-all
+          # GitHub Actions heeft geen IPv6. De pooler wel.
+          DBURL=$(python3 scripts/pooler-url.py)
+          echo "::add-mask::$DBURL"
+          supabase db push --include-all --db-url "$DBURL"
 
       - name: Accounts van Jacky, Paps en Bren aanmaken
         if: steps.secrets.outputs.ok == 'true'
