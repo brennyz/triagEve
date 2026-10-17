@@ -36,6 +36,8 @@ jobs:
       PAPS_PASSWORD: ${{ secrets.TRIAGEVE_PAPS_PASSWORD }}
       BREN_PASSWORD: ${{ secrets.TRIAGEVE_BREN_PASSWORD }}
       VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+      # Session pooler (IPv4, EU/Ierland). Geen geheim. GitHub Actions heeft geen IPv6.
+      POOLER_HOST: aws-0-eu-west-1.pooler.supabase.com
     steps:
       - uses: actions/checkout@v4
 
@@ -43,7 +45,7 @@ jobs:
         id: secrets
         run: |
           missing=""
-          for v in SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD PROJECT_REF SERVICE_KEY JACKY_PASSWORD PAPS_PASSWORD BREN_PASSWORD; do
+          for v in SUPABASE_DB_PASSWORD PROJECT_REF SERVICE_KEY JACKY_PASSWORD PAPS_PASSWORD BREN_PASSWORD; do
             [ -z "${!v}" ] && missing="$missing $v"
           done
           if [ -n "$missing" ]; then
@@ -61,8 +63,6 @@ jobs:
       - name: Migraties uitvoeren
         if: steps.secrets.outputs.ok == 'true'
         run: |
-          supabase link --project-ref "$PROJECT_REF"
-          # GitHub Actions heeft geen IPv6. De pooler wel.
           DBURL=$(python3 scripts/pooler-url.py)
           echo "::add-mask::$DBURL"
           supabase db push --include-all --db-url "$DBURL"
@@ -140,7 +140,11 @@ jobs:
 
       - name: Edge function notify + VAPID-secret
         if: steps.secrets.outputs.ok == 'true'
+        continue-on-error: true
         run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::warning::Geen SUPABASE_ACCESS_TOKEN; edge function overgeslagen. Inloggen werkt zonder."; exit 0
+          fi
           supabase functions deploy notify --project-ref "$PROJECT_REF" || echo "::warning::Function deploy mislukt (kan wachten tot fase 12 secrets er zijn)."
           PUB=$(grep -oP "VAPID_PUBLIC_KEY:\s*'\K[^']+" config.js || true)
           if [ -n "$VAPID_PRIVATE_KEY" ] && [ -n "$PUB" ]; then

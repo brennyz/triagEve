@@ -19,12 +19,13 @@ jobs:
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
       BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      POOLER_HOST: aws-0-eu-west-1.pooler.supabase.com
     steps:
       - uses: actions/checkout@v4
       - name: Controleer secrets
         id: secrets
         run: |
-          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ] || [ -z "$PROJECT_REF" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+          if [ -z "$SUPABASE_DB_PASSWORD" ] || [ -z "$PROJECT_REF" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
             echo "::warning::Secrets ontbreken (o.a. BACKUP_PASSPHRASE). Back-up overgeslagen."
             echo "ok=false" >> "$GITHUB_OUTPUT"
           else
@@ -37,7 +38,6 @@ jobs:
       - name: Dump en versleutelen
         if: steps.secrets.outputs.ok == 'true'
         run: |
-          supabase link --project-ref "$PROJECT_REF"
           DBURL=$(python3 scripts/pooler-url.py)
           echo "::add-mask::$DBURL"
           supabase db dump --data-only --schema public -f dump.sql --db-url "$DBURL"

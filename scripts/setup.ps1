@@ -89,29 +89,22 @@ foreach ($name in $optionalNames) {
   Write-Host "OK  $name"
 }
 
-$start = [datetimeoffset]::UtcNow.AddSeconds(-20)
+function Get-LatestRunId {
+  $raw = & gh run list --workflow supabase.yml -R $repo --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // 0'
+  if ($LASTEXITCODE -ne 0 -or -not $raw) { return [int64]0 }
+  return [int64]([string]$raw).Trim()
+}
+
+# Run-nummers vergelijken in plaats van datums: die hangen af van de taal van Windows.
+$before = Get-LatestRunId
 Invoke-Gh workflow run supabase.yml -R $repo
 Write-Host 'Workflow gestart. Wachten tot de run zichtbaar is...'
 
 $runId = $null
 for ($i = 0; $i -lt 40; $i++) {
   Start-Sleep -Seconds 3
-  $raw = & gh run list --workflow supabase.yml -R $repo --limit 5 --json databaseId,createdAt,status
-  if ($LASTEXITCODE -ne 0 -or -not $raw) { continue }
-  $runs = @($raw | ConvertFrom-Json)
-  foreach ($run in $runs) {
-    try {
-      $created = [datetimeoffset]::Parse(
-        [string]$run.createdAt,
-        [System.Globalization.CultureInfo]::InvariantCulture,
-        [System.Globalization.DateTimeStyles]::RoundtripKind
-      )
-    } catch {
-      continue
-    }
-    if ($created -gt $start) { $runId = $run.databaseId; break }
-  }
-  if ($runId) { break }
+  $latest = Get-LatestRunId
+  if ($latest -gt $before) { $runId = $latest; break }
 }
 if (-not $runId) { throw 'Geen nieuwe workflow-run gevonden. Kijk bij GitHub Actions.' }
 
