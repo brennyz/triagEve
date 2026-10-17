@@ -97,7 +97,9 @@ function openContact(id = null, preset = {}) {
   store.draftCircle = c?.circle || preset.circle || 'zorg';
   store.draftRank = c?.rank || preset.rank || null;
   $('#contact-title').textContent = c ? 'Contact bewerken' : (preset.name ? preset.name : 'Nieuw contact');
+  const familyName = c?.circle === 'familie' || preset.circle === 'familie';
   $('#c-name').value = c?.name || preset.name || '';
+  $('#c-name').readOnly = familyName && FAMILY.some(([name]) => name === $('#c-name').value);
   fillRoles(c?.role || preset.role || (store.draftCircle === 'familie' ? 'Familie' : 'Huisarts'));
   $('#c-org').value = c?.organisation || '';
   $('#c-phone').value = c?.phone || '';
@@ -168,6 +170,22 @@ $('#contact-form')?.addEventListener('submit', async (e) => {
     updated_at: new Date().toISOString(),
   };
   if (!data.name) return;
+  const familyRanks = { Paps: 'hoofd', Jacky: 'secundair', Bren: 'secundair' };
+  const canonical = Object.keys(familyRanks).find((name) => name.toLowerCase() === data.name.toLowerCase());
+  if (!store.editingContactId && canonical) {
+    data.name = canonical;
+    const existing = familyOf(canonical);
+    if (existing) {
+      store.editingContactId = existing.id;
+      for (const key of ['phone', 'email', 'address', 'notes', 'organisation', 'hours']) {
+        if (!data[key]) data[key] = existing[key] || '';
+      }
+      data.is_emergency = data.is_emergency || Boolean(existing.is_emergency);
+    }
+    data.circle = 'familie';
+    data.rank = familyRanks[canonical];
+    data.role = 'Familie';
+  }
   if (!db) {
     rememberLocal(data);
     $('#contact-editor').close();

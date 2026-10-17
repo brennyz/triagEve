@@ -335,6 +335,7 @@
   <!-- Agenda editor -->
   <dialog id="editor">
     <form id="editor-form" method="dialog">
+      <div class="dialog-scroll">
       <h2 id="editor-title">Nieuwe afspraak</h2>
       <p class="notice">Let op: na opslaan zien Jacky, Paps en Bren dit, en kunnen zij het wijzigen.</p>
       <label for="f-title">Onderwerp *</label>
@@ -375,7 +376,7 @@
       <label for="f-actions">Actiepunten (1 per regel)</label>
       <textarea id="f-actions" rows="3" placeholder="Bren: ...&#10;Paps: ..."></textarea>
       <button type="button" id="make-tasks" class="ghost">Maak taken van actiepunten</button>
-
+      </div>
       <div class="dialog-buttons">
         <button type="button" id="delete-btn" class="danger" hidden>Verwijderen</button>
         <span class="spacer"></span>
@@ -411,6 +412,7 @@
 
   <dialog id="task-editor">
     <form id="task-form" method="dialog">
+      <div class="dialog-scroll">
       <h2 id="task-title">Nieuwe taak</h2>
       <label for="t-title">Taak *</label>
       <input id="t-title" required>
@@ -422,6 +424,7 @@
       </select>
       <label for="t-due">Uiterlijk</label>
       <input id="t-due" type="date">
+      </div>
       <div class="dialog-buttons">
         <button type="button" id="task-delete" class="danger" hidden>Verwijderen</button>
         <span class="spacer"></span>
@@ -433,6 +436,7 @@
 
   <dialog id="med-editor">
     <form id="med-form" method="dialog">
+      <div class="dialog-scroll">
       <h2 id="med-title">Nieuwe medicatie</h2>
       <label for="m-name">Naam *</label>
       <input id="m-name" required>
@@ -446,6 +450,7 @@
       <textarea id="m-notes" rows="2"></textarea>
       <label for="m-started">Gestart op</label>
       <input id="m-started" type="date">
+      </div>
       <div class="dialog-buttons">
         <button type="button" id="med-delete" class="danger" hidden>Verwijderen</button>
         <button type="button" id="med-stop" class="ghost" hidden>Stoppen</button>

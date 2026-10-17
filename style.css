@@ -435,11 +435,15 @@ dialog::backdrop { background: rgba(10, 8, 20, 0.55); }
 dialog h2 { margin-top: 0; }
 
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 420px) {
+  .row { grid-template-columns: 1fr; }
+}
 .checks { display: flex; gap: 16px; flex-wrap: wrap; }
 .checks label { font-weight: 500; margin: 0; display: flex; align-items: center; gap: 8px; min-height: 44px; }
 .checks input { width: 24px; height: 24px; }
 
-.dialog-buttons { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.dialog-buttons { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.dialog-buttons button { flex: 0 1 auto; }
 .spacer { flex: 1; }
 
 .toast {
@@ -586,14 +590,18 @@ dialog h2 { margin-top: 0; }
 .section-title { font-size: 1.05rem; margin: 16px 0 8px; }
 .stopped-box { margin-top: 16px; }
 .stopped-box summary { font-weight: 700; cursor: pointer; min-height: 44px; display: flex; align-items: center; }
-.task-card { display: flex; align-items: flex-start; gap: 8px; cursor: default; }
-.task-check { display: flex; gap: 10px; align-items: flex-start; flex: 1; margin: 0; font-weight: 500; min-height: 44px; }
+.scroll, .list, .task-card, .task-check, .item-head, .item-title { min-width: 0; }
+.task-card { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; cursor: default; max-width: 100%; }
+.task-check { display: flex; gap: 10px; align-items: flex-start; flex: 1 1 100%; margin: 0; font-weight: 500; min-height: 44px; }
 .task-check input { width: 24px; height: 24px; margin-top: 2px; flex-shrink: 0; }
-.task-check span { display: flex; flex-direction: column; gap: 2px; }
+.task-check span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.task-check strong, .task-check .item-who { overflow-wrap: break-word; }
+.task-edit { margin-left: auto; }
 .task-card.done strong { text-decoration: line-through; color: var(--muted); }
 .task-card.late { border-color: var(--danger); }
 .task-card.late .item-who { color: var(--danger); font-weight: 700; }
-.task-edit { min-height: 44px; }
+.task-edit { min-height: 44px; flex-shrink: 0; }
+.status-for, .ics-btn { display: flex; align-items: center; width: 100%; text-align: left; }
 #make-tasks { margin-top: 8px; min-height: 44px; }
 .together {
   margin-bottom: 12px;
@@ -615,20 +623,49 @@ dialog h2 { margin-top: 0; }
 .status-ok { background: #fff0d8; }
 .status-bad { background: #ffe1e4; }
 .status-none { background: var(--bg); }
-#contact-editor[open] { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
-#contact-form { display: flex; flex-direction: column; min-height: 0; max-height: 92dvh; }
-.contact-scroll { overflow: auto; min-height: 0; padding: 20px 20px 8px; }
-#contact-form .dialog-buttons { flex: 0 0 auto; margin: 0; padding: 8px 20px 16px; background: var(--card); }
-#status-dialog { display: flex; flex-direction: column; overflow: hidden; }
-#status-form { display: flex; flex-direction: column; min-height: 0; max-height: calc(92dvh - 40px); }
-.status-scroll { overflow: auto; min-height: 0; }
-.status-actions { flex: 0 0 auto; padding-top: 4px; background: var(--card); }
+#contact-editor[open],
+#editor[open],
+#med-editor[open],
+#task-editor[open],
+#status-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+#contact-form,
+#editor-form,
+#med-form,
+#task-form,
+#status-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 92dvh;
+}
+.contact-scroll,
+.dialog-scroll,
+.status-scroll { overflow: auto; min-height: 0; padding: 20px 20px 8px; }
+#contact-form .dialog-buttons,
+#editor-form .dialog-buttons,
+#med-form .dialog-buttons,
+#task-form .dialog-buttons,
+.status-actions {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 8px 20px 16px;
+  background: var(--card);
+}
 .status-traits { margin: 0 0 8px; font-weight: 700; }
 .status-fields { display: grid; gap: 2px; margin-top: 4px; }
 .status-fields label { margin-top: 8px; }
 .status-for { margin-top: 8px; }
 .status-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
-.status-btns button { min-height: 52px; font-weight: 800; border-radius: 12px; }
+.status-btns button { min-height: 52px; min-width: 0; font-weight: 800; border-radius: 12px; }
+@media (max-width: 360px) {
+  .status-btns { grid-template-columns: 1fr; }
+}
+html.large-text .status-btns { grid-template-columns: 1fr; }
 @media (prefers-color-scheme: dark) {
   .status-good { background: #1c3d2a; }
   .status-ok { background: #3d3018; }
