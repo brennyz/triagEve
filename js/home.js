@@ -104,7 +104,10 @@ export function renderHome() {
       ${meetHtml}
     </article>
     <article class="card home-card">
-      <h2>Open taken</h2>
+      <div class="card-head">
+        <h2>Open taken</h2>
+        <button type="button" class="plus-btn" id="home-add-task" aria-label="Nieuwe taak">+</button>
+      </div>
       ${taskHtml}
     </article>
     <article class="card home-card">
@@ -121,6 +124,7 @@ export function renderHome() {
 
 document.addEventListener('click', (e) => {
   if (e.target.id === 'status-open') actions.openStatus?.();
+  if (e.target.closest('#home-add-task')) actions.openTask?.();
 });
 
 onAfterLoad(renderHome);

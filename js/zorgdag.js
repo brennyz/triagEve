@@ -297,6 +297,7 @@ document.addEventListener('click', (e) => {
 });
 
 actions.stayHtml = stayHtml;
+actions.shiftHtml = shiftHtml;
 actions.stayPhrase = stayPhrase;
 actions.mountStay = mountStay;
 actions.doseBlock = doseBlock;

@@ -461,16 +461,24 @@ a[href^="tel:"]:not(.emergency-call) {
 .item-meta { margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
 .badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: #ffe7b3; color: #7a5200; margin-left: 6px; }
 
-.cal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 10px 10px 12px; margin-bottom: 12px; }
+.meet-split { display: grid; gap: 12px; }
+.meet-main { min-width: 0; }
+.cal-side { order: -1; }
+.meet-tabs { margin-top: 0; }
+.meet-tabs .tab { min-height: 44px; font-size: 0.92rem; padding: 8px 4px; }
+#add-btn { width: 100%; margin: 8px 0; }
+#meet-search { width: 100%; margin: 0 0 8px; }
+.meet-main .section-title { margin-top: 0; }
+.cal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 8px 8px 10px; margin: 0; }
 .cal-head { display: flex; align-items: center; gap: 4px; }
-.cal-head h2 { flex: 1; margin: 0; text-align: center; font-size: 1.05rem; text-transform: capitalize; }
-.cal-head .ghost { min-width: 44px; font-size: 1.5rem; padding: 0; }
-.cal-jump { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+.cal-head h2 { flex: 1; margin: 0; text-align: center; font-size: 1rem; text-transform: capitalize; }
+.cal-head .ghost { min-width: 44px; min-height: 44px; font-size: 1.4rem; padding: 0; }
+.cal-head input[type="date"] { width: 9.2rem; flex: 0 0 auto; min-height: 44px; padding: 6px 8px; }
 .cal-dows, .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
-.cal-dows { margin-bottom: 4px; color: var(--muted); font-size: 0.72rem; font-weight: 700; text-align: center; }
+.cal-dows { margin: 6px 0 4px; color: var(--muted); font-size: 0.72rem; font-weight: 700; text-align: center; }
 .cal-day {
   min-height: 44px;
-  padding: 2px 0;
+  padding: 0;
   background: var(--bg);
   color: var(--text);
   border: 1px solid transparent;
@@ -480,6 +488,7 @@ a[href^="tel:"]:not(.emergency-call) {
   align-items: center;
   justify-content: center;
   font-weight: 700;
+  font-size: 0.95rem;
   line-height: 1.1;
 }
 .cal-day i { font-style: normal; font-size: 0.65rem; font-weight: 800; color: var(--primary); }
@@ -487,8 +496,31 @@ a[href^="tel:"]:not(.emergency-call) {
 .cal-day.on { background: var(--btn); color: var(--btn-text); }
 .cal-day.on i { color: inherit; }
 .cal-empty { min-height: 44px; }
-.meet-toolbar { display: grid; grid-template-columns: 1fr 1.3fr; gap: 8px; margin-bottom: 10px; }
-.meet-toolbar button { width: 100%; }
+@media (min-width: 800px) {
+  .meet-split { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
+  .cal-side { order: 0; position: sticky; top: 0; }
+}
+.chip-row { flex-wrap: nowrap; overflow-x: auto; margin-top: 8px; padding-bottom: 2px; }
+.chip-row .chip { flex: 0 0 auto; }
+.menu-label { margin: 16px 4px 0; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.contact-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; cursor: pointer; }
+.contact-copy { flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.contact-copy strong { font-size: 1rem; }
+.contact-copy span { color: var(--muted); font-size: 0.88rem; }
+.contact-phone { color: var(--text) !important; font-weight: 700; font-size: 1rem !important; }
+.contact-actions { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
+.contact-actions .ghost, .contact-actions .primary { min-height: 44px; padding: 8px 12px; }
+a.contact-call[href^="tel:"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--btn);
+  color: var(--btn-text);
+  text-decoration: none;
+}
 .who-add-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
 .who-add-row input { flex: 1; min-width: 0; }
 .who-add-row .primary { flex: 0 0 auto; }
@@ -525,6 +557,7 @@ dialog h2 { margin-top: 0; }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 @media (max-width: 420px) {
   .row { grid-template-columns: 1fr; }
+  #editor-form .row { grid-template-columns: 1fr 1fr; }
 }
 .checks { display: flex; gap: 16px; flex-wrap: wrap; }
 .checks label { font-weight: 500; margin: 0; display: flex; align-items: center; gap: 8px; min-height: 44px; }
@@ -636,6 +669,19 @@ dialog h2 { margin-top: 0; }
   .present-card.is-here { background: #1c3d2a; }
 }
 .home-card h2 { margin: 0 0 8px; font-size: 1rem; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.card-head h2 { margin: 0; }
+.plus-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--primary);
+  color: white;
+  font-size: 1.7rem;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
 .home-card .primary { margin-top: 8px; min-height: 44px; }
 .empty-inline { color: var(--muted); margin: 0; font-size: 0.95rem; }
 
@@ -803,6 +849,7 @@ dialog h2 { margin-top: 0; }
   margin: 0;
   padding: 8px 20px 16px;
   background: var(--card);
+  box-shadow: 0 -8px 16px rgba(62, 36, 18, 0.06);
 }
 .status-traits { margin: 0 0 8px; font-weight: 700; }
 .status-fields { display: grid; gap: 2px; margin-top: 4px; }

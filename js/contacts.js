@@ -47,14 +47,26 @@ export async function loadContacts() {
   renderHome();
 }
 
+function phoneLink(phone) {
+  const raw = String(phone || '').trim();
+  if (!raw) return '';
+  return `<a class="contact-call" href="tel:${esc(raw.replace(/\s+/g, ''))}">Bellen</a>`;
+}
+
 function familyCard(name, rank, label) {
   const c = familyOf(name);
-  const bits = [c?.phone, c?.email].filter(Boolean).join(' · ');
+  const phone = c?.phone ? String(c.phone) : '';
   return `
-    <button type="button" class="home-row family-card" data-family="${esc(name)}" data-rank="${rank}">
-      <strong>${esc(name)} · ${esc(label)}</strong>
-      <span>${esc(bits || 'Tik en vul het telefoonnummer in')}</span>
-    </button>`;
+    <article class="card contact-row" data-family="${esc(name)}" data-rank="${rank}">
+      <div class="contact-copy">
+        <strong>${esc(name)} · ${esc(label)}</strong>
+        <span class="${phone ? 'contact-phone' : ''}">${phone ? esc(phone) : 'Nog geen nummer'}</span>
+      </div>
+      <div class="contact-actions">
+        ${phoneLink(phone)}
+        <button type="button" class="${phone ? 'ghost' : 'primary'}">${phone ? 'Wijzigen' : 'Nummer invullen'}</button>
+      </div>
+    </article>`;
 }
 
 export function renderContacts() {
@@ -71,18 +83,16 @@ export function renderContacts() {
     .sort((a, b) => `${a.role || ''} ${a.name}`.localeCompare(`${b.role || ''} ${b.name}`, 'nl'));
   list.innerHTML = items.length
     ? items.map((c) => `
-      <article class="card item contact-card" data-id="${c.id}">
-        <div class="item-head">
-          <h3 class="item-title">${esc(c.name)}${c.is_emergency ? '<span class="badge danger-badge">nood</span>' : ''}</h3>
-          <span class="item-date">${esc(c.role || '')}</span>
+      <article class="card item contact-row" data-id="${c.id}">
+        <div class="contact-copy">
+          <strong>${esc(c.name)}${c.is_emergency ? '<span class="badge danger-badge">nood</span>' : ''}</strong>
+          <span>${esc([c.role, c.organisation].filter(Boolean).join(' · '))}</span>
+          <span class="${c.phone ? 'contact-phone' : ''}">${c.phone ? esc(c.phone) : 'Nog geen nummer'}</span>
         </div>
-        ${c.organisation ? `<p class="item-who">${esc(c.organisation)}</p>` : ''}
-        ${c.phone ? `<p><a href="tel:${esc(String(c.phone).replace(/\s+/g, ''))}">${esc(c.phone)}</a></p>` : ''}
-        ${c.email ? `<p class="item-who">${esc(c.email)}</p>` : ''}
-        ${c.address ? `<p class="item-who">${esc(c.address)}</p>` : ''}
-        ${c.hours ? `<p class="item-who">${esc(c.hours)}</p>` : ''}
-        ${c.notes ? `<p class="entry-body">${esc(c.notes)}</p>` : ''}
-        <div class="item-meta">Bewerkt door ${esc(c.updated_by || '?')} · ${esc(fmtStamp(c.updated_at))}</div>
+        <div class="contact-actions">
+          ${phoneLink(c.phone)}
+          <button type="button" class="${c.phone ? 'ghost' : 'primary'}">${c.phone ? 'Wijzigen' : 'Nummer invullen'}</button>
+        </div>
       </article>`).join('')
     : '<p class="empty">Nog geen zorgverlener. Tik op een rol hierboven.</p>';
   $$('#contact-list .item').forEach((el) => el.addEventListener('click', (e) => {
@@ -91,13 +101,27 @@ export function renderContacts() {
   }));
 }
 
+function syncPhoneNote() {
+  const note = $('#c-phone-note');
+  if (!note) return;
+  const role = $('#c-role')?.value || '';
+  const emergency = $('#c-emergency')?.checked;
+  const family = store.draftCircle === 'familie';
+  if (family) note.textContent = 'Dit nummer staat bij Eerst bellen op de noodkaart.';
+  else if (/huisarts|psychiater/i.test(role) || emergency) note.textContent = 'Dit nummer komt op de noodkaart.';
+  else note.textContent = 'Vink onderaan aan als dit nummer ook op de noodkaart moet.';
+}
+
 function openContact(id = null, preset = {}) {
   const c = id ? (store.contacts || []).find((x) => x.id === id) : null;
   store.editingContactId = c?.id || null;
   store.draftCircle = c?.circle || preset.circle || 'zorg';
   store.draftRank = c?.rank || preset.rank || null;
-  $('#contact-title').textContent = c ? 'Contact bewerken' : (preset.name ? preset.name : 'Nieuw contact');
+  const who = c?.name || preset.name || '';
   const familyName = c?.circle === 'familie' || preset.circle === 'familie';
+  $('#contact-title').textContent = familyName
+    ? `Nummer van ${who || 'ons'}`
+    : (c ? 'Contact wijzigen' : (who || 'Nieuw contact'));
   $('#c-name').value = c?.name || preset.name || '';
   $('#c-name').readOnly = familyName && FAMILY.some(([name]) => name === $('#c-name').value);
   fillRoles(c?.role || preset.role || (store.draftCircle === 'familie' ? 'Familie' : 'Huisarts'));
@@ -116,8 +140,11 @@ function openContact(id = null, preset = {}) {
     if (label) label.hidden = family;
   }
   $('#contact-delete').hidden = !c;
+  const emergencyLabel = document.querySelector('#contact-form .check-line');
+  if (emergencyLabel) emergencyLabel.hidden = family;
+  syncPhoneNote();
   $('#contact-editor').showModal();
-  if (!c?.phone) setTimeout(() => $('#c-phone')?.focus(), 40);
+  setTimeout(() => $('#c-phone')?.focus(), 40);
 }
 
 function rememberLocal(data) {
@@ -133,6 +160,7 @@ function rememberLocal(data) {
 }
 
 $('#family-cards')?.addEventListener('click', (e) => {
+  if (e.target.closest('a')) return;
   const btn = e.target.closest('[data-family]');
   if (!btn) return;
   const name = btn.dataset.family;
@@ -147,8 +175,9 @@ $('#role-chips')?.addEventListener('click', (e) => {
   openContact(null, { role: btn.dataset.role, circle: 'zorg' });
 });
 
-$('#add-contact')?.addEventListener('click', () => openContact(null, { circle: 'zorg', role: 'Overig' }));
 $('#add-contact-inline')?.addEventListener('click', () => openContact(null, { circle: 'zorg', role: 'Overig' }));
+$('#c-role')?.addEventListener('change', syncPhoneNote);
+$('#c-emergency')?.addEventListener('change', syncPhoneNote);
 $('#contact-cancel')?.addEventListener('click', () => {
   store.attachWho = false;
   $('#contact-editor').close();

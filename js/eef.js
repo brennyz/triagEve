@@ -54,7 +54,10 @@ export function renderNood() {
   const familyIds = new Set(family.map((c) => c.id));
   const huisarts = contacts.filter((c) => c.circle !== 'familie' && /huisarts/i.test(c.role || ''));
   const huisIds = new Set(huisarts.map((c) => c.id));
-  const nood = contacts.filter((c) => c.is_emergency && !familyIds.has(c.id) && !huisIds.has(c.id));
+  const psychiaterAll = contacts.filter((c) => c.circle !== 'familie' && /psychiater/i.test(c.role || ''));
+  const psychiater = psychiaterAll.filter((c) => c.phone);
+  const psychIds = new Set(psychiaterAll.map((c) => c.id));
+  const nood = contacts.filter((c) => c.is_emergency && !familyIds.has(c.id) && !huisIds.has(c.id) && !psychIds.has(c.id));
 
   const telBtn = (c, extra) => c.phone
     ? `<a class="emergency-call small" href="tel:${esc(String(c.phone).replace(/\s+/g, ''))}">${esc(c.name)}${extra ? ` · ${esc(extra)}` : ''} · ${esc(c.phone)}</a>`
@@ -65,6 +68,7 @@ export function renderNood() {
     <p class="stay-nood">${esc(stayPhrase(p))}</p>
     ${family.length ? `<h3>Eerst bellen</h3>${family.map((c) => telBtn(c, c.rank === 'hoofd' ? 'hoofd' : 'secundair')).join('')}` : ''}
     ${huisarts.length ? `<h3>Huisarts</h3>${huisarts.map((c) => telBtn(c)).join('')}` : '<p class="empty-inline">Nog geen huisarts-nummer.</p>'}
+    ${psychiater.length ? `<h3>Psychiater</h3>${psychiater.map((c) => telBtn(c)).join('')}` : ''}
     ${nood.length ? `<h3>Noodcontacten</h3>${nood.map((c) => telBtn(c)).join('')}` : ''}
     ${p.emergency ? `<div class="nood-block"><h3>In geval van nood</h3><p>${esc(p.emergency)}</p></div>` : ''}
     ${p.important ? `<div class="nood-block"><h3>Belangrijk om te weten</h3><p>${esc(p.important)}</p></div>` : ''}

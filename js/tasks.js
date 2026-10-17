@@ -207,6 +207,7 @@ $('#make-tasks')?.addEventListener('click', async (e) => {
 onLoad(loadTasks);
 onRealtime('triageve_tasks', () => loadTasks());
 actions.renderTasks = renderTasks;
+actions.openTask = openTask;
 actions.tasksFromActions = tasksFromActions;
 actions.parseActionLines = parseActionLines;
 actions.toggleTask = toggleTask;

@@ -32,7 +32,7 @@ const store = {
   diaryWho: '',
   diaryCategory: '',
   editingDiaryId: null,
-  meetFilter: 'day',
+  meetFilter: 'current',
   meetScope: 'day',
   meetDay: '',
   editingMeetingId: null,

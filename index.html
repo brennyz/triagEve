@@ -74,7 +74,7 @@
 
     <!-- Chat -->
     <div id="tab-chat" class="tab-panel" hidden>
-      <div id="messages" class="messages"></div>
+      <div id="messages" class="messages"><p class="empty">Nog geen berichten. Zeg hallo!</p></div>
       <form id="chat-form" class="composer">
         <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
         <button type="submit" class="primary send" title="Versturen" aria-label="Versturen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -84,11 +84,13 @@
     <!-- Dagboek -->
     <div id="tab-diary" class="tab-panel" hidden>
       <div class="scroll">
+        <input id="diary-search" type="search" placeholder="Zoeken op tekst, naam of categorie">
+        <p id="diary-search-note" class="item-meta"></p>
         <form id="diary-form" class="card diary-compose">
           <label for="diary-input" id="diary-label">Wat is er gebeurd?</label>
-          <textarea id="diary-input" rows="4" placeholder="Schrijf hier je dagboek..." maxlength="20000"></textarea>
+          <textarea id="diary-input" rows="3" placeholder="Schrijf hier je dagboek..." maxlength="20000"></textarea>
           <p class="chip-label">Categorie</p>
-          <div class="chips" id="diary-cat-chips">
+          <div class="chips chip-row" id="diary-cat-chips">
             <button type="button" class="chip active" data-cat="algemeen">Algemeen</button>
             <button type="button" class="chip" data-cat="gezondheid">Gezondheid</button>
             <button type="button" class="chip" data-cat="stemming">Stemming</button>
@@ -105,15 +107,13 @@
             <button type="submit" class="primary" id="diary-save">Opslaan</button>
           </div>
         </form>
-        <input id="diary-search" type="search" placeholder="Zoeken op tekst, naam of categorie">
-        <p id="diary-search-note" class="item-meta"></p>
-        <div class="chips" id="diary-chips">
+        <div class="chips chip-row" id="diary-chips">
           <button class="chip active" data-who="">Iedereen</button>
           <button class="chip" data-who="Jacky">Jacky</button>
           <button class="chip" data-who="Paps">Paps</button>
           <button class="chip" data-who="Bren">Bren</button>
         </div>
-        <div class="chips" id="diary-filter-cats">
+        <div class="chips chip-row" id="diary-filter-cats">
           <button class="chip active" data-cat="">Alle categorieën</button>
           <button class="chip" data-cat="algemeen">Algemeen</button>
           <button class="chip" data-cat="gezondheid">Gezondheid</button>
@@ -130,25 +130,29 @@
     <!-- Agenda -->
     <div id="tab-meet" class="tab-panel" hidden>
       <div class="scroll">
-        <div class="cal">
-          <div class="cal-head">
-            <button type="button" id="cal-prev" class="ghost" aria-label="Vorige maand">‹</button>
-            <h2 id="cal-title">Agenda</h2>
-            <button type="button" id="cal-next" class="ghost" aria-label="Volgende maand">›</button>
+        <div class="tabs" id="meet-tabs">
+          <button type="button" class="tab" data-meet="upcoming">Aankomend</button>
+          <button type="button" class="tab active" data-meet="current">Huidig</button>
+          <button type="button" class="tab" data-meet="past">Eerder</button>
+        </div>
+        <button type="button" id="add-btn" class="primary">Nieuwe afspraak</button>
+        <input id="meet-search" type="search" placeholder="Zoeken in de agenda">
+        <div class="meet-split">
+          <div class="meet-main">
+            <h2 id="meet-heading" class="section-title"></h2>
+            <div id="meet-list" class="list"></div>
           </div>
-          <label class="cal-jump">Ga naar een dag
-            <input id="day-jump" type="date" aria-label="Ga naar een dag">
-          </label>
-          <div class="cal-dows" aria-hidden="true"><span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span></div>
-          <div id="cal-grid" class="cal-grid"></div>
+          <aside class="cal cal-side">
+            <div class="cal-head">
+              <button type="button" id="cal-prev" class="ghost" aria-label="Vorige maand">‹</button>
+              <h2 id="cal-title">Agenda</h2>
+              <button type="button" id="cal-next" class="ghost" aria-label="Volgende maand">›</button>
+              <input id="day-jump" type="date" aria-label="Ga naar een dag">
+            </div>
+            <div class="cal-dows" aria-hidden="true"><span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span></div>
+            <div id="cal-grid" class="cal-grid"></div>
+          </aside>
         </div>
-        <div class="meet-toolbar">
-          <button type="button" id="meet-scope" class="ghost">Hele maand</button>
-          <button type="button" id="add-btn" class="primary">Nieuwe afspraak</button>
-        </div>
-        <input id="meet-search" type="search" placeholder="Zoeken in de agenda...">
-        <h2 id="meet-heading" class="section-title"></h2>
-        <div id="meet-list" class="list"></div>
       </div>
     </div>
 
@@ -156,10 +160,12 @@
     <div id="tab-more" class="tab-panel" hidden>
       <div class="scroll">
         <nav class="menu-list">
+          <p class="menu-label">Elke dag</p>
           <button type="button" class="menu-item" data-go="eef">Over Eef</button>
           <button type="button" class="menu-item" data-go="meds">Medicatie</button>
           <button type="button" class="menu-item" data-go="tasks">Taken</button>
           <button type="button" class="menu-item" data-go="contacts">Contacten</button>
+          <p class="menu-label">Papieren en extra</p>
           <button type="button" class="menu-item" data-go="print">PDF voor dienstverlener</button>
           <button type="button" class="menu-item" data-go="timeline">Tijdlijn uitdraaien</button>
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
@@ -224,16 +230,15 @@
     <div id="tab-contacts" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
-        <h2 class="section-title">Wij</h2>
-        <p class="muted">Paps is hoofdcontact. Jacky en Bren zijn secundair. Dit komt op de pdf.</p>
+        <h2 class="section-title">Onze nummers</h2>
+        <p class="muted">Paps is hoofdcontact. Jacky en Bren zijn secundair. Tik op Nummer invullen of Wijzigen. Met een nummer staan jullie op de noodkaart.</p>
         <div id="family-cards" class="list"></div>
         <h2 class="section-title">Zorgverleners</h2>
-        <p class="muted">Tik een rol, of voeg iemand toe en vul meteen het nummer in.</p>
+        <p class="muted">Tik een rol en vul het nummer in. Huisarts en psychiater komen daarna op de noodkaart. Wijzigen past een nummer aan.</p>
         <div class="chips" id="role-chips"></div>
         <button type="button" id="add-contact-inline" class="primary contact-add">Zorgverlener toevoegen</button>
         <div id="contact-list" class="list"></div>
       </div>
-      <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
     </div>
     <div id="tab-support" class="tab-panel" hidden>
       <div class="scroll">
@@ -487,6 +492,7 @@
       <input id="c-name" required>
       <label for="c-phone">Telefoon</label>
       <input id="c-phone" type="tel" autocomplete="tel" placeholder="06 …">
+      <p class="muted" id="c-phone-note"></p>
       <label for="c-role">Rol</label>
       <select id="c-role"></select>
       <label for="c-org">Praktijk of organisatie</label>
@@ -499,7 +505,7 @@
       <input id="c-hours" placeholder="Bijv. ma–vr 8–17">
       <label for="c-notes">Notitie</label>
       <textarea id="c-notes" rows="2"></textarea>
-      <label class="check-line"><input id="c-emergency" type="checkbox"> Noodcontact (bovenaan)</label>
+      <label class="check-line"><input id="c-emergency" type="checkbox"> Ook op de noodkaart</label>
       </div>
       <div class="dialog-buttons">
         <button type="button" id="contact-delete" class="danger" hidden>Verwijderen</button>
