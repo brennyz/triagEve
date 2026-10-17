@@ -30,11 +30,11 @@
       <form id="login-form">
         <label>Wie ben je?</label>
         <div class="user-picker">
-          <button type="button" class="user-btn" data-user="Jacky">Jacky</button>
-          <button type="button" class="user-btn" data-user="Paps">Paps</button>
-          <button type="button" class="user-btn" data-user="Bren">Bren</button>
+          <button type="button" class="user-btn" data-user="Jacky" aria-pressed="false">Jacky</button>
+          <button type="button" class="user-btn" data-user="Paps" aria-pressed="false">Paps</button>
+          <button type="button" class="user-btn" data-user="Bren" aria-pressed="false">Bren</button>
         </div>
-        <p class="muted login-hint">Je eigen wachtwoord. Wat je opslaat staat op deze naam.</p>
+        <p id="login-hint" class="muted login-hint">Kies je naam. Dit toestel onthoudt dat. Daarna alleen je eigen wachtwoord.</p>
         <label class="sr-only" for="login-email">Account</label>
         <input id="login-email" class="sr-only" name="username" type="email" autocomplete="username" value="" readonly tabindex="-1">
         <label for="password">Wachtwoord</label>
@@ -166,6 +166,7 @@
     <div id="tab-eef" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <div id="stay-on-eef"></div>
         <form id="eef-form" class="card">
           <label for="eef-summary">Situatie</label>
           <textarea id="eef-summary" rows="4" placeholder="Kort wat er aan de hand is" maxlength="20000"></textarea>
@@ -488,6 +489,21 @@
         <span class="spacer"></span>
         <button type="button" id="contact-cancel" class="ghost">Annuleren</button>
         <button type="submit" class="primary">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="stay-dialog">
+    <form id="stay-form" method="dialog">
+      <h2>Waar is Eef?</h2>
+      <div id="stay-choices" class="stay-choices"></div>
+      <label for="stay-new">Andere plek</label>
+      <div class="stay-add">
+        <input id="stay-new" maxlength="60" placeholder="Naam, bijvoorbeeld bij familie">
+        <button type="button" id="stay-add" class="primary">Toevoegen</button>
+      </div>
+      <div class="dialog-buttons">
+        <button type="button" id="stay-cancel" class="ghost">Sluiten</button>
       </div>
     </form>
   </dialog>

@@ -14,9 +14,11 @@ Dit is een korte uitleg. Moeilijke woorden laten we weg. Bij twijfel: pagina ver
 
 ## Inloggen
 
-1. Kies wie je bent: Jacky, Paps of Bren.
+1. De eerste keer kies je wie je bent: Jacky, Paps of Bren.
 2. Typ je eigen wachtwoord. Dat van de ander werkt niet.
 3. Tik op **Inloggen**.
+
+Dit toestel onthoudt je naam, ook na uitloggen. De volgende keer staat je naam al gekozen en typ je alleen je wachtwoord. Iemand anders op hetzelfde toestel tikt een andere naam.
 
 Bren geeft elk zijn eigen wachtwoord. Deel het niet in een openbare app-groep.
 
@@ -24,7 +26,7 @@ Bren geeft elk zijn eigen wachtwoord. Deel het niet in een openbare app-groep.
 
 Onderaan vijf knoppen:
 
-- **Home** – overzicht: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. **Waar** staat standaard op thuis (ook in bed, tuin, onderweg of bij de arts). **Bezig met** is rusten, eten, bezoek, lopen, toilet of slapen. Daarna alleen wat opviel, bijvoorbeeld een slechte nacht. Moment kan Nu zijn, of een afspraak van vandaag. Rode knop **Noodkaart** (112 en noodnummers).
+- **Home** – bovenaan waar Eef is: thuis, in Assen (opvang), of een plek die je zelf toevoegt. Het potloodje wijzigt dat. Verder: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. **Waar** staat standaard op thuis (ook in bed, tuin, onderweg of bij de arts). **Bezig met** is rusten, eten, bezoek, lopen, toilet of slapen. Daarna alleen wat opviel, bijvoorbeeld een slechte nacht. Moment kan Nu zijn, of een afspraak van vandaag. Rode knop **Noodkaart** (112 en noodnummers).
 - **Chat** – berichten naar elkaar, met tijd.
 - **Dagboek** – wat er gebeurd is. Je kunt een categorie kiezen en “Belangrijk” aanvinken. Schrijf feitelijk en respectvol.
 - **Agenda** – overleg, doktersafspraak, bezoek of overig. Tik op **Dag** om events van één dag te zien of te wijzigen. Vink aan wie erbij is: Jacky, Paps, Bren en de zorgverleners. **Iemand toevoegen** bewaart een nieuw contact en zet die meteen aan. Iedereen ziet de afspraak en kan hem aanpassen. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.

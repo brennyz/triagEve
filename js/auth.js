@@ -3,18 +3,37 @@ import {
   emailFor, nameForEmail, toast, actions,
 } from './core.js';
 
+function applyPerson(name) {
+  const known = USERS.includes(name) ? name : null;
+  store.selectedUser = known;
+  $$('.user-btn').forEach((btn) => {
+    const on = btn.dataset.user === known;
+    btn.classList.toggle('selected', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  const mail = $('#login-email');
+  if (mail) mail.value = known ? emailFor(known) : '';
+  const hint = $('#login-hint');
+  if (hint) {
+    hint.textContent = known
+      ? `${known}, alleen je wachtwoord. Iemand anders? Tik een andere naam.`
+      : 'Kies je naam. Dit toestel onthoudt dat. Daarna alleen je eigen wachtwoord.';
+  }
+}
+
 export function showLogin() {
   $('#app-view').hidden = true;
   $('#login-view').hidden = false;
   $('#password').value = '';
   $('#config-warning').hidden = configured;
+  applyPerson(localStorage.getItem(NAME_KEY));
+  if (store.selectedUser) $('#password').focus();
 }
 
 export async function doLogout(msg) {
   if (store.channel && db) await db.removeChannel(store.channel);
   store.channel = null;
   if (db) await db.auth.signOut();
-  localStorage.removeItem(NAME_KEY);
   localStorage.removeItem(ACTIVITY_KEY);
   store.me = null;
   showLogin();
@@ -34,10 +53,8 @@ export function idleExpired() {
 
 $$('.user-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
-    store.selectedUser = btn.dataset.user;
-    $$('.user-btn').forEach((b) => b.classList.toggle('selected', b === btn));
-    const mail = $('#login-email');
-    if (mail) mail.value = emailFor(store.selectedUser);
+    applyPerson(btn.dataset.user);
+    localStorage.setItem(NAME_KEY, btn.dataset.user);
     $('#password').focus();
   });
 });

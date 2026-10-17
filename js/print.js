@@ -2,6 +2,7 @@ import { $, store, esc, localDate, fmtStamp, actions, alive } from './core.js';
 import { KINDS } from './meet.js';
 import { STATUS, traitPhrase, lastCheckin } from './checkins.js';
 import { isZorg } from './contacts.js';
+import { stayPhrase } from './zorgdag.js';
 
 const FAMILY = [
   ['Paps', 'Hoofdcontactpersoon'],
@@ -79,6 +80,7 @@ export function renderPrint() {
     ${block('Contactpersonen', familyHtml)}
     ${block('Zorgverleners', zorgHtml)}
     ${block('Over Eef', `
+      <h3>Waar</h3><p>${esc(stayPhrase(p))}</p>
       <h3>Situatie</h3><p>${esc(p.summary || 'Nog niet ingevuld.')}</p>
       <h3>Belangrijk om te weten</h3><p>${esc(p.important || 'Nog niet ingevuld.')}</p>
       <h3>In geval van nood</h3><p>${esc(p.emergency || 'Nog niet ingevuld.')}</p>

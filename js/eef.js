@@ -2,6 +2,7 @@ import {
   $, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive,
 } from './core.js';
 import { renderHome } from './home.js';
+import { stayPhrase } from './zorgdag.js';
 
 export async function loadProfile() {
   if (!db) {
@@ -31,6 +32,7 @@ export function renderEef() {
     $('#w-rep').value = p.representative || '';
     $('#w-docs').value = p.documents || '';
   }
+  actions.mountStay?.();
   const meta = $('#eef-meta');
   if (meta) {
     meta.textContent = p.updated_at
@@ -60,6 +62,7 @@ export function renderNood() {
 
   el.innerHTML = `
     <a class="emergency-call" href="tel:112">112 bellen</a>
+    <p class="stay-nood">${esc(stayPhrase(p))}</p>
     ${family.length ? `<h3>Eerst bellen</h3>${family.map((c) => telBtn(c, c.rank === 'hoofd' ? 'hoofd' : 'secundair')).join('')}` : ''}
     ${huisarts.length ? `<h3>Huisarts</h3>${huisarts.map((c) => telBtn(c)).join('')}` : '<p class="empty-inline">Nog geen huisarts-nummer.</p>'}
     ${nood.length ? `<h3>Noodcontacten</h3>${nood.map((c) => telBtn(c)).join('')}` : ''}
@@ -80,7 +83,7 @@ $('#eef-form')?.addEventListener('submit', async (e) => {
     sharing: $('#w-sharing')?.value.trim() || '',
     representative: $('#w-rep')?.value.trim() || '',
     documents: $('#w-docs')?.value.trim() || '',
-    // Overdracht en aanwezigheid horen bij de dienst, niet bij dit formulier.
+    // Overdracht, aanwezigheid en plek horen bij de dienst, niet bij dit formulier.
     updated_by: store.me,
     updated_at: new Date().toISOString(),
   };

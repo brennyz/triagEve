@@ -98,6 +98,7 @@ export function renderHome() {
       <summary>We doen dit samen, mét Eef</summary>
       <p>Bespreek met haar wat hier komt te staan. De app is om samen te zorgen, niet om over haar heen te praten.</p>
     </details>
+    ${actions.stayHtml ? actions.stayHtml() : ''}
     ${statusCard()}
     ${actions.shiftHtml ? actions.shiftHtml() : ''}
     ${visitCard()}

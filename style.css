@@ -477,6 +477,48 @@ dialog h2 { margin-top: 0; }
 .home-card { margin-bottom: 12px; }
 .home-card .notice { margin: 0 0 8px; }
 .home-card textarea { margin-top: 8px; }
+.stay-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0 2px 0 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  min-height: 44px;
+}
+.stay-line span { font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+.pencil {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  padding: 0;
+  background: transparent;
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.pencil svg { width: 18px; height: 18px; display: block; }
+.stay-choices { display: grid; gap: 8px; }
+.stay-choice {
+  width: 100%;
+  text-align: left;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 700;
+}
+.stay-choice.on { background: var(--btn); color: var(--btn-text); border-color: var(--btn); }
+.stay-row { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.stay-row .stay-choice { flex: 1; min-width: 0; }
+.stay-add { display: flex; gap: 8px; align-items: center; }
+.stay-add input { flex: 1; min-width: 0; }
+.stay-add .primary { flex-shrink: 0; }
+.stay-nood { font-weight: 800; margin: 8px 0 12px; }
 .present-now { font-size: 1.2rem; font-weight: 800; margin: 0 0 8px; }
 .present-card.is-here { background: #e7f6ec; }
 .shift-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }

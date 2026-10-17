@@ -25,7 +25,9 @@ Het script vraagt alleen wat nog niet in `.env.local` staat. Typen is onzichtbaa
 | `TRIAGEVE_PAPS_PASSWORD` | eigen wachtwoord voor Paps |
 | `TRIAGEVE_BREN_PASSWORD` | eigen wachtwoord voor Bren |
 
-Het script zet de GitHub-secrets en wacht tot de database-workflow klaar is. Die workflow draait de migraties en maakt de drie accounts aan (`jacky@triageve.app`, `paps@triageve.app`, `bren@triageve.app`). Er is geen mailbox op die adressen, dus geen resetmail.
+Het script zet de GitHub-secrets en wacht tot de database-workflow klaar is. Die workflow draait de migraties en maakt de drie accounts aan (`jacky@triageve.app`, `paps@triageve.app`, `bren@triageve.app`). Er is geen mailbox op die adressen, dus geen resetmail. Accounts niet zelf aanmaken in het Supabase-dashboard.
+
+De run van 2026-10-17 (39022802051) stopte vóór de accounts, omdat GitHub het IPv6-adres van de database niet kan bereiken. De secrets staan. Niet opnieuw invullen. De volgende push van de workflow zet de verbinding via de pooler (IPv4) en draait dezelfde workflow opnieuw.
 
 Bestaat een account al, dan blijft het oude wachtwoord staan. Wijzigen doe je in Supabase → Authentication → Users → die persoon.
 
@@ -51,3 +53,4 @@ Regio: …
 - Migratie `20261017200000_accounts.sql` staat in de repo en draait mee met het script hierboven.
 - Status-dropdowns (slechte nacht, waar, en waarmee bezig) zitten in de app. Migraties `20261017210000_statusmoment.sql` en `20261017220000_statusplek.sql` draaien mee met hetzelfde commando. Geen extra stap.
 - Contacten (praktijk, adres, bereikbaarheid, hoofd en secundair) zitten in de app. Migratie `20261017230000_contacten.sql` draait mee met hetzelfde commando. Geen extra stap. Daarna in de app: telefoon van Paps, Jacky en Bren, en de zorgverleners.
+- Waar Eef is (thuis, Assen, of een zelfgemaakte plek) zit in de app. Migratie `20261017240000_plek.sql` draait mee met hetzelfde commando. Geen extra stap.

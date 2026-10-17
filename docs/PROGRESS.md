@@ -4,7 +4,7 @@ Bijwerken na elke fase: `- [x] Fase N – naam (JJJJ-MM-DD) – korte notitie`.
 Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 
 - [x] Fase 0 – Basis: PWA, login, chat, dagboek, overleg, migraties, workflows, GitHub Pages live (2026-10-16) – nog niet getest tegen echte Supabase
-- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-16) – URL en publishable key staan in `config.js` (project `slddtxwbufoadmvdconz`). GitHub-secrets zijn nog leeg, dus de migraties draaien nog niet. Signups blijven AAN. Hoorspel koppelt Bren later zelf los. Geen wachtwoord of service-key in de repo.
+- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-17) – URL en publishable key staan in `config.js` (project `slddtxwbufoadmvdconz`). De zeven GitHub-secrets staan. Run 39022802051 faalde op IPv6, vóór migraties en vóór de accounts. De workflow gaat via de pooler (IPv4). Accounts niet zelf aanmaken. Signups blijven AAN. Hoorspel koppelt Bren later zelf los. Geen wachtwoord of service-key in de repo.
 - [x] Fase 2 – Beveiliging en privacy (2026-10-16) – auto-uitloggen na 14 dagen, robots/noindex, CSP (`*.supabase.co` tot project-ref bekend is), Privacy-sectie in README. Regio DB onbekend (wacht op fase 1). Wachtwoordkeuze nog open. E2e-inlog wacht op secrets; `node --check` + login-scherm + robots.txt gecontroleerd. `git log` bevat geen echte service-keys (wel het woord `service_role` in docs/vendor).
 - [x] Fase 3 – Navigatie + Home-overzicht (2026-10-16) – nav Home/Chat/Dagboek/Agenda/Meer, Home met lege-teksten, Noodkaart-knop (112). Code gesplitst naar `js/*.js`. Getest zonder Supabase via `?preview=1` in Chrome 390×844 en desktop; geen JS-fouten. Live e2e wacht op fase 1.
 - [x] Fase 4 – Agenda: afspraken + overleggen (+ .ics) (2026-10-16) – soort/locatie, label per soort, `.ics` download. Bestaande items = overleg. Migratie `20261016190000_agenda.sql` (wacht op secrets). Getest in preview: labels, locatie, ICS-inhoud, formulierlabel bij afspraak.
@@ -39,6 +39,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017210000_statusmoment.sql` – status aan een moment en kenmerken zoals slechte nacht. Wacht op hetzelfde pc-commando in `docs/PC.md`.
 - [ ] `20261017220000_statusplek.sql` – waar en waarmee bezig. Zelfde pc-commando, geen extra stap.
 - [ ] `20261017230000_contacten.sql` – praktijk, adres en bereikbaarheid bij een contact, plus hoofd of secundair. Zelfde pc-commando, geen extra stap.
+- [ ] `20261017240000_plek.sql` – waar Eef verblijft, plus zelf aangemaakte plekken. Zelfde pc-commando, geen extra stap.
 
 ## Open vragen voor Bren
 - GitHub secrets en de drie wachtwoorden: zie `docs/PC.md`. Zonder die secrets blijft inloggen dicht.
@@ -53,6 +54,8 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Het inlogscherm onthoudt de laatst gekozen naam op dit toestel. Na uitloggen alleen het eigen wachtwoord. Een andere naam blijft één tik. Geen wijziging in Supabase.
+- 2026-10-17: Bovenaan Home staat waar Eef is. Thuis en Assen (opvang) staan vast. Een andere plek voeg je zelf toe. Het potloodje wijzigt het. Dezelfde regel staat op de noodkaart, bij Over Eef en op de pdf. Migratie `20261017240000_plek.sql`.
 - 2026-10-17: Contacten hebben een rol (huisarts, psychiater, psycholoog, …), praktijk, adres en bereikbaarheid. Een afspraak kan meerdere mensen hebben, ook een zorgverlener. De pdf voor een dienstverlener zet Paps als hoofdcontact en Jacky en Bren als secundair. Migratie `20261017230000_contacten.sql`.
 - 2026-10-17: Bij Goed, Matig of Zorgelijk hoort ook waar (thuis, bed, tuin, onderweg, arts) en waarmee Eef bezig was. Migratie `20261017220000_statusplek.sql`.
 - 2026-10-17: Status doorgeven blijft één tik. Dropdowns voor nacht, stemming, eten, pijn en helderheid, en een moment (nu of een afspraak van vandaag). Migratie `20261017210000_statusmoment.sql`.

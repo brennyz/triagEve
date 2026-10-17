@@ -188,7 +188,110 @@ document.addEventListener('click', (e) => {
   if (e.target.id === 'handover-save') saveHandover();
 }, true);
 
-actions.shiftHtml = shiftHtml;
+const BUILTIN_STAYS = [
+  ['thuis', 'Eef is thuis', 'Thuis'],
+  ['assen', 'Eef is in Assen (opvang)', 'Assen (opvang)'],
+];
+
+export function stayPhrase(profile = store.profile || {}) {
+  const stay = String(profile.stay || '').trim();
+  const known = BUILTIN_STAYS.find(([key]) => key === stay);
+  if (known) return known[1];
+  if (stay) return `Eef is in ${stay}`;
+  return 'Plek nog niet gekozen';
+}
+
+function extraPlaces(profile = store.profile || {}) {
+  const list = Array.isArray(profile.places) ? profile.places : [];
+  return [...new Set(list.map((name) => String(name || '').trim()).filter(Boolean))];
+}
+
+function stayButton() {
+  return `<button type="button" class="pencil stay-edit" aria-label="Plek van Eef wijzigen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5V20h3.5L18.8 8.7l-3.5-3.5L4 16.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.8 6.7l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>`;
+}
+
+function stayHtml() {
+  return `<div class="stay-line"><span>${esc(stayPhrase())}</span>${stayButton()}</div>`;
+}
+
+function renderStayChoices() {
+  const box = $('#stay-choices');
+  if (!box) return;
+  const current = String(store.profile?.stay || '');
+  const builtins = BUILTIN_STAYS.map(([key, , label]) => `
+    <button type="button" class="stay-choice${current === key ? ' on' : ''}" data-stay="${key}">${esc(label)}</button>`).join('');
+  const custom = extraPlaces().map((name) => `
+    <div class="stay-row">
+      <button type="button" class="stay-choice${current === name ? ' on' : ''}" data-stay="${esc(name)}">${esc(name)}</button>
+      <button type="button" class="ghost stay-remove" data-stay-remove="${esc(name)}" aria-label="${esc(name)} weghalen">Weg</button>
+    </div>`).join('');
+  box.innerHTML = builtins + custom;
+}
+
+function openStay() {
+  renderStayChoices();
+  if ($('#stay-new')) $('#stay-new').value = '';
+  $('#stay-dialog')?.showModal();
+}
+
+async function chooseStay(key, places) {
+  const patch = {
+    stay: key || null,
+    stay_by: store.me,
+    stay_at: new Date().toISOString(),
+  };
+  if (places) patch.places = places;
+  await saveProfileBits(patch);
+  $('#stay-dialog')?.close();
+}
+
+function mountStay() {
+  const spot = $('#stay-on-eef');
+  if (spot) spot.innerHTML = stayHtml();
+}
+
+$('#stay-choices')?.addEventListener('click', (e) => {
+  const remove = e.target.closest('[data-stay-remove]');
+  if (remove) {
+    const name = remove.dataset.stayRemove;
+    const places = extraPlaces().filter((item) => item !== name);
+    const current = String(store.profile?.stay || '');
+    if (current === name) chooseStay(null, places);
+    else saveProfileBits({ places }).then(() => renderStayChoices());
+    return;
+  }
+  const choice = e.target.closest('[data-stay]');
+  if (choice) chooseStay(choice.dataset.stay);
+});
+
+$('#stay-add')?.addEventListener('click', () => {
+  const name = $('#stay-new')?.value.trim() || '';
+  if (!name || name.length > 60) return;
+  const reserved = ['thuis', 'assen', 'assen (opvang)'];
+  if (reserved.includes(name.toLowerCase())) {
+    chooseStay(name.toLowerCase() === 'thuis' ? 'thuis' : 'assen');
+    return;
+  }
+  const places = extraPlaces();
+  const existing = places.find((item) => item.toLowerCase() === name.toLowerCase());
+  const saved = existing || name;
+  if (!existing) places.push(saved);
+  chooseStay(saved, places);
+});
+
+$('#stay-cancel')?.addEventListener('click', () => $('#stay-dialog')?.close());
+$('#stay-form')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  $('#stay-add')?.click();
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.stay-edit')) openStay();
+});
+
+actions.stayHtml = stayHtml;
+actions.stayPhrase = stayPhrase;
+actions.mountStay = mountStay;
 actions.doseBlock = doseBlock;
 actions.loadDoses = loadDoses;
 
