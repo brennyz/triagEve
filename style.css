@@ -361,6 +361,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
   box-shadow: var(--shadow);
 }
 .bubble-author { font-size: 0.78rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+.mine .bubble-author { color: inherit; opacity: 0.8; }
 .bubble-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .bubble-time { font-size: 0.75rem; text-align: right; margin-top: 2px; color: var(--muted); }
 .mine .bubble-time { color: var(--btn-text); }

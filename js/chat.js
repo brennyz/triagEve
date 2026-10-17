@@ -38,22 +38,18 @@ export function renderChat() {
     return;
   }
   let lastDay = null;
-  let lastAuthor = null;
   el.innerHTML = store.messages.map((m) => {
     let html = '';
     const day = localDate(new Date(m.created_at));
     if (day !== lastDay) {
       html += `<div class="day-sep"><span>${esc(dayLabel(m.created_at))}</span></div>`;
       lastDay = day;
-      lastAuthor = null;
     }
     const mine = m.author === store.me;
-    const showName = !mine && m.author !== lastAuthor;
-    lastAuthor = m.author;
     html += `
       <div class="bubble-row ${mine ? 'mine' : ''}">
         <div class="bubble" title="${esc(fmtStamp(m.created_at))}">
-          ${showName ? `<div class="bubble-author">${esc(m.author)}</div>` : ''}
+          <div class="bubble-author">${esc(m.author || 'Onbekend')}</div>
           <div class="bubble-body">${esc(m.body)}</div>
           <div class="bubble-time">${esc(fmtTime(m.created_at))}${m.pending ? ' · wacht op verbinding' : ''}</div>
         </div>
