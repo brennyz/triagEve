@@ -27,7 +27,7 @@ geregeld wordt. Grok: vink in fase 16 elk punt af of schrijf erachter waarom nie
 - [x] Duidelijke tekst: de app vervangt geen arts, alarmknop of 112 (handleiding + Medicatie + status).
 - [x] Medicatie-overzicht met wie wat wanneer wijzigde (fase 6 + 13).
 - [x] Inname vandaag, wie er is, en een briefje voor de volgende (2026-10-17). Iedereen ziet het en kan het wijzigen.
-- [x] Overzicht voor de arts printen (fase 9).
+- [x] Overzicht voor de dienstverlener printen (fase 9, uitgebreid 2026-10-17). Paps is hoofdcontact, Jacky en Bren secundair. Nummers vult de familie in.
 
 ## D. Betrouwbaarheid
 - [x] Database wakker houden (gratis Supabase pauzeert na 7 dagen) – `keepalive.yml`.

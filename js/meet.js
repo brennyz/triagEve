@@ -14,7 +14,7 @@ export const KINDS = {
 
 export async function loadMeetings() {
   if (!db) {
-    store.meetings = [];
+    store.meetings = store.meetings || [];
     renderMeetings();
     return;
   }
@@ -173,6 +173,28 @@ export function renderMeetings() {
   }));
 }
 
+function whoNames(selected) {
+  const names = ['Jacky', 'Paps', 'Bren'];
+  for (const c of alive(store.contacts)) {
+    if (!c.name || c.circle === 'familie' || names.includes(c.name)) continue;
+    if (actions.isZorg?.(c) || c.circle === 'zorg') names.push(c.name);
+  }
+  for (const name of selected || []) {
+    if (name && !names.includes(name)) names.push(name);
+  }
+  return names;
+}
+
+export function refreshWho(extraName, preset) {
+  const box = $('#who-box');
+  if (!box) return;
+  const selected = preset || [...$$('#who-box input[name="who"]:checked')].map((cb) => cb.value);
+  if (extraName && !selected.includes(extraName)) selected.push(extraName);
+  box.innerHTML = whoNames(selected).map((name) => `
+    <label><input type="checkbox" name="who" value="${esc(name)}"> ${esc(name)}</label>`).join('');
+  $$('#who-box input[name="who"]').forEach((cb) => { cb.checked = selected.includes(cb.value); });
+}
+
 function openEditor(id = null) {
   store.editingMeetingId = id;
   const m = id ? store.meetings.find((x) => x.id === id) : null;
@@ -185,8 +207,7 @@ function openEditor(id = null) {
   $('#f-agenda').value = m?.agenda || '';
   $('#f-happened').value = m?.happened || '';
   $('#f-actions').value = m?.actions || '';
-  const who = m?.who || [store.me];
-  $$('input[name="who"]').forEach((cb) => { cb.checked = who.includes(cb.value); });
+  refreshWho(null, m?.who || [store.me]);
   $('#delete-btn').hidden = !m;
   syncHappenedLabel();
   $('#editor').showModal();
@@ -238,6 +259,10 @@ $('#day-jump')?.addEventListener('change', () => {
   renderMeetings();
 });
 
+$('#who-add')?.addEventListener('click', () => {
+  store.attachWho = true;
+  actions.openContact?.(null, { circle: 'zorg', role: 'Overig' });
+});
 $('#add-btn').addEventListener('click', () => openEditor());
 $('#cancel-btn').addEventListener('click', () => $('#editor').close());
 $('#f-kind').addEventListener('change', syncHappenedLabel);
@@ -253,12 +278,24 @@ $('#editor-form').addEventListener('submit', async (e) => {
     agenda: $('#f-agenda').value.trim(),
     happened: $('#f-happened').value.trim(),
     actions: $('#f-actions').value.trim(),
-    who: [...$$('input[name="who"]:checked')].map((cb) => cb.value),
+    who: [...$$('#who-box input[name="who"]:checked')].map((cb) => cb.value),
     updated_by: store.me,
     updated_at: new Date().toISOString(),
   };
   if (!data.title || !data.date) return;
-  if (!db) return;
+  if (!db) {
+    store.meetings = store.meetings || [];
+    if (store.editingMeetingId) {
+      const i = store.meetings.findIndex((m) => m.id === store.editingMeetingId);
+      if (i >= 0) store.meetings[i] = { ...store.meetings[i], ...data };
+    } else {
+      store.meetings.push({ ...data, id: Date.now(), created_by: store.me, deleted_at: null });
+    }
+    $('#editor').close();
+    renderMeetings();
+    renderHome();
+    return;
+  }
 
   const { error } = store.editingMeetingId
     ? await db.from('triageve_meetings').update(data).eq('id', store.editingMeetingId)
@@ -281,6 +318,7 @@ $('#delete-btn').addEventListener('click', async () => {
 onLoad(loadMeetings);
 onRealtime('triageve_meetings', () => loadMeetings());
 actions.renderMeetings = renderMeetings;
+actions.refreshWho = refreshWho;
 actions.openEditor = openEditor;
 actions.formatMeetingDate = formatMeetingDate;
 actions.meetingToIcs = meetingToIcs;

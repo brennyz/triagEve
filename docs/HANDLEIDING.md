@@ -27,9 +27,11 @@ Onderaan vijf knoppen:
 - **Home** – overzicht: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. **Waar** staat standaard op thuis (ook in bed, tuin, onderweg of bij de arts). **Bezig met** is rusten, eten, bezoek, lopen, toilet of slapen. Daarna alleen wat opviel, bijvoorbeeld een slechte nacht. Moment kan Nu zijn, of een afspraak van vandaag. Rode knop **Noodkaart** (112 en noodnummers).
 - **Chat** – berichten naar elkaar, met tijd.
 - **Dagboek** – wat er gebeurd is. Je kunt een categorie kiezen en “Belangrijk” aanvinken. Schrijf feitelijk en respectvol.
-- **Agenda** – overleg, doktersafspraak, bezoek of overig. Tik op **Dag** om events van één dag te zien of te wijzigen. Iedereen ziet ze en kan ze aanpassen. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.
+- **Agenda** – overleg, doktersafspraak, bezoek of overig. Tik op **Dag** om events van één dag te zien of te wijzigen. Vink aan wie erbij is: Jacky, Paps, Bren en de zorgverleners. **Iemand toevoegen** bewaart een nieuw contact en zet die meteen aan. Iedereen ziet de afspraak en kan hem aanpassen. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.
+- **Contacten** (onder Meer) – bovenaan jullie drie. Paps is hoofdcontact, Jacky en Bren zijn secundair. Vul telefoon, e-mail en adres in. Daaronder de zorgverleners: tik op Huisarts, Psychiater, Psycholoog, Apotheek of Thuiszorg en vul praktijk, telefoon, adres en wanneer ze bereikbaar zijn.
+- **PDF voor dienstverlener** (onder Meer) – één tik, daarna **Printen / Opslaan als PDF**. Paps staat als hoofdcontact, Jacky en Bren als secundair, plus de zorgverleners, medicatie, status en komende afspraken.
 - **Tijdlijn uitdraaien** (onder Meer) – dagboek, agenda en status op een rij. Daarna **Printen / Opslaan als PDF**.
-- **Meer** – Over Eef, medicatie, taken, contacten, overzicht voor de arts, wensen van Eef, metingen, meldingen, prullenbak, downloaden, grote tekst, hulp & steun, uitloggen.
+- **Meer** – Over Eef, medicatie, taken, contacten, pdf voor de dienstverlener, wensen van Eef, metingen, meldingen, prullenbak, downloaden, grote tekst, hulp & steun, uitloggen.
 
 We doen dit **samen, mét Eef**. Bespreek met haar wat erin komt.
 

@@ -38,6 +38,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017200000_accounts.sql` – alleen Jacky, Paps en Bren. Wacht op GitHub secrets.
 - [ ] `20261017210000_statusmoment.sql` – status aan een moment en kenmerken zoals slechte nacht. Wacht op hetzelfde pc-commando in `docs/PC.md`.
 - [ ] `20261017220000_statusplek.sql` – waar en waarmee bezig. Zelfde pc-commando, geen extra stap.
+- [ ] `20261017230000_contacten.sql` – praktijk, adres en bereikbaarheid bij een contact, plus hoofd of secundair. Zelfde pc-commando, geen extra stap.
 
 ## Open vragen voor Bren
 - GitHub secrets en de drie wachtwoorden: zie `docs/PC.md`. Zonder die secrets blijft inloggen dicht.
@@ -52,6 +53,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Contacten hebben een rol (huisarts, psychiater, psycholoog, …), praktijk, adres en bereikbaarheid. Een afspraak kan meerdere mensen hebben, ook een zorgverlener. De pdf voor een dienstverlener zet Paps als hoofdcontact en Jacky en Bren als secundair. Migratie `20261017230000_contacten.sql`.
 - 2026-10-17: Bij Goed, Matig of Zorgelijk hoort ook waar (thuis, bed, tuin, onderweg, arts) en waarmee Eef bezig was. Migratie `20261017220000_statusplek.sql`.
 - 2026-10-17: Status doorgeven blijft één tik. Dropdowns voor nacht, stemming, eten, pijn en helderheid, en een moment (nu of een afspraak van vandaag). Migratie `20261017210000_statusmoment.sql`.
 - 2026-10-17: Aparte login voor Jacky, Paps en Bren. De naam bij een wijziging komt uit het account. Wat Bren nog op de pc draait staat in `docs/PC.md`. Migratie `20261017200000_accounts.sql`.

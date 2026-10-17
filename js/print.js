@@ -1,6 +1,13 @@
 import { $, store, esc, localDate, fmtStamp, actions, alive } from './core.js';
 import { KINDS } from './meet.js';
-import { STATUS, traitPhrase } from './checkins.js';
+import { STATUS, traitPhrase, lastCheckin } from './checkins.js';
+import { isZorg } from './contacts.js';
+
+const FAMILY = [
+  ['Paps', 'Hoofdcontactpersoon'],
+  ['Jacky', 'Secundair contactpersoon'],
+  ['Bren', 'Secundair contactpersoon'],
+];
 
 const SLOT_LABEL = { ochtend: 'ochtend', middag: 'middag', avond: 'avond', nacht: 'nacht' };
 
@@ -33,7 +40,11 @@ export function renderPrint() {
   const meets = alive(store.meetings)
     .filter((m) => m.date >= today)
     .sort((a, b) => `${a.date}T${a.time || '00:00'}`.localeCompare(`${b.date}T${b.time || '00:00'}`));
-  const contacts = alive(store.contacts).filter((c) => c.is_emergency || /huisarts/i.test(c.role || ''));
+  const people = alive(store.contacts);
+  const zorg = people.filter(isZorg)
+    .sort((a, b) => `${a.role || ''} ${a.name}`.localeCompare(`${b.role || ''} ${b.name}`, 'nl'));
+  const last = lastCheckin();
+  const wishes = [p.wishes, p.sharing].filter(Boolean);
 
   const block = (title, inner) => `
     <section class="print-section">
@@ -41,16 +52,39 @@ export function renderPrint() {
       ${inner}
     </section>`;
 
+  const familyHtml = FAMILY.map(([name, label]) => {
+    const c = people.find((x) => x.circle === 'familie' && x.name === name);
+    const bits = [c?.phone, c?.email, c?.address].filter(Boolean);
+    const extra = bits.length ? bits.join(' · ') : 'Telefoon en e-mail nog niet ingevuld.';
+    return `<p><strong>${esc(name)}</strong> · ${esc(label)}<br>${esc(extra)}</p>`;
+  }).join('');
+
+  const zorgHtml = zorg.length
+    ? `<ul>${zorg.map((c) => {
+      const bits = [c.organisation, c.phone, c.email, c.address, c.hours].filter(Boolean);
+      return `<li><strong>${esc(c.name)}</strong>${c.role ? ` · ${esc(c.role)}` : ''}${c.is_emergency ? ' · nood' : ''}${bits.length ? `<br>${esc(bits.join(' · '))}` : ''}${c.notes ? `<br>${esc(c.notes)}` : ''}</li>`;
+    }).join('')}</ul>`
+    : '<p>Nog geen zorgverlener ingevuld.</p>';
+
+  const statusHtml = last
+    ? `<p><strong>${esc(STATUS[last.status]?.label || last.status || '')}</strong> · ${esc(last.author || '')} · ${esc(fmtStamp(last.created_at))}<br>${esc([traitPhrase(last), last.note].filter(Boolean).join(' · ') || 'Geen extra kenmerken.')}</p>`
+    : '<p>Nog geen status doorgegeven.</p>';
+
   el.innerHTML = `
     <header class="print-head">
-      <h1>triagEve – overzicht voor de arts</h1>
+      <h1>triagEve – overzicht voor de dienstverlener</h1>
       <p>Gemaakt op ${esc(fmtStamp(new Date().toISOString()))} door ${esc(store.me || '')}</p>
+      <p>Paps is hoofdcontactpersoon. Jacky en Bren zijn secundair.</p>
     </header>
+    ${block('Contactpersonen', familyHtml)}
+    ${block('Zorgverleners', zorgHtml)}
     ${block('Over Eef', `
       <h3>Situatie</h3><p>${esc(p.summary || 'Nog niet ingevuld.')}</p>
       <h3>Belangrijk om te weten</h3><p>${esc(p.important || 'Nog niet ingevuld.')}</p>
       <h3>In geval van nood</h3><p>${esc(p.emergency || 'Nog niet ingevuld.')}</p>
+      ${wishes.length ? `<h3>Wat Eef zelf belangrijk vindt</h3><p>${esc(wishes.join('\n\n'))}</p>` : ''}
     `)}
+    ${block('Laatste status', statusHtml)}
     ${block('Huidige medicatie', meds.length
       ? `<ul>${meds.map((m) => `<li><strong>${esc(m.name)}</strong> ${esc([m.dose, m.schedule, m.reason].filter(Boolean).join(' · '))}</li>`).join('')}</ul>`
       : '<p>Geen huidige medicatie in de app.</p>')}
@@ -59,11 +93,8 @@ export function renderPrint() {
       ? diary.map((d) => `<p><strong>${esc(d.author)}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}</p>`).join('')
       : '<p>Geen belangrijke stukjes in de laatste 30 dagen.</p>')}
     ${block('Komende afspraken', meets.length
-      ? `<ul>${meets.map((m) => `<li>${esc(m.date)}${m.time ? ` ${esc(m.time)}` : ''} · ${esc(m.title)}${m.location ? ` (${esc(m.location)})` : ''}</li>`).join('')}</ul>`
+      ? `<ul>${meets.map((m) => `<li>${esc(m.date)}${m.time ? ` ${esc(m.time)}` : ''} · ${esc(m.title)}${m.location ? ` (${esc(m.location)})` : ''}${m.who?.length ? ` · met ${esc(m.who.join(', '))}` : ''}</li>`).join('')}</ul>`
       : '<p>Geen komende afspraken.</p>')}
-    ${block('Noodcontacten', contacts.length
-      ? `<ul>${contacts.map((c) => `<li>${esc(c.name)}${c.role ? ` (${esc(c.role)})` : ''}${c.phone ? ` · ${esc(c.phone)}` : ''}</li>`).join('')}</ul>`
-      : '<p>Nog geen noodcontacten.</p>')}
   `;
 }
 

@@ -149,7 +149,7 @@
           <button type="button" class="menu-item" data-go="meds">Medicatie</button>
           <button type="button" class="menu-item" data-go="tasks">Taken</button>
           <button type="button" class="menu-item" data-go="contacts">Contacten</button>
-          <button type="button" class="menu-item" data-go="print">Overzicht voor arts</button>
+          <button type="button" class="menu-item" data-go="print">PDF voor dienstverlener</button>
           <button type="button" class="menu-item" data-go="timeline">Tijdlijn uitdraaien</button>
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
           <button type="button" class="menu-item" data-go="measure">Metingen</button>
@@ -212,6 +212,11 @@
     <div id="tab-contacts" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <h2 class="section-title">Wij</h2>
+        <p class="muted">Paps is hoofdcontact. Jacky en Bren zijn secundair. Dit komt op de pdf.</p>
+        <div id="family-cards" class="list"></div>
+        <h2 class="section-title">Zorgverleners</h2>
+        <div class="chips" id="role-chips"></div>
         <div id="contact-list" class="list"></div>
       </div>
       <button id="add-contact" class="fab" title="Nieuw contact" aria-label="Nieuw contact">+</button>
@@ -298,6 +303,7 @@
     <div id="tab-print" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
+        <p class="muted no-print">Eén tik. Paps staat als hoofdcontact, Jacky en Bren als secundair, plus de zorgverleners en de zorg van nu.</p>
         <button type="button" id="print-btn" class="primary no-print">Printen / Opslaan als PDF</button>
         <div id="print-root"></div>
       </div>
@@ -357,11 +363,8 @@
       <input id="f-location" placeholder="Bijv. huisartsenpraktijk">
 
       <label>Wie zijn erbij?</label>
-      <div class="checks">
-        <label><input type="checkbox" name="who" value="Jacky"> Jacky</label>
-        <label><input type="checkbox" name="who" value="Paps"> Paps</label>
-        <label><input type="checkbox" name="who" value="Bren"> Bren</label>
-      </div>
+      <div class="checks" id="who-box"></div>
+      <button type="button" id="who-add" class="ghost">Iemand toevoegen</button>
 
       <label for="f-agenda">Agenda / bespreekpunten</label>
       <textarea id="f-agenda" rows="3" placeholder="Wat willen we bespreken?"></textarea>
@@ -459,11 +462,17 @@
       <label for="c-name">Naam *</label>
       <input id="c-name" required>
       <label for="c-role">Rol</label>
-      <input id="c-role" placeholder="Huisarts, specialist, thuiszorg, buren…">
+      <select id="c-role"></select>
+      <label for="c-org">Praktijk of organisatie</label>
+      <input id="c-org" placeholder="Naam van de praktijk">
       <label for="c-phone">Telefoon</label>
-      <input id="c-phone" type="tel">
+      <input id="c-phone" type="tel" autocomplete="tel">
       <label for="c-email">E-mail</label>
-      <input id="c-email" type="email">
+      <input id="c-email" type="email" autocomplete="email">
+      <label for="c-address">Adres</label>
+      <input id="c-address" placeholder="Straat en plaats">
+      <label for="c-hours">Wanneer bereikbaar</label>
+      <input id="c-hours" placeholder="Bijv. ma–vr 8–17">
       <label for="c-notes">Notitie</label>
       <textarea id="c-notes" rows="2"></textarea>
       <label class="check-line"><input id="c-emergency" type="checkbox"> Noodcontact (bovenaan)</label>

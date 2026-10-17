@@ -12,7 +12,7 @@ const TITLES = {
   tasks: 'Taken',
   contacts: 'Contacten',
   nood: 'Noodkaart',
-  print: 'Overzicht voor arts',
+  print: 'PDF voor dienstverlener',
   timeline: 'Tijdlijn',
   wishes: 'Wensen van Eef',
   measure: 'Metingen',
