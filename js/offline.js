@@ -77,7 +77,7 @@ $('#large-text-btn')?.addEventListener('click', () => {
 const TABLES = [
   'triageve_messages', 'triageve_diary', 'triageve_meetings', 'triageve_profile',
   'triageve_contacts', 'triageve_medications', 'triageve_tasks', 'triageve_checkins',
-  'triageve_measurements',
+  'triageve_measurements', 'triageve_doses',
 ];
 
 async function exportAll() {
@@ -94,6 +94,7 @@ async function exportAll() {
       tasks: store.tasks,
       checkins: store.checkins,
       measurements: store.measurements,
+      doses: store.doses,
     }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);

@@ -92,6 +92,7 @@ export function renderHome() {
       <p>Bespreek met haar wat hier komt te staan. De app is om samen te zorgen, niet om over haar heen te praten.</p>
     </details>
     ${statusCard()}
+    ${actions.shiftHtml ? actions.shiftHtml() : ''}
     ${visitCard()}
     <button type="button" class="emergency-btn" data-go="nood" aria-label="Noodkaart">Noodkaart</button>
     <article class="card home-card">

@@ -46,6 +46,7 @@ function card(m) {
       </div>
       ${m.reason ? `<p class="item-who">${esc(m.reason)}</p>` : ''}
       ${m.notes ? `<p class="entry-body">${esc(m.notes)}</p>` : ''}
+      ${m.active ? (actions.doseBlock?.(m) || '') : ''}
       <div class="item-meta">${m.active ? 'Gestart' : 'Gestopt'} ${esc(m.active ? (m.started_on || '') : (m.stopped_on || ''))}
         · ${esc(m.updated_by || '?')} · ${esc(fmtStamp(m.updated_at))}</div>
     </article>`;

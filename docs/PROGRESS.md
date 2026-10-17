@@ -34,6 +34,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] `20261017160000_push.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017170000_history.sql` – klaar in repo; wacht op GitHub secrets
 - [ ] `20261017180000_grants.sql` – lees/schrijfrechten voor het ingelogde team; anon blijft buiten. Lokaal gedraaid, op Supabase nog niet.
+- [ ] `20261017190000_zorgdag.sql` – inname per dagdeel, overdracht en aanwezigheid op het profiel. Wacht op GitHub secrets.
 
 ## Open vragen voor Bren
 - GitHub secrets (5 waarden, zie `SETUP.md`). De publishable key staat al in `config.js`. Zonder de secrets blijft inloggen dicht.
@@ -48,6 +49,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Home toont wie er bij Eef is, een briefje voor de volgende, en de inname van vandaag. Op Medicatie vink je ochtend, middag, avond of nacht aan, met naam en tijd. Iedereen kan dat wijzigen. Migratie `20261017190000_zorgdag.sql`.
 - 2026-10-17: Agenda heeft een dagweergave. Events zijn dezelfde gedeelde afspraken: iedereen ziet ze en kan ze wijzigen, met een waarschuwing op het scherm en in het formulier. Meer → Tijdlijn uitdraaien maakt een print/pdf van dagboek, agenda en status. Geen nieuwe tabel.
 - 2026-10-16: Geen Supabase access token of DB-wachtwoord gevonden in andere projectmappen.
   Service-role keys daar horen bij andere projecten (`ajoitfflpmjemrrmbsew`, `vdkwomhhqvdpnkfvhvkz`).

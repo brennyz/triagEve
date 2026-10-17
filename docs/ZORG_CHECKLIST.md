@@ -26,6 +26,7 @@ geregeld wordt. Grok: vink in fase 16 elk punt af of schrijf erachter waarom nie
 - [x] Dagstatus met "zorgelijk" (fase 11) + push naar anderen (fase 12, wacht op VAPID).
 - [x] Duidelijke tekst: de app vervangt geen arts, alarmknop of 112 (handleiding + Medicatie + status).
 - [x] Medicatie-overzicht met wie wat wanneer wijzigde (fase 6 + 13).
+- [x] Inname vandaag, wie er is, en een briefje voor de volgende (2026-10-17). Iedereen ziet het en kan het wijzigen.
 - [x] Overzicht voor de arts printen (fase 9).
 
 ## D. Betrouwbaarheid

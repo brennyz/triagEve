@@ -29,6 +29,7 @@ const store = {
   contacts: [],
   editingContactId: null,
   medications: [],
+  doses: [],
   editingMedId: null,
   tasks: [],
   editingTaskId: null,

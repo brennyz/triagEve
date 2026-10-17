@@ -7,11 +7,11 @@ en live gesynchroniseerd. Te openen in Chrome en te installeren als app (PWA).
 
 ## Onderdelen
 
-- **Home** – overzicht, status van Eef, bezoek deze week, noodkaart
+- **Home** – overzicht, status van Eef, wie er is, overdracht, inname vandaag, bezoek, noodkaart
 - **Chat** – live berichten met tijd en datum
 - **Dagboek** – wat is er gebeurd, met categorie en “belangrijk”
 - **Agenda** – overleg, doktersafspraak, bezoek; verslag; `.ics` naar je eigen agenda
-- **Meer** – Over Eef, medicatie, taken, contacten, overzicht voor de arts, wensen van Eef, metingen, meldingen, prullenbak, export, grote tekst, hulp & steun
+- **Meer** – Over Eef, medicatie met inname vandaag, taken, contacten, overzicht voor de arts, wensen van Eef, metingen, meldingen, prullenbak, export, grote tekst, hulp & steun
 
 Handleiding voor Jacky en Paps: [`docs/HANDLEIDING.md`](docs/HANDLEIDING.md).
 

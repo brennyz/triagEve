@@ -42,8 +42,8 @@ Ververs één keer als je een oude pagina ziet.
 ## Bekende beperkingen
 
 - **Eén gedeelde login.** "Wie ben je?" wordt bewaard bij chat, dagboek, agenda,
-  metingen en in de geschiedenis. Iedereen kan elke naam kiezen. Dat is geen
-  apart account en geen bewijs wie er geklikt heeft.
+  metingen, inname, overdracht, aanwezigheid en in de geschiedenis. Iedereen kan
+  elke naam kiezen. Dat is geen apart account en geen bewijs wie er geklikt heeft.
 - **Noodkaart.** Op het inlogscherm staat alleen 112. Huisarts en bijzonderheden
   staan pas na inloggen, zodat ze niet in de openbare site staan.
 - **Geen geheimen of medische gegevens in git.** De anon-sleutel in `config.js`

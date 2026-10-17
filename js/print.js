@@ -2,6 +2,20 @@ import { $, store, esc, localDate, fmtStamp, actions, alive } from './core.js';
 import { KINDS } from './meet.js';
 import { STATUS } from './checkins.js';
 
+const SLOT_LABEL = { ochtend: 'ochtend', middag: 'middag', avond: 'avond', nacht: 'nacht' };
+
+function intakeToday(meds) {
+  const doses = (store.doses || []).filter((d) => d.day === localDate());
+  if (!meds.length) return '<p>Geen huidige medicatie in de app.</p>';
+  return `<ul>${meds.map((m) => {
+    const mine = doses.filter((d) => Number(d.medication_id) === Number(m.id));
+    const given = mine.length
+      ? mine.map((d) => `${SLOT_LABEL[d.slot] || d.slot} (${d.author || '?'})`).join(', ')
+      : 'nog niet aangevinkt';
+    return `<li><strong>${esc(m.name)}</strong> · ${esc(given)}</li>`;
+  }).join('')}</ul>`;
+}
+
 function daysAgo(n) {
   const d = new Date();
   d.setDate(d.getDate() - n);
@@ -40,6 +54,7 @@ export function renderPrint() {
     ${block('Huidige medicatie', meds.length
       ? `<ul>${meds.map((m) => `<li><strong>${esc(m.name)}</strong> ${esc([m.dose, m.schedule, m.reason].filter(Boolean).join(' · '))}</li>`).join('')}</ul>`
       : '<p>Geen huidige medicatie in de app.</p>')}
+    ${block('Inname vandaag', intakeToday(meds))}
     ${block('Belangrijke dagboekstukjes (30 dagen)', diary.length
       ? diary.map((d) => `<p><strong>${esc(d.author)}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}</p>`).join('')
       : '<p>Geen belangrijke stukjes in de laatste 30 dagen.</p>')}

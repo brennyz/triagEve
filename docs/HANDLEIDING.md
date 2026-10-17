@@ -24,7 +24,7 @@ Deel het wachtwoord niet in een openbare app-groep.
 
 Onderaan vijf knoppen:
 
-- **Home** – overzicht: hoe het met Eef gaat, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Rode knop **Noodkaart** (112 en noodnummers).
+- **Home** – overzicht: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Rode knop **Noodkaart** (112 en noodnummers).
 - **Chat** – berichten naar elkaar, met tijd.
 - **Dagboek** – wat er gebeurd is. Je kunt een categorie kiezen en “Belangrijk” aanvinken. Schrijf feitelijk en respectvol.
 - **Agenda** – overleg, doktersafspraak, bezoek of overig. Tik op **Dag** om events van één dag te zien of te wijzigen. Iedereen ziet ze en kan ze aanpassen. **Zet in mijn agenda** maakt een bestandje voor je telefoon-agenda.
@@ -45,3 +45,9 @@ De app is **geen vervanging van de arts, een alarmknop of 112**. Bij acuut gevaa
 ## Medicatie
 
 Het lijstje is voor de familie. Volg altijd wat de arts of apotheek zegt.
+
+Vink **ochtend, middag, avond of nacht** aan als je het gegeven hebt. De ander ziet wie het was en hoe laat, zodat het niet nog een keer gegeven wordt. Tik nog eens om het vinkje weg te halen.
+
+## Wie is er, en voor de volgende
+
+Op Home: **Ik ben er** en **Ik ga weg**. Staat er al iemand, dan vraagt de app het eerst. **Voor de volgende** is één briefje met wie het opsloeg en wanneer. Iedereen ziet het en kan het wijzigen.

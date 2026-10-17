@@ -72,6 +72,7 @@ $('#eef-form')?.addEventListener('submit', async (e) => {
     sharing: $('#w-sharing')?.value.trim() || '',
     representative: $('#w-rep')?.value.trim() || '',
     documents: $('#w-docs')?.value.trim() || '',
+    // Overdracht en aanwezigheid horen bij de dienst, niet bij dit formulier.
     updated_by: store.me,
     updated_at: new Date().toISOString(),
   };

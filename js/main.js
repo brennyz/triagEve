@@ -10,6 +10,7 @@ import './home.js';
 import './eef.js';
 import './contacts.js';
 import './meds.js';
+import './zorgdag.js';
 import './tasks.js';
 import './print.js';
 import './checkins.js';

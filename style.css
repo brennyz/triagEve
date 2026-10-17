@@ -471,6 +471,20 @@ dialog h2 { margin-top: 0; }
 .emergency-btn:hover { filter: brightness(0.95); }
 
 .home-card { margin-bottom: 12px; }
+.home-card .notice { margin: 0 0 8px; }
+.home-card textarea { margin-top: 8px; }
+.present-now { font-size: 1.2rem; font-weight: 800; margin: 0 0 8px; }
+.present-card.is-here { background: #e7f6ec; }
+.shift-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.shift-actions button { width: 100%; font-weight: 700; }
+.shift-actions button:disabled { cursor: default; }
+#present-leave { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.dose-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.dose-slot { background: var(--bg); color: var(--text); border: 1px solid var(--border); font-weight: 700; }
+.dose-slot.on { background: var(--btn); color: var(--btn-text); border-color: var(--btn); }
+@media (prefers-color-scheme: dark) {
+  .present-card.is-here { background: #1c3d2a; }
+}
 .home-card h2 { margin: 0 0 8px; font-size: 1rem; }
 .home-card .primary { margin-top: 8px; min-height: 44px; }
 .empty-inline { color: var(--muted); margin: 0; font-size: 0.95rem; }
