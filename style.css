@@ -615,6 +615,10 @@ dialog h2 { margin-top: 0; }
 .status-ok { background: #fff0d8; }
 .status-bad { background: #ffe1e4; }
 .status-none { background: var(--bg); }
+#contact-editor[open] { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+#contact-form { display: flex; flex-direction: column; min-height: 0; max-height: 92dvh; }
+.contact-scroll { overflow: auto; min-height: 0; padding: 20px 20px 8px; }
+#contact-form .dialog-buttons { flex: 0 0 auto; margin: 0; padding: 8px 20px 16px; background: var(--card); }
 #status-dialog { display: flex; flex-direction: column; overflow: hidden; }
 #status-form { display: flex; flex-direction: column; min-height: 0; max-height: calc(92dvh - 40px); }
 .status-scroll { overflow: auto; min-height: 0; }

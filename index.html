@@ -458,6 +458,7 @@
 
   <dialog id="contact-editor">
     <form id="contact-form" method="dialog">
+      <div class="contact-scroll">
       <h2 id="contact-title">Nieuw contact</h2>
       <label for="c-name">Naam *</label>
       <input id="c-name" required>
@@ -476,6 +477,7 @@
       <label for="c-notes">Notitie</label>
       <textarea id="c-notes" rows="2"></textarea>
       <label class="check-line"><input id="c-emergency" type="checkbox"> Noodcontact (bovenaan)</label>
+      </div>
       <div class="dialog-buttons">
         <button type="button" id="contact-delete" class="danger" hidden>Verwijderen</button>
         <span class="spacer"></span>
