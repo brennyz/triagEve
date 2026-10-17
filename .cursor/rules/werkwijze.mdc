@@ -1,0 +1,41 @@
+---
+description: Werkwijze triagEve - pullen, cache-versie in sw.js, pushen, cloud en lokaal door elkaar
+alwaysApply: true
+---
+
+# Werkwijze: cloud en lokaal
+
+Bren werkt soms lokaal (Windows, `C:\Users\bzijf\TriageEve`) en soms via een cloud-agent.
+Beide pushen naar dezelfde repo. Daarom:
+
+## Begin van elke sessie
+
+```sh
+git config core.hooksPath .githooks   # zet de sw.js-hook aan, mag elke keer
+git fetch origin && git pull --ff-only origin main
+```
+
+Lukt `--ff-only` niet, dan eerst `git status` bekijken. Nooit force-pushen, nooit `--no-verify`.
+
+## Cache-versie in sw.js (automatisch)
+
+- Verandert `index.html`, `style.css`, `config.js`, `manifest.webmanifest`, `js/`, `icons/` of `vendor/`,
+  dan moet `const CACHE = 'triageve-vN'` in `sw.js` omhoog. Anders blijven telefoons de oude versie tonen.
+- `.githooks/pre-commit` doet dat zelf bij de commit (`scripts/bump-sw.sh`). Niet ook nog met de hand verhogen.
+- Zie je bij de commit geen regel `sw.js: cache triageve-vN -> ...` terwijl er app-bestanden in zitten,
+  dan staat de hook uit: `git config core.hooksPath .githooks` en opnieuw committen.
+- Handmatig, als het echt moet: `sh scripts/bump-sw.sh --force` (Windows: Git Bash).
+- Vangnet: workflow `sw-check.yml` wordt rood als een push app-bestanden wijzigt zonder nieuwe CACHE.
+
+## Pushen
+
+- Een push naar `main` zet de site binnen ongeveer een minuut live (GitHub Pages).
+- Cloud-agent: werk op `cursor/<naam>-2097`, push die tak, maak een PR en spoel `main` daarna fast-forward door.
+- Lokaal: committen op `main` en `git push origin main` mag.
+- Database: alleen een nieuw bestand in `supabase/migrations/`, nooit een bestaand bestand aanpassen.
+  Een push daarvan start `supabase.yml` (migraties via de pooler in eu-west-1).
+
+## Geheimen
+
+- `.env.local` en `env.local` staan alleen op de pc van Bren en worden door `.gitignore` genegeerd.
+- Een cloud-agent heeft die bestanden niet. Nooit om wachtwoorden vragen om ze in te vullen of te committen.

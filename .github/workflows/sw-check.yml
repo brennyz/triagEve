@@ -1,0 +1,52 @@
+name: Cache-versie
+
+# Vangnet: app-bestanden gewijzigd zonder nieuwe CACHE in sw.js? Dan wordt deze check rood.
+# Normaal regelt .githooks/pre-commit dat al bij de commit.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'style.css'
+      - 'config.js'
+      - 'manifest.webmanifest'
+      - 'js/**'
+      - 'icons/**'
+      - 'vendor/**'
+      - 'sw.js'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'style.css'
+      - 'config.js'
+      - 'manifest.webmanifest'
+      - 'js/**'
+      - 'icons/**'
+      - 'vendor/**'
+      - 'sw.js'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Is CACHE in sw.js verhoogd?
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "Geen vergelijkingspunt, check overgeslagen."; exit 0
+          fi
+          app=$(git diff --name-only "$BASE" HEAD | grep -E '^(index\.html|style\.css|config\.js|manifest\.webmanifest|js/|icons/|vendor/)' || true)
+          if [ -z "$app" ]; then echo "Geen app-bestanden gewijzigd."; exit 0; fi
+          if git diff "$BASE" HEAD -- sw.js | grep -qE '^\+const CACHE'; then
+            echo "CACHE is verhoogd."; exit 0
+          fi
+          echo "::error file=sw.js,line=1::App-bestanden gewijzigd zonder nieuwe CACHE. Verhoog triageve-vN in sw.js (of: sh scripts/bump-sw.sh --force), commit en push."
+          exit 1

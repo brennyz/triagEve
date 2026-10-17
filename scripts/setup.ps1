@@ -22,6 +22,9 @@ function Read-Secret([string]$Prompt) {
   finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
 }
 
+& git -C $root config core.hooksPath .githooks
+Write-Host 'Git-hook aan: sw.js krijgt bij elke app-commit een nieuwe cache-versie.'
+
 if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
   throw 'GitHub CLI (gh) ontbreekt. Installeer die en log in met: gh auth login'
 }

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Aanzetten (eenmalig per checkout): git config core.hooksPath .githooks
+exec sh "$(git rev-parse --show-toplevel)/scripts/bump-sw.sh"

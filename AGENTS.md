@@ -15,6 +15,9 @@ Lees voor je iets doet:
 2. `docs/PROGRESS.md` – welke fases af zijn. Werk altijd aan de eerste open fase.
 3. `docs/ZORG_CHECKLIST.md` – waar een zorg-app aan moet voldoen.
 
+Werkwijze (pullen, cache-versie in `sw.js`, pushen, cloud en lokaal): `.cursor/rules/werkwijze.mdc`.
+Begin elke sessie met `git config core.hooksPath .githooks` en `git pull --ff-only origin main`.
+
 Belangrijkste regels:
 - De repo is **openbaar**. Nooit wachtwoorden, keys of tokens committen (alleen in `.env.local`).
 - Geen echte gegevens over Eef in de repo of testdata.
