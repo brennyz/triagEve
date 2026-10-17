@@ -4,7 +4,7 @@ Bijwerken na elke fase: `- [x] Fase N – naam (JJJJ-MM-DD) – korte notitie`.
 Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 
 - [x] Fase 0 – Basis: PWA, login, chat, dagboek, overleg, migraties, workflows, GitHub Pages live (2026-10-16) – nog niet getest tegen echte Supabase
-- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-17) – URL en publishable key staan in `config.js` (project `slddtxwbufoadmvdconz`). De zeven GitHub-secrets staan. Run 39022802051 faalde op IPv6. Run 39023366966 faalde daarna op het token: `database_pooling_config_read` ontbreekt (Connection Pooling → Read). Accounts niet zelf aanmaken. Signups blijven AAN. Hoorspel koppelt Bren later zelf los. Geen wachtwoord of service-key in de repo.
+- [ ] Fase 1 – Supabase automatisch koppelen en end-to-end werkend (open, 2026-10-17) – URL en publishable key staan in `config.js` (project `slddtxwbufoadmvdconz`). Run 39024235511 groen: alle migraties via de session pooler (eu-west-1, IPv4, zonder access token), drie accounts aangemaakt, anon-lektest OK. Live gecheckt: fout wachtwoord geeft "Wachtwoord klopt niet". Open: Bren logt één keer in met de echte wachtwoorden. Edge function wacht op een geldig access token. Signups blijven AAN. Hoorspel koppelt Bren later zelf los. Geen wachtwoord of service-key in de repo.
 - [x] Fase 2 – Beveiliging en privacy (2026-10-16) – auto-uitloggen na 14 dagen, robots/noindex, CSP (`*.supabase.co` tot project-ref bekend is), Privacy-sectie in README. Regio DB onbekend (wacht op fase 1). Wachtwoordkeuze nog open. E2e-inlog wacht op secrets; `node --check` + login-scherm + robots.txt gecontroleerd. `git log` bevat geen echte service-keys (wel het woord `service_role` in docs/vendor).
 - [x] Fase 3 – Navigatie + Home-overzicht (2026-10-16) – nav Home/Chat/Dagboek/Agenda/Meer, Home met lege-teksten, Noodkaart-knop (112). Code gesplitst naar `js/*.js`. Getest zonder Supabase via `?preview=1` in Chrome 390×844 en desktop; geen JS-fouten. Live e2e wacht op fase 1.
 - [x] Fase 4 – Agenda: afspraken + overleggen (+ .ics) (2026-10-16) – soort/locatie, label per soort, `.ics` download. Bestaande items = overleg. Migratie `20261016190000_agenda.sql` (wacht op secrets). Getest in preview: labels, locatie, ICS-inhoud, formulierlabel bij afspraak.
@@ -23,23 +23,23 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - [ ] Fase 17 – E-mail naar bzijffers@gmail.com en stoppen
 
 ## Database-migraties (uitgevoerd door workflow `supabase.yml`)
-- [ ] `20261016180000_init.sql` – goedgekeurd om te draaien; wacht op GitHub secrets (fase 1)
-- [ ] `20261016190000_agenda.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017100000_eef.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017110000_medicatie.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017120000_taken.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017130000_dagboek.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017140000_wensen.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017150000_checkins.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017160000_push.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017170000_history.sql` – klaar in repo; wacht op GitHub secrets
-- [ ] `20261017180000_grants.sql` – lees/schrijfrechten voor het ingelogde team; anon blijft buiten. Lokaal gedraaid, op Supabase nog niet.
-- [ ] `20261017190000_zorgdag.sql` – inname per dagdeel, overdracht en aanwezigheid op het profiel. Wacht op GitHub secrets.
-- [ ] `20261017200000_accounts.sql` – alleen Jacky, Paps en Bren. Wacht op GitHub secrets.
-- [ ] `20261017210000_statusmoment.sql` – status aan een moment en kenmerken zoals slechte nacht. Wacht op hetzelfde pc-commando in `docs/PC.md`.
-- [ ] `20261017220000_statusplek.sql` – waar en waarmee bezig. Zelfde pc-commando, geen extra stap.
-- [ ] `20261017230000_contacten.sql` – praktijk, adres en bereikbaarheid bij een contact, plus hoofd of secundair. Zelfde pc-commando, geen extra stap.
-- [ ] `20261017240000_plek.sql` – waar Eef verblijft, plus zelf aangemaakte plekken. Zelfde pc-commando, geen extra stap.
+- [x] `20261016180000_init.sql` – goedgekeurd om te draaien; wacht op GitHub secrets (fase 1)
+- [x] `20261016190000_agenda.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017100000_eef.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017110000_medicatie.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017120000_taken.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017130000_dagboek.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017140000_wensen.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017150000_checkins.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017160000_push.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017170000_history.sql` – klaar in repo; wacht op GitHub secrets
+- [x] `20261017180000_grants.sql` – lees/schrijfrechten voor het ingelogde team; anon blijft buiten. Lokaal gedraaid, op Supabase nog niet.
+- [x] `20261017190000_zorgdag.sql` – inname per dagdeel, overdracht en aanwezigheid op het profiel. Wacht op GitHub secrets.
+- [x] `20261017200000_accounts.sql` – alleen Jacky, Paps en Bren. Wacht op GitHub secrets.
+- [x] `20261017210000_statusmoment.sql` – status aan een moment en kenmerken zoals slechte nacht. Wacht op hetzelfde pc-commando in `docs/PC.md`.
+- [x] `20261017220000_statusplek.sql` – waar en waarmee bezig. Zelfde pc-commando, geen extra stap.
+- [x] `20261017230000_contacten.sql` – praktijk, adres en bereikbaarheid bij een contact, plus hoofd of secundair. Zelfde pc-commando, geen extra stap.
+- [x] `20261017240000_plek.sql` – waar Eef verblijft, plus zelf aangemaakte plekken. Zelfde pc-commando, geen extra stap.
 
 ## Open vragen voor Bren
 - GitHub secrets en de drie wachtwoorden: zie `docs/PC.md`. Zonder die secrets blijft inloggen dicht.
@@ -54,6 +54,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-17: Alle migraties staan op Supabase (run 39024235511). Regio eu-west-1. Inlogscherm strakker: tegels met beginletter, "Hoi Jacky", wachtwoord tonen. Rondgang langs alle 18 schermen op 390 en 320: geen fouten. Oracle: geen gegevens gevonden, dus niets verhuisd.
 - 2026-10-17: Workflow 39023366966 bereikt de pooler niet: het token mist Connection Pooling → Read. Verder geen dashboard-werk. Zie `docs/PC.md`.
 - 2026-10-17: Het inlogscherm onthoudt de laatst gekozen naam op dit toestel. Na uitloggen alleen het eigen wachtwoord. Een andere naam blijft één tik. Geen wijziging in Supabase.
 - 2026-10-17: Bovenaan Home staat waar Eef is. Thuis en Assen (opvang) staan vast. Een andere plek voeg je zelf toe. Het potloodje wijzigt het. Dezelfde regel staat op de noodkaart, bij Over Eef en op de pdf. Migratie `20261017240000_plek.sql`.
