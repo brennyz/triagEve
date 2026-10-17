@@ -6,14 +6,24 @@ Bijgewerkt: 2026-10-17.
 
 ## Nu, één keer
 
-- [ ] GitHub CLI staat erop en `gh auth login` is gedaan.
-- [ ] In de map van triagEve:
+- [x] GitHub CLI staat erop en `gh auth login` is gedaan.
+- [x] `scripts/setup.ps1` heeft de secrets gezet. De wachtwoorden niet opnieuw invoeren.
+
+## Nog één keer: het token mag de pooler lezen
+
+Run 39023366966 stopte omdat het token de database-pooler niet mag lezen. De wachtwoorden en de andere secrets zijn goed. Geen gebruikers aanmaken in het Supabase-dashboard.
+
+1. supabase.com → avatar → Account → Access Tokens.
+2. Een bestaand token kun je meestal niet aanpassen. Maak een nieuw token voor project triagEve, met dezelfde rechten als de vorige keer, plus **Connection Pooling → Read**. Geen Full access.
+3. In `.env.local` alleen de regel `SUPABASE_ACCESS_TOKEN=` vervangen. De rest laten staan.
+4. In de map van triagEve:
 
 ```powershell
+git pull origin main
 powershell -ExecutionPolicy Bypass -File scripts/setup.ps1
 ```
 
-Het script vraagt alleen wat nog niet in `.env.local` staat. Typen is onzichtbaar.
+Het script vraagt alleen wat nog niet in `.env.local` staat. Typen is onzichtbaar. Daarna start het de workflow opnieuw.
 
 | Naam | Waarde |
 |---|---|
@@ -27,7 +37,7 @@ Het script vraagt alleen wat nog niet in `.env.local` staat. Typen is onzichtbaa
 
 Het script zet de GitHub-secrets en wacht tot de database-workflow klaar is. Die workflow draait de migraties en maakt de drie accounts aan (`jacky@triageve.app`, `paps@triageve.app`, `bren@triageve.app`). Er is geen mailbox op die adressen, dus geen resetmail. Accounts niet zelf aanmaken in het Supabase-dashboard.
 
-De run van 2026-10-17 (39022802051) stopte vóór de accounts, omdat GitHub het IPv6-adres van de database niet kan bereiken. De secrets staan. Niet opnieuw invullen. De volgende push van de workflow zet de verbinding via de pooler (IPv4) en draait dezelfde workflow opnieuw.
+Run 39022802051 stopte op IPv6, vóór de accounts. De workflow gaat nu via de pooler. Daarvoor moet het token Connection Pooling mogen lezen, zoals hierboven. Niet opnieuw alle wachtwoorden invullen.
 
 Bestaat een account al, dan blijft het oude wachtwoord staan. Wijzigen doe je in Supabase → Authentication → Users → die persoon.
 
