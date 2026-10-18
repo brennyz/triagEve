@@ -1,5 +1,6 @@
 import {
   $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, localDate, USERS, toast, softDelete,
+  personName, samePerson,
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
@@ -26,35 +27,33 @@ export function renderTasks() {
   if (!list) return;
   const f = store.taskFilter || 'all';
   let items = alive(store.tasks);
-  if (f === 'mine') items = items.filter((t) => t.assignee === store.me);
+  if (f === 'mine') items = items.filter((t) => samePerson(t.assignee, store.me));
   if (f === 'done') items = items.filter((t) => t.done);
   items = [...items].sort((a, b) => Number(a.done) - Number(b.done) || String(a.due_date || '9999').localeCompare(String(b.due_date || '9999')));
 
   const counts = USERS.map((u) => {
-    const n = alive(store.tasks).filter((t) => !t.done && t.assignee === u).length;
+    const n = alive(store.tasks).filter((t) => !t.done && samePerson(t.assignee, u)).length;
     return `${u}: ${n}`;
   });
 
   const tally = $('#task-tally');
   if (tally) tally.textContent = `Open: ${counts.join(' · ')}`;
 
-  if (!items.length) {
-    list.innerHTML = '<p class="empty">Geen taken in deze lijst.</p>';
-    return;
-  }
-  list.innerHTML = items.map((t) => `
+  if (!items.length) list.innerHTML = '<p class="empty">Geen taken in deze lijst.</p>';
+  else list.innerHTML = items.map((t) => `
     <article class="card task-card ${t.done ? 'done' : ''} ${isLate(t) ? 'late' : ''}" data-id="${t.id}">
       <label class="task-check">
         <input type="checkbox" data-toggle="${t.id}" ${t.done ? 'checked' : ''}>
         <span>
           <strong>${esc(t.title)}</strong>
-          <span class="item-who">${esc(t.assignee || 'niemand')}${t.due_date ? ` · ${esc(t.due_date)}` : ''}${isLate(t) ? ' · te laat' : ''}</span>
-          ${t.done ? `<span class="item-meta">Klaar door ${esc(t.done_by || '?')} · ${esc(fmtStamp(t.done_at))}</span>` : ''}
+          <span class="item-who">${esc(personName(t.assignee) || 'niemand')}${t.due_date ? ` · ${esc(t.due_date)}` : ''}${isLate(t) ? ' · te laat' : ''}</span>
+          ${t.done ? `<span class="item-meta">Klaar door ${esc(personName(t.done_by) || '?')} · ${esc(fmtStamp(t.done_at))}</span>` : ''}
         </span>
       </label>
       <button type="button" class="ghost task-edit" data-edit="${t.id}" aria-label="Taak bewerken">Bewerken</button>
     </article>
   `).join('');
+  actions.renderMeetings?.();
 }
 
 async function toggleTask(id, done) {
@@ -82,7 +81,8 @@ function openTask(id = null) {
   const t = id ? store.tasks.find((x) => x.id === id) : null;
   $('#task-title').textContent = t ? 'Taak bewerken' : 'Nieuwe taak';
   $('#t-title').value = t?.title || '';
-  $('#t-assignee').value = t?.assignee || store.me;
+  const who = personName(t?.assignee || '');
+  $('#t-assignee').value = USERS.includes(who) ? who : (store.me || 'Jacky');
   $('#t-due').value = t?.due_date || '';
   $('#task-delete').hidden = !t;
   $('#task-editor').showModal();
@@ -158,9 +158,9 @@ $('#task-delete')?.addEventListener('click', async () => {
 
 export function parseActionLines(text) {
   return String(text || '').split('\n').map((line) => line.trim()).filter(Boolean).map((line) => {
-    const m = line.match(/^(Jacky|Paps|Bren)\s*[:\-–]\s*(.+)$/i);
+    const m = line.match(/^(Jacky|Ronald|Paps|Pap|Bren)\s*[:\-–]\s*(.+)$/i);
     if (m) {
-      const who = USERS.find((u) => u.toLowerCase() === m[1].toLowerCase());
+      const who = personName(m[1]);
       return { assignee: who, title: m[2].trim() };
     }
     return { assignee: null, title: line };

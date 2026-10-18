@@ -1,5 +1,6 @@
 import {
   $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, dayLabel, actions, alive, softDelete,
+  personName, samePerson,
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
@@ -37,7 +38,7 @@ export function renderDiary() {
   const q = ($('#diary-search')?.value || '').trim().toLowerCase();
   const items = alive(store.diary).filter((d) => {
     const blob = `${d.author || ''} ${d.body || ''} ${catLabel(d.category)}`.toLowerCase();
-    return (!store.diaryWho || d.author === store.diaryWho)
+    return (!store.diaryWho || samePerson(d.author, store.diaryWho))
       && (!store.diaryCategory || (d.category || 'algemeen') === store.diaryCategory)
       && (!q || blob.includes(q));
   });
@@ -57,12 +58,12 @@ export function renderDiary() {
       html += `<h3 class="list-day">${esc(dayLabel(d.created_at))}</h3>`;
       lastDay = day;
     }
-    const mine = d.author === store.me;
+    const mine = samePerson(d.author, store.me);
     const cat = d.category || 'algemeen';
     html += `
       <article class="card entry ${mine ? 'editable' : ''} ${d.important ? 'important' : ''}" data-id="${d.id}">
         <div class="item-head">
-          <strong>${esc(d.author)}${d.important ? ' · belangrijk' : ''}</strong>
+          <strong>${esc(personName(d.author))}${d.important ? ' · belangrijk' : ''}</strong>
           <span class="item-date">${esc(fmtStamp(d.created_at))}</span>
         </div>
         <p class="kind-label">${esc(catLabel(cat))}</p>

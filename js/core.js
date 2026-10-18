@@ -1,4 +1,4 @@
-const USERS = ['Jacky', 'Paps', 'Bren'];
+const USERS = ['Jacky', 'Ronald', 'Bren'];
 const NAME_KEY = 'triageve.user';
 const ACTIVITY_KEY = 'triageve.lastActivity';
 const MAX_IDLE_MS = 14 * 24 * 60 * 60 * 1000;
@@ -8,20 +8,40 @@ const preview = !configured && new URLSearchParams(location.search).has('preview
 const db = configured ? supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY) : null;
 const ACCOUNTS = CFG.ACCOUNTS && typeof CFG.ACCOUNTS === 'object' ? CFG.ACCOUNTS : {};
 
+function personName(name) {
+  const n = String(name || '').trim();
+  if (/^(paps|pap)$/i.test(n)) return 'Ronald';
+  if (/^brendon$/i.test(n)) return 'Bren';
+  return USERS.find((u) => u.toLowerCase() === n.toLowerCase()) || n;
+}
+
+function samePerson(a, b) {
+  const x = personName(a);
+  return Boolean(x) && x === personName(b);
+}
+
+function accountKey(name) {
+  return personName(name) === 'Ronald' ? 'Paps' : personName(name);
+}
+
 function emailFor(name) {
-  return ACCOUNTS[name] || '';
+  return ACCOUNTS[accountKey(name)] || ACCOUNTS[name] || '';
 }
 
 function nameForEmail(email) {
   const want = String(email || '').toLowerCase();
-  return Object.keys(ACCOUNTS).find((name) => String(ACCOUNTS[name]).toLowerCase() === want) || '';
+  const key = Object.keys(ACCOUNTS).find((name) => String(ACCOUNTS[name]).toLowerCase() === want) || '';
+  return personName(key);
 }
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => root.querySelectorAll(sel);
 
+const remembered = personName(localStorage.getItem(NAME_KEY) || '');
+if (USERS.includes(remembered)) localStorage.setItem(NAME_KEY, remembered);
+
 const store = {
-  me: localStorage.getItem(NAME_KEY),
+  me: USERS.includes(remembered) ? remembered : null,
   selectedUser: null,
   activeTab: 'home',
   channel: null,
@@ -130,7 +150,7 @@ async function restoreRow(table, id) {
 
 export {
   USERS, NAME_KEY, ACTIVITY_KEY, MAX_IDLE_MS, CFG, ACCOUNTS, configured, preview, db,
-  emailFor, nameForEmail,
+  emailFor, nameForEmail, personName, samePerson,
   $, $$, store, loaders, realtime, afterLoad, actions,
   onLoad, onAfterLoad, onRealtime, esc, localDate, fmtTime, fmtDay, fmtStamp,
   dayLabel, toast, check, alive, softDelete, restoreRow,

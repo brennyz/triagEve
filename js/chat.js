@@ -1,5 +1,6 @@
 import {
   $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtTime, fmtStamp, dayLabel, actions,
+  personName, samePerson,
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
@@ -24,7 +25,7 @@ function addMessage(m) {
   store.messages.push(m);
   renderChat();
   renderHome();
-  if (m.author !== store.me && (store.activeTab !== 'chat' || document.hidden)) {
+  if (!samePerson(m.author, store.me) && (store.activeTab !== 'chat' || document.hidden)) {
     store.unread += 1;
     updateBadge();
   }
@@ -45,19 +46,19 @@ export function renderChat() {
       html += `<div class="day-sep"><span>${esc(dayLabel(m.created_at))}</span></div>`;
       lastDay = day;
     }
-    const mine = m.author === store.me;
-    const who = { jacky: 'who-jacky', paps: 'who-paps', pap: 'who-paps', bren: 'who-bren', brendon: 'who-bren' }[String(m.author || '').toLowerCase()] || 'who-other';
+    const mine = samePerson(m.author, store.me);
+    const who = { jacky: 'who-jacky', ronald: 'who-ronald', paps: 'who-ronald', pap: 'who-ronald', bren: 'who-bren', brendon: 'who-bren' }[String(m.author || '').toLowerCase()] || 'who-other';
     html += `
       <div class="bubble-row ${mine ? 'mine' : ''} ${who}">
         <div class="bubble" title="${esc(fmtStamp(m.created_at))}">
-          <div class="bubble-author">${esc(m.author || 'Onbekend')}</div>
+          <div class="bubble-author">${esc(personName(m.author) || 'Onbekend')}</div>
           <div class="bubble-body">${esc(m.body)}</div>
           <div class="bubble-time">${esc(fmtTime(m.created_at))}${m.pending ? ' · wacht op verbinding' : ''}</div>
         </div>
       </div>`;
     return html;
   }).join('');
-  if (nearBottom || store.messages.at(-1)?.author === store.me) scrollChatToBottom();
+  if (nearBottom || samePerson(store.messages.at(-1)?.author, store.me)) scrollChatToBottom();
 }
 
 function scrollChatToBottom() {

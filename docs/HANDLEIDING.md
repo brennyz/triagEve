@@ -1,4 +1,4 @@
-# triagEve – handleiding voor Jacky en Paps
+# triagEve – handleiding voor Jacky en Ronald
 
 Openen: https://brennyz.github.io/triagEve/
 
@@ -14,7 +14,7 @@ Dit is een korte uitleg. Moeilijke woorden laten we weg. Bij twijfel: pagina ver
 
 ## Inloggen
 
-1. De eerste keer kies je wie je bent: Jacky, Paps of Bren.
+1. De eerste keer kies je wie je bent: Jacky, Ronald of Bren.
 2. Typ je eigen wachtwoord. Dat van de ander werkt niet.
 3. Tik op **Inloggen**.
 
@@ -26,13 +26,13 @@ Bren geeft elk zijn eigen wachtwoord. Deel het niet in een openbare app-groep.
 
 Onderaan vijf knoppen:
 
-- **Home** – bovenaan een tegel: een huisje met Eef erin als ze thuis is. Tik erop om Assen of een andere plek te kiezen. Daarna: hoe het met Eef gaat, wie er nu is, een briefje voor de volgende, inname vandaag, bezoek deze week, afspraken, taken, dagboek, nieuwe berichten. Bij **Open taken** staat een plus voor een nieuwe taak. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. **Noodkaart** staat onder de status. Daar staan 112, jullie nummers, de huisarts en – als die is ingevuld – de psychiater.
-- **Chat** – berichten naar elkaar, met naam en tijd. Jacky is warmbruin, Paps groenblauw, Bren paars. Zonder berichten staat er “Nog geen berichten”.
-- **Dagboek** – zoeken staat bovenaan, in de tekst, de naam en de categorie. Daaronder schrijf je wat er gebeurd is en kun je “Belangrijk” aanvinken.
-- **Agenda** – de kalender staat bovenaan. **Aankomend**, **Huidig** of **Eerder** klapt hem weg. Helemaal naar boven scrollen toont hem weer. **Nieuwe afspraak** vraagt ook een tijd. Soort begint op afspraak. Vink aan wie erbij is, of typ een naam en tik **Zet erbij**.
+- **Home** – bovenaan een tegel: een huisje met Eef erin als ze thuis is. Tik erop om Assen of een andere plek te kiezen. Zolang ze thuis is, zie je geen “wie is er”, geen briefje voor de volgende en geen bezoek. Daarna: hoe het met Eef gaat, inname vandaag, afspraken, taken, dagboek, nieuwe berichten. Bij **Open taken** staat een plus voor een nieuwe taak. Bij **Status doorgeven** kies je Goed, Matig of Zorgelijk. **Noodkaart** staat onder de status. Daar staan 112, jullie nummers, de huisarts en – als die is ingevuld – de psychiater.
+- **Chat** – berichten naar elkaar, met naam en tijd. Jacky is warmbruin, Ronald groenblauw, Bren paars. Zonder berichten staat er “Nog geen berichten”. Chat komt niet in een pdf.
+- **Dagboek** – zoeken staat bovenaan, in de tekst, de naam en de categorie. Daaronder schrijf je wat er gebeurd is en kun je “Belangrijk” aanvinken. Een belangrijk stukje van de laatste 30 dagen komt in de pdf voor de dienstverlener. Alles komt in Tijdlijn uitdraaien.
+- **Agenda** – de kalender staat bovenaan. **Aankomend**, **Huidig** of **Eerder** klapt hem zacht weg. **Toon kalender** of helemaal naar boven scrollen toont hem weer. Een licht bolletje op een dag betekent: er staat een open taak op die datum. **Nieuwe afspraak** vraagt ook een tijd. Soort begint op afspraak. Vink aan wie erbij is, of typ een naam en tik **Zet erbij**. Afspraken komen in de pdf.
 - **Op je telefoon** – de eerste keer in de browser vraagt de app om hem te bewaren. Op Android: **Opslaan**, dan staat hij in de app-lade. Op de iPhone: tik in Safari op Delen en kies **Zet op beginscherm**. **Niet nu** verbergt het tot de volgende keer.
 - **Contacten** (onder Meer) – bovenaan jullie drie, met **Nummer invullen** of **Wijzigen**. Daaronder de zorgverleners: tik op Huisarts, Psychiater, Psycholoog, Apotheek of Thuiszorg, of op **Zorgverlener toevoegen**. **Wijzigen** past een nummer aan. Huisarts en psychiater komen op de noodkaart.
-- **PDF voor dienstverlener** (onder Meer) – één tik, daarna **Printen / Opslaan als PDF**. Paps staat als hoofdcontact, Jacky en Bren als secundair, plus de zorgverleners, medicatie, status en komende afspraken.
+- **PDF voor dienstverlener** (onder Meer) – één tik, daarna **Printen / Opslaan als PDF**. Ronald staat als hoofdcontact, Jacky en Bren als secundair. Mee komen contacten, Over Eef, wensen, status, medicatie, inname, belangrijke dagboekstukjes, open taken, metingen en komende afspraken. Chat niet. Bij het invullen staat steeds een zinnetje wat er meegaat.
 - **Tijdlijn uitdraaien** (onder Meer) – dagboek, agenda en status op een rij. Daarna **Printen / Opslaan als PDF**.
 - **Meer** – eerst Elke dag: Over Eef, medicatie, taken, contacten. Daaronder papieren en extra: pdf, tijdlijn, wensen, metingen, meldingen, prullenbak, downloaden, grote tekst, hulp & steun, uitloggen.
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="theme-color" content="#5c3d82">
-  <meta name="description" content="Contact, dagboek en agenda voor Jacky, Paps en Bren">
+  <meta name="description" content="Contact, dagboek en agenda voor Jacky, Ronald en Bren">
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://slddtxwbufoadmvdconz.supabase.co wss://slddtxwbufoadmvdconz.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>triagEve</title>
@@ -42,7 +42,7 @@
         <h2 id="login-greet" class="login-greet">Wie ben je?</h2>
         <div class="user-picker" role="group" aria-labelledby="login-greet">
           <button type="button" class="user-btn" data-user="Jacky" aria-pressed="false"><span class="avatar" aria-hidden="true">J</span>Jacky</button>
-          <button type="button" class="user-btn" data-user="Paps" aria-pressed="false"><span class="avatar" aria-hidden="true">P</span>Paps</button>
+          <button type="button" class="user-btn" data-user="Ronald" aria-pressed="false"><span class="avatar" aria-hidden="true">R</span>Ronald</button>
           <button type="button" class="user-btn" data-user="Bren" aria-pressed="false"><span class="avatar" aria-hidden="true">B</span>Bren</button>
         </div>
         <p id="login-hint" class="muted login-hint">Kies je naam. Dit toestel onthoudt dat.</p>
@@ -82,6 +82,7 @@
     <!-- Chat -->
     <div id="tab-chat" class="tab-panel" hidden>
       <div id="messages" class="messages"><p class="empty">Nog geen berichten. Zeg hallo!</p></div>
+      <p class="pdf-note">Chat blijft in de app en komt niet in een pdf.</p>
       <form id="chat-form" class="composer">
         <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
         <button type="submit" class="primary send" title="Versturen" aria-label="Versturen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -107,6 +108,7 @@
             <button type="button" class="chip" data-cat="incident">Incident</button>
           </div>
           <label class="check-line"><input id="diary-important" type="checkbox"> Belangrijk</label>
+          <p class="pdf-note">Een belangrijk stukje van de laatste 30 dagen komt in de pdf voor de dienstverlener. Alles komt in Tijdlijn uitdraaien.</p>
           <div class="dialog-buttons">
             <button type="button" id="diary-delete" class="danger" hidden>Verwijderen</button>
             <span class="spacer"></span>
@@ -117,7 +119,7 @@
         <div class="chips chip-row" id="diary-chips">
           <button class="chip active" data-who="">Iedereen</button>
           <button class="chip" data-who="Jacky">Jacky</button>
-          <button class="chip" data-who="Paps">Paps</button>
+          <button class="chip" data-who="Ronald">Ronald</button>
           <button class="chip" data-who="Bren">Bren</button>
         </div>
         <div class="chips chip-row" id="diary-filter-cats">
@@ -147,6 +149,7 @@
         <div id="cal-grid" class="cal-grid"></div>
       </aside>
       <div class="scroll" id="meet-scroll">
+        <button type="button" id="cal-show" class="ghost cal-show" hidden>Toon kalender</button>
         <div class="tabs" id="meet-tabs">
           <button type="button" class="tab" data-meet="upcoming">Aankomend</button>
           <button type="button" class="tab active" data-meet="current">Huidig</button>
@@ -188,6 +191,7 @@
         <button type="button" class="ghost back" data-go="more">← Meer</button>
         <div id="stay-on-eef"></div>
         <form id="eef-form" class="card">
+          <p class="pdf-note">Dit komt mee in de pdf voor de dienstverlener.</p>
           <label for="eef-summary">Situatie</label>
           <textarea id="eef-summary" rows="4" placeholder="Kort wat er aan de hand is" maxlength="20000"></textarea>
           <label for="eef-important">Belangrijk om te weten</label>
@@ -206,7 +210,8 @@
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
         <p class="notice">Dit is een overzicht voor de familie. Volg altijd het advies van de arts/apotheek.</p>
-        <p class="notice">Vink ochtend, middag, avond of nacht aan als je het gegeven hebt. Jacky, Paps en Bren zien dat en kunnen het wijzigen.</p>
+        <p class="notice">Vink ochtend, middag, avond of nacht aan als je het gegeven hebt. Jacky, Ronald en Bren zien dat en kunnen het wijzigen.</p>
+        <p class="pdf-note">Huidige medicatie en de inname van vandaag komen mee in de pdf.</p>
         <button type="button" class="ghost" data-go="history" data-history="triageve_medications">Geschiedenis</button>
         <h2 class="section-title">Huidige medicatie</h2>
         <div id="meds-current" class="list"></div>
@@ -220,6 +225,7 @@
     <div id="tab-tasks" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <p class="pdf-note">Open taken komen mee in de pdf. Een taak met een datum krijgt een bolletje in de agenda.</p>
         <p class="item-meta" id="task-tally"></p>
         <div class="chips" id="task-chips">
           <button class="chip active" data-filter="all">Alles</button>
@@ -234,7 +240,8 @@
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
         <h2 class="section-title">Onze nummers</h2>
-        <p class="muted">Paps is hoofdcontact. Jacky en Bren zijn secundair. Tik op Nummer invullen of Wijzigen. Met een nummer staan jullie op de noodkaart.</p>
+        <p class="muted">Ronald is hoofdcontact. Jacky en Bren zijn secundair. Tik op Nummer invullen of Wijzigen. Met een nummer staan jullie op de noodkaart.</p>
+        <p class="pdf-note">Jullie nummers en de zorgverleners komen mee in de pdf.</p>
         <div id="family-cards" class="list"></div>
         <h2 class="section-title">Zorgverleners</h2>
         <p class="muted">Tik een rol en vul het nummer in. Huisarts en psychiater komen daarna op de noodkaart. Wijzigen past een nummer aan.</p>
@@ -285,6 +292,7 @@
       <div class="scroll">
         <button type="button" class="ghost back" data-go="more">← Meer</button>
         <form id="measure-form" class="card">
+          <p class="pdf-note">Metingen komen mee in de pdf en in de tijdlijn.</p>
           <label for="ms-kind">Soort</label>
           <select id="ms-kind">
             <option>bloeddruk</option>
@@ -310,6 +318,7 @@
         <button type="button" class="ghost back" data-go="more">← Meer</button>
         <p class="notice">Alleen wat Eef zelf belangrijk vindt. Geen BSN, DigiD, pincodes of kopieën van papieren – alleen waar die liggen.</p>
         <form id="wishes-form" class="card">
+          <p class="pdf-note">Dit komt mee in de pdf voor de dienstverlener.</p>
           <label for="w-wishes">Wat Eef zelf belangrijk vindt</label>
           <textarea id="w-wishes" rows="4" placeholder="Eten, bezoek, zorg, dagritme: wat ze wel en niet wil"></textarea>
           <label for="w-sharing">Wat mag de familie bijhouden en delen?</label>
@@ -325,7 +334,7 @@
     <div id="tab-print" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
-        <p class="muted no-print">Eén tik. Paps staat als hoofdcontact, Jacky en Bren als secundair, plus de zorgverleners en de zorg van nu.</p>
+        <p class="muted no-print">Contacten, Over Eef, wensen, de laatste status, medicatie, inname van vandaag, belangrijke dagboekstukjes (30 dagen), open taken, recente metingen en komende afspraken. Chat zit er niet in.</p>
         <button type="button" id="print-btn" class="primary no-print">Printen / Opslaan als PDF</button>
         <div id="print-root"></div>
       </div>
@@ -333,6 +342,7 @@
     <div id="tab-timeline" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
+        <p class="muted no-print">Dagboek, agenda, status, taken met een datum en metingen. Chat zit er niet in.</p>
         <button type="button" id="timeline-print" class="primary no-print">Printen / Opslaan als PDF</button>
         <div id="timeline-root"></div>
       </div>
@@ -359,7 +369,8 @@
     <form id="editor-form" method="dialog">
       <div class="dialog-scroll">
       <h2 id="editor-title">Nieuwe afspraak</h2>
-      <p class="notice">Let op: na opslaan zien Jacky, Paps en Bren dit, en kunnen zij het wijzigen.</p>
+      <p class="notice">Let op: na opslaan zien Jacky, Ronald en Bren dit, en kunnen zij het wijzigen.</p>
+      <p class="pdf-note">De afspraak komt mee in de pdf en in de tijdlijn.</p>
       <label for="f-title">Onderwerp *</label>
       <input id="f-title" required>
 
@@ -400,7 +411,7 @@
       <textarea id="f-happened" rows="4" placeholder="Wat is er besproken / besloten?"></textarea>
 
       <label for="f-actions">Actiepunten (1 per regel)</label>
-      <textarea id="f-actions" rows="3" placeholder="Bren: ...&#10;Paps: ..."></textarea>
+      <textarea id="f-actions" rows="3" placeholder="Bren: ...&#10;Ronald: ..."></textarea>
       <button type="button" id="make-tasks" class="ghost">Maak taken van actiepunten</button>
       </div>
       <div class="dialog-buttons">
@@ -418,6 +429,7 @@
         <h2>Hoe gaat het?</h2>
         <p class="notice">Bij acuut gevaar: bel 112. Twijfel? Bel de huisarts of huisartsenpost.</p>
         <p class="muted">Kies alleen wat opviel. Dan één tik.</p>
+        <p class="pdf-note">De laatste status komt mee in de pdf. Alles komt in de tijdlijn.</p>
         <label for="status-moment">Moment</label>
         <select id="status-moment"><option value="">Nu</option></select>
         <div id="status-context" class="status-fields"></div>
@@ -440,12 +452,13 @@
     <form id="task-form" method="dialog">
       <div class="dialog-scroll">
       <h2 id="task-title">Nieuwe taak</h2>
+      <p class="pdf-note">Een open taak komt mee in de pdf. Met een datum zie je een bolletje op die dag in de agenda.</p>
       <label for="t-title">Taak *</label>
       <input id="t-title" required>
       <label for="t-assignee">Wie doet het?</label>
       <select id="t-assignee">
         <option value="Jacky">Jacky</option>
-        <option value="Paps">Paps</option>
+        <option value="Ronald">Ronald</option>
         <option value="Bren">Bren</option>
       </select>
       <label for="t-due">Uiterlijk</label>
@@ -464,6 +477,7 @@
     <form id="med-form" method="dialog">
       <div class="dialog-scroll">
       <h2 id="med-title">Nieuwe medicatie</h2>
+      <p class="pdf-note">Huidige medicatie komt mee in de pdf voor de dienstverlener.</p>
       <label for="m-name">Naam *</label>
       <input id="m-name" required>
       <label for="m-dose">Dosis</label>
@@ -491,6 +505,7 @@
     <form id="contact-form" method="dialog">
       <div class="contact-scroll">
       <h2 id="contact-title">Nieuw contact</h2>
+      <p class="pdf-note">Dit contact komt mee in de pdf voor de dienstverlener.</p>
       <label for="c-name">Naam *</label>
       <input id="c-name" required>
       <label for="c-phone">Telefoon</label>

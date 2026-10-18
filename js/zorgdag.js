@@ -1,5 +1,6 @@
 import {
   $, store, db, esc, check, onLoad, onAfterLoad, onRealtime, fmtTime, fmtStamp, localDate, toast, actions, alive,
+  personName, samePerson,
 } from './core.js';
 import { renderHome } from './home.js';
 import { renderMeds } from './meds.js';
@@ -61,13 +62,13 @@ async function saveProfileBits(patch) {
 async function setPresent(here) {
   const current = store.profile?.present_by || '';
   if (here) {
-    if (current === store.me) return;
-    if (current && !confirm(`${current} staat al als aanwezig. Toch aangeven dat jij er bent?`)) return;
+    if (samePerson(current, store.me)) return;
+    if (current && !confirm(`${personName(current)} staat al als aanwezig. Toch aangeven dat jij er bent?`)) return;
     await saveProfileBits({ present_by: store.me, present_since: new Date().toISOString() });
     return;
   }
   if (!current) return;
-  if (current !== store.me && !confirm(`${current} staat als aanwezig. Toch aangeven dat diegene weg is?`)) return;
+  if (!samePerson(current, store.me) && !confirm(`${personName(current)} staat als aanwezig. Toch aangeven dat diegene weg is?`)) return;
   await saveProfileBits({ present_by: null, present_since: null });
 }
 
@@ -120,18 +121,19 @@ async function toggleDose(medId, slot) {
 
 function shiftHtml() {
   const p = store.profile || {};
+  const atHome = String(p.stay || '').trim() === 'thuis';
   const here = p.present_by
-    ? `${p.present_by} is er${p.present_since ? ` sinds ${whenLabel(p.present_since)}` : ''}.`
+    ? `${personName(p.present_by)} is er${p.present_since ? ` sinds ${whenLabel(p.present_since)}` : ''}.`
     : 'Nu is er niemand aangegeven.';
   const handMeta = p.handover_at
-    ? `Laatst door ${p.handover_by || '?'} · ${whenLabel(p.handover_at)}`
+    ? `Laatst door ${personName(p.handover_by) || '?'} · ${whenLabel(p.handover_at)}`
     : 'Nog niks achtergelaten.';
   const active = alive(store.medications).filter((m) => m.active);
   const lines = active.length
     ? active.map((m) => {
       const mine = todayDoses(m.id);
       const text = mine.length
-        ? mine.map((d) => `${slotLabel(d.slot)} · ${d.author}`).join(', ')
+        ? mine.map((d) => `${slotLabel(d.slot)} · ${personName(d.author)}`).join(', ')
         : 'nog niet';
       return `<button type="button" class="home-row" data-go="meds">
         <strong>${esc(m.name)}</strong><span>${esc(text)}</span>
@@ -139,23 +141,26 @@ function shiftHtml() {
     }).join('')
     : '<p class="empty-inline">Nog geen huidige medicatie.</p>';
 
-  return `
+  const presence = atHome ? '' : `
     <article class="card home-card present-card${p.present_by ? ' is-here' : ''}">
       <h2>Wie is er bij Eef?</h2>
       <p class="present-now">${esc(here)}</p>
-      <p class="notice">Jacky, Paps en Bren zien dit en kunnen het wijzigen.</p>
+      <p class="notice">Jacky, Ronald en Bren zien dit en kunnen het wijzigen.</p>
       <div class="shift-actions">
-        <button type="button" class="primary" id="present-here" ${p.present_by === store.me ? 'disabled' : ''}>Ik ben er</button>
+        <button type="button" class="primary" id="present-here" ${samePerson(p.present_by, store.me) ? 'disabled' : ''}>Ik ben er</button>
         <button type="button" id="present-leave" ${p.present_by ? '' : 'disabled'}>Ik ga weg</button>
       </div>
     </article>
     <article class="card home-card">
       <h2>Voor de volgende</h2>
-      <p class="notice">Jacky, Paps en Bren zien dit en kunnen het wijzigen.</p>
+      <p class="notice">Jacky, Ronald en Bren zien dit en kunnen het wijzigen.</p>
       <textarea id="handover-text" rows="3" maxlength="2000" placeholder="Wat moet de volgende weten?">${esc(p.handover || '')}</textarea>
       <p class="item-meta">${esc(handMeta)}</p>
       <button type="button" class="primary" id="handover-save">Opslaan</button>
-    </article>
+    </article>`;
+
+  return `
+    ${presence}
     <article class="card home-card">
       <h2>Inname vandaag</h2>
       ${lines}
@@ -170,7 +175,7 @@ function doseBlock(med) {
     return `<button type="button" class="dose-slot${hit ? ' on' : ''}" data-dose="1" data-med="${med.id}" data-slot="${key}" aria-pressed="${hit ? 'true' : 'false'}">${label}</button>`;
   }).join('');
   const meta = mine.length
-    ? mine.map((d) => `${slotLabel(d.slot)} · ${d.author} · ${whenLabel(d.created_at)}`).join(' · ')
+    ? mine.map((d) => `${slotLabel(d.slot)} · ${personName(d.author)} · ${whenLabel(d.created_at)}`).join(' · ')
     : 'Vandaag nog niet aangevinkt.';
   return `<div class="dose-slots">${buttons}</div><p class="item-meta">${esc(meta)}</p>`;
 }
@@ -208,7 +213,7 @@ function extraPlaces(profile = store.profile || {}) {
 
 function stayMark(home) {
   if (home) {
-    return `<span class="house" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M8 30 32 10l24 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M16 28v22h32V28" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M28 50V36h8v14" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg><span>Eef</span></span>`;
+    return `<span class="house" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M8 30 32 10l24 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M16 28v22h32V28" fill="var(--card)" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg><span>Eef</span></span>`;
   }
   return `<span class="house pin" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 8a16 16 0 0 0-16 16c0 12 16 32 16 32s16-20 16-32A16 16 0 0 0 32 8z" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="32" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="3"/></svg></span>`;
 }

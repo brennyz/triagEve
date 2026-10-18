@@ -1,5 +1,5 @@
 import {
-  $, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive,
+  $, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, personName,
 } from './core.js';
 import { renderHome } from './home.js';
 import { stayPhrase } from './zorgdag.js';
@@ -46,10 +46,10 @@ export function renderNood() {
   if (!el) return;
   const p = store.profile || {};
   const contacts = alive(store.contacts).sort((a, b) => Number(b.is_emergency) - Number(a.is_emergency));
-  const familyOrder = [['Paps', 'hoofd'], ['Jacky', 'secundair'], ['Bren', 'secundair']];
+  const familyOrder = [['Ronald', 'hoofd'], ['Jacky', 'secundair'], ['Bren', 'secundair']];
   const family = familyOrder.map(([name, rank]) => {
-    const c = contacts.find((x) => x.circle === 'familie' && x.name === name && x.phone);
-    return c ? { ...c, rank } : null;
+    const c = contacts.find((x) => x.circle === 'familie' && personName(x.name) === name && x.phone);
+    return c ? { ...c, name: personName(c.name), rank } : null;
   }).filter(Boolean);
   const familyIds = new Set(family.map((c) => c.id));
   const huisarts = contacts.filter((c) => c.circle !== 'familie' && /huisarts/i.test(c.role || ''));

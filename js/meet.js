@@ -1,5 +1,6 @@
 import {
   $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtStamp, actions, alive, softDelete,
+  personName, USERS,
 } from './core.js';
 import { renderHome } from './home.js';
 import { pingNotify } from './push.js';
@@ -119,6 +120,10 @@ function renderCalendar() {
   for (const ev of alive(store.meetings)) {
     if (String(ev.date || '').startsWith(ym)) counts[ev.date] = (counts[ev.date] || 0) + 1;
   }
+  const taskDays = {};
+  for (const t of alive(store.tasks)) {
+    if (!t.done && t.due_date && String(t.due_date).startsWith(ym)) taskDays[t.due_date] = (taskDays[t.due_date] || 0) + 1;
+  }
   const today = localDate();
   const showDay = store.meetFilter === 'current';
   let cells = '';
@@ -130,8 +135,12 @@ function renderCalendar() {
       showDay && key === store.meetDay ? 'on' : '',
       key === today ? 'today' : '',
       counts[key] ? 'has' : '',
+      taskDays[key] ? 'has-task' : '',
     ].filter(Boolean).join(' ');
-    cells += `<button type="button" class="${cls}" data-day="${key}" aria-label="${key}${counts[key] ? `, ${counts[key]} afspraken` : ''}">${d}${counts[key] ? `<i>${counts[key]}</i>` : ''}</button>`;
+    const bits = [key];
+    if (counts[key]) bits.push(`${counts[key]} afspraken`);
+    if (taskDays[key]) bits.push(taskDays[key] === 1 ? 'een taak' : `${taskDays[key]} taken`);
+    cells += `<button type="button" class="${cls}" data-day="${key}" aria-label="${bits.join(', ')}">${d}${counts[key] ? `<i>${counts[key]}</i>` : ''}${taskDays[key] ? '<b class="task-dot"></b>' : ''}</button>`;
   }
   grid.innerHTML = cells;
   const todayView = showDay && store.meetDay === today;
@@ -212,7 +221,7 @@ export function renderMeetings() {
         <p class="kind-label">${esc(k.icon)} ${esc(k.label)}</p>
         ${eefLine ? `<p class="status-traits">${esc(eefLine)}</p>` : ''}
         ${m.location ? `<p class="item-who">Locatie: ${esc(m.location)}</p>` : ''}
-        ${m.who?.length ? `<p class="item-who">Met: ${esc(m.who.join(', '))}</p>` : ''}
+        ${m.who?.length ? `<p class="item-who">Met: ${esc(m.who.map(personName).join(', '))}</p>` : ''}
         ${m.agenda ? `<div class="item-section"><h4>Agenda</h4><p>${esc(m.agenda)}</p></div>` : ''}
         ${m.happened ? `<div class="item-section"><h4>${esc(happenedHeading(m.kind))}</h4><p>${esc(m.happened)}</p></div>` : ''}
         ${actionLines.length ? `<div class="item-section"><h4>Actiepunten</h4><ul>${actionLines.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
@@ -237,8 +246,13 @@ export function renderMeetings() {
   }));
 }
 
+function showWho(name) {
+  const shown = personName(name);
+  return USERS.includes(shown) ? shown : name;
+}
+
 function whoNames(selected) {
-  const names = ['Jacky', 'Paps', 'Bren'];
+  const names = [...USERS];
   for (const c of alive(store.contacts)) {
     if (!c.name || c.circle === 'familie' || names.includes(c.name)) continue;
     if (actions.isZorg?.(c) || c.circle === 'zorg') names.push(c.name);
@@ -252,8 +266,8 @@ function whoNames(selected) {
 export function refreshWho(extraName, preset) {
   const box = $('#who-box');
   if (!box) return;
-  const selected = preset || [...$$('#who-box input[name="who"]:checked')].map((cb) => cb.value);
-  if (extraName && !selected.includes(extraName)) selected.push(extraName);
+  const selected = (preset || [...$$('#who-box input[name="who"]:checked')].map((cb) => cb.value)).map(showWho);
+  if (extraName && !selected.includes(showWho(extraName))) selected.push(showWho(extraName));
   box.innerHTML = whoNames(selected).map((name) => `
     <label><input type="checkbox" name="who" value="${esc(name)}"> ${esc(name)}</label>`).join('');
   $$('#who-box input[name="who"]').forEach((cb) => { cb.checked = selected.includes(cb.value); });
@@ -280,36 +294,31 @@ function openEditor(id = null) {
 $('#meet-search')?.addEventListener('input', renderMeetings);
 function setCalendar(open) {
   $('#cal-panel')?.classList.toggle('is-away', !open);
+  const show = $('#cal-show');
+  if (show) show.hidden = Boolean(open);
 }
 
 let meetPulled = false;
 const meetScroll = $('#meet-scroll');
 meetScroll?.addEventListener('scroll', () => {
-  if (meetScroll.scrollTop > 16) {
+  if (meetScroll.scrollTop > 24) {
     meetPulled = true;
     setCalendar(false);
-  } else if (meetPulled) {
+  } else if (meetPulled && meetScroll.scrollTop <= 0) {
     meetPulled = false;
     setCalendar(true);
   }
 }, { passive: true });
-meetScroll?.addEventListener('wheel', (e) => {
-  if (meetScroll.scrollTop <= 0 && e.deltaY < 0) setCalendar(true);
-}, { passive: true });
-let meetTouchY = 0;
-meetScroll?.addEventListener('touchstart', (e) => {
-  meetTouchY = e.touches[0]?.clientY || 0;
-}, { passive: true });
-meetScroll?.addEventListener('touchmove', (e) => {
-  const y = e.touches[0]?.clientY || 0;
-  if (meetScroll.scrollTop <= 0 && y - meetTouchY > 28) setCalendar(true);
-}, { passive: true });
+$('#cal-show')?.addEventListener('click', () => {
+  meetPulled = false;
+  setCalendar(true);
+  meetScroll?.scrollTo({ top: 0 });
+});
 
 $('#cal-grid')?.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-day]');
   if (!btn) return;
   showDay(btn.dataset.day);
-  setCalendar(false);
 });
 $('#cal-prev')?.addEventListener('click', () => shiftMonth(-1));
 $('#cal-next')?.addEventListener('click', () => shiftMonth(1));

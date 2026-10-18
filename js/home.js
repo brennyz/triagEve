@@ -1,4 +1,4 @@
-import { $, store, esc, localDate, actions, onAfterLoad, alive } from './core.js';
+import { $, store, esc, localDate, actions, onAfterLoad, alive, personName } from './core.js';
 
 function statusCard() {
   const c = (store.checkins || [])[0];
@@ -7,7 +7,7 @@ function statusCard() {
     ? alive(store.meetings).find((m) => Number(m.id) === Number(c.meeting_id))
     : null;
   const when = c
-    ? `${c.author}${meet ? ` · ${meet.title}` : ''} · ${new Date(c.created_at).toLocaleString('nl-NL')}`
+    ? `${personName(c.author)}${meet ? ` · ${meet.title}` : ''} · ${new Date(c.created_at).toLocaleString('nl-NL')}`
     : 'Nog niet doorgegeven';
   const traits = actions.traitPhrase?.(c) || '';
   return `
@@ -30,7 +30,12 @@ function weekBounds() {
   return { start: localDate(start), end: localDate(end) };
 }
 
+function atHome() {
+  return String(store.profile?.stay || '').trim() === 'thuis';
+}
+
 function visitCard() {
+  if (atHome()) return '';
   const { start, end } = weekBounds();
   const visits = alive(store.meetings).filter((m) => m.kind === 'bezoek' && m.date >= start && m.date <= end);
   const names = [...new Set(visits.flatMap((m) => m.who || []))];
@@ -67,7 +72,7 @@ export function renderHome() {
       const when = actions.formatMeetingDate
         ? actions.formatMeetingDate(m.date, m.time)
         : `${m.date}${m.time ? ` · ${m.time}` : ''}`;
-      const who = (m.who || []).length ? ` · ${m.who.join(', ')}` : '';
+      const who = (m.who || []).length ? ` · ${(m.who || []).map(personName).join(', ')}` : '';
       return `<button type="button" class="home-row" data-go="meet">
         <strong>${esc(m.title)}</strong>
         <span>${esc((actions.KINDS?.[m.kind] || {}).label || 'Overleg')} · ${esc(when)}${esc(who)}</span>
@@ -78,13 +83,13 @@ export function renderHome() {
   const taskHtml = openTasks.length
     ? openTasks.map((t) => `<button type="button" class="home-row" data-go="tasks">
         <strong>${esc(t.title)}</strong>
-        <span>${esc(t.assignee || 'niemand')} ${t.due_date ? `· ${esc(t.due_date)}` : ''}</span>
+        <span>${esc(personName(t.assignee) || 'niemand')} ${t.due_date ? `· ${esc(t.due_date)}` : ''}</span>
       </button>`).join('')
     : '<p class="empty-inline">Geen open taken.</p>';
 
   const diaryHtml = diaryBits.length
     ? diaryBits.map((d) => `<button type="button" class="home-row" data-go="diary">
-        <strong>${esc(d.author)}${d.important ? ' · belangrijk' : ''}</strong>
+        <strong>${esc(personName(d.author))}${d.important ? ' · belangrijk' : ''}</strong>
         <span>${esc(clip(d.body))}</span>
       </button>`).join('')
     : '<p class="empty-inline">Nog geen dagboekstukjes.</p>';

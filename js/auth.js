@@ -137,7 +137,7 @@ $('#login-form').addEventListener('submit', async (e) => {
   const person = nameForEmail(session?.user?.email);
   if (!person) {
     await db.auth.signOut();
-    return fail('Dit account hoort niet bij Jacky, Paps of Bren.');
+    return fail('Dit account hoort niet bij Jacky, Ronald of Bren.');
   }
   error.hidden = true;
   store.me = person;

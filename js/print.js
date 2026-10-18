@@ -1,11 +1,11 @@
-import { $, store, esc, localDate, fmtStamp, actions, alive } from './core.js';
+import { $, store, esc, localDate, fmtStamp, actions, alive, personName } from './core.js';
 import { KINDS } from './meet.js';
 import { STATUS, traitPhrase, lastCheckin } from './checkins.js';
 import { isZorg } from './contacts.js';
 import { stayPhrase } from './zorgdag.js';
 
 const FAMILY = [
-  ['Paps', 'Hoofdcontactpersoon'],
+  ['Ronald', 'Hoofdcontactpersoon'],
   ['Jacky', 'Secundair contactpersoon'],
   ['Bren', 'Secundair contactpersoon'],
 ];
@@ -18,7 +18,7 @@ function intakeToday(meds) {
   return `<ul>${meds.map((m) => {
     const mine = doses.filter((d) => Number(d.medication_id) === Number(m.id));
     const given = mine.length
-      ? mine.map((d) => `${SLOT_LABEL[d.slot] || d.slot} (${d.author || '?'})`).join(', ')
+      ? mine.map((d) => `${SLOT_LABEL[d.slot] || d.slot} (${personName(d.author) || '?'})`).join(', ')
       : 'nog niet aangevinkt';
     return `<li><strong>${esc(m.name)}</strong> · ${esc(given)}</li>`;
   }).join('')}</ul>`;
@@ -46,6 +46,11 @@ export function renderPrint() {
     .sort((a, b) => `${a.role || ''} ${a.name}`.localeCompare(`${b.role || ''} ${b.name}`, 'nl'));
   const last = lastCheckin();
   const wishes = [p.wishes, p.sharing].filter(Boolean);
+  const openTasks = alive(store.tasks).filter((t) => !t.done)
+    .sort((a, b) => String(a.due_date || '9999').localeCompare(String(b.due_date || '9999')));
+  const measures = [...(store.measurements || [])]
+    .sort((a, b) => String(b.measured_at).localeCompare(String(a.measured_at)))
+    .slice(0, 12);
 
   const block = (title, inner) => `
     <section class="print-section">
@@ -54,7 +59,7 @@ export function renderPrint() {
     </section>`;
 
   const familyHtml = FAMILY.map(([name, label]) => {
-    const c = people.find((x) => x.circle === 'familie' && x.name === name);
+    const c = people.find((x) => x.circle === 'familie' && personName(x.name) === name);
     const bits = [c?.phone, c?.email, c?.address].filter(Boolean);
     const extra = bits.length ? bits.join(' · ') : 'Telefoon en e-mail nog niet ingevuld.';
     return `<p><strong>${esc(name)}</strong> · ${esc(label)}<br>${esc(extra)}</p>`;
@@ -68,14 +73,14 @@ export function renderPrint() {
     : '<p>Nog geen zorgverlener ingevuld.</p>';
 
   const statusHtml = last
-    ? `<p><strong>${esc(STATUS[last.status]?.label || last.status || '')}</strong> · ${esc(last.author || '')} · ${esc(fmtStamp(last.created_at))}<br>${esc([traitPhrase(last), last.note].filter(Boolean).join(' · ') || 'Geen extra kenmerken.')}</p>`
+    ? `<p><strong>${esc(STATUS[last.status]?.label || last.status || '')}</strong> · ${esc(personName(last.author) || '')} · ${esc(fmtStamp(last.created_at))}<br>${esc([traitPhrase(last), last.note].filter(Boolean).join(' · ') || 'Geen extra kenmerken.')}</p>`
     : '<p>Nog geen status doorgegeven.</p>';
 
   el.innerHTML = `
     <header class="print-head">
       <h1>triagEve – overzicht voor de dienstverlener</h1>
       <p>Gemaakt op ${esc(fmtStamp(new Date().toISOString()))} door ${esc(store.me || '')}</p>
-      <p>Paps is hoofdcontactpersoon. Jacky en Bren zijn secundair.</p>
+      <p>Ronald is hoofdcontactpersoon. Jacky en Bren zijn secundair. Chat zit niet in deze pdf.</p>
     </header>
     ${block('Contactpersonen', familyHtml)}
     ${block('Zorgverleners', zorgHtml)}
@@ -85,6 +90,8 @@ export function renderPrint() {
       <h3>Belangrijk om te weten</h3><p>${esc(p.important || 'Nog niet ingevuld.')}</p>
       <h3>In geval van nood</h3><p>${esc(p.emergency || 'Nog niet ingevuld.')}</p>
       ${wishes.length ? `<h3>Wat Eef zelf belangrijk vindt</h3><p>${esc(wishes.join('\n\n'))}</p>` : ''}
+      ${p.representative ? `<h3>Aanspreekpunt voor artsen</h3><p>${esc(p.representative)}</p>` : ''}
+      ${p.documents ? `<h3>Waar liggen belangrijke papieren</h3><p>${esc(p.documents)}</p>` : ''}
     `)}
     ${block('Laatste status', statusHtml)}
     ${block('Huidige medicatie', meds.length
@@ -92,10 +99,16 @@ export function renderPrint() {
       : '<p>Geen huidige medicatie in de app.</p>')}
     ${block('Inname vandaag', intakeToday(meds))}
     ${block('Belangrijke dagboekstukjes (30 dagen)', diary.length
-      ? diary.map((d) => `<p><strong>${esc(d.author)}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}</p>`).join('')
+      ? diary.map((d) => `<p><strong>${esc(personName(d.author))}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}</p>`).join('')
       : '<p>Geen belangrijke stukjes in de laatste 30 dagen.</p>')}
+    ${block('Open taken', openTasks.length
+      ? `<ul>${openTasks.map((t) => `<li><strong>${esc(t.title)}</strong> · ${esc(personName(t.assignee) || 'niemand')}${t.due_date ? ` · uiterlijk ${esc(t.due_date)}` : ''}</li>`).join('')}</ul>`
+      : '<p>Geen open taken.</p>')}
+    ${block('Recente metingen', measures.length
+      ? `<ul>${measures.map((m) => `<li><strong>${esc(m.kind)}</strong> · ${esc(m.value)}${m.note ? ` · ${esc(m.note)}` : ''} · ${esc(personName(m.author))} · ${esc(fmtStamp(m.measured_at))}</li>`).join('')}</ul>`
+      : '<p>Nog geen metingen.</p>')}
     ${block('Komende afspraken', meets.length
-      ? `<ul>${meets.map((m) => `<li>${esc(m.date)}${m.time ? ` ${esc(m.time)}` : ''} · ${esc(m.title)}${m.location ? ` (${esc(m.location)})` : ''}${m.who?.length ? ` · met ${esc(m.who.join(', '))}` : ''}</li>`).join('')}</ul>`
+      ? `<ul>${meets.map((m) => `<li>${esc(m.date)}${m.time ? ` ${esc(m.time)}` : ''} · ${esc(m.title)}${m.location ? ` (${esc(m.location)})` : ''}${m.who?.length ? ` · met ${esc((m.who || []).map(personName).join(', '))}` : ''}</li>`).join('')}</ul>`
       : '<p>Geen komende afspraken.</p>')}
   `;
 }
@@ -107,7 +120,7 @@ function timelineEvents() {
       date: localDate(new Date(d.created_at)),
       sort: d.created_at,
       kind: 'Dagboek',
-      title: `${d.author || '?'}${d.important ? ' · belangrijk' : ''}`,
+      title: `${personName(d.author) || '?'}${d.important ? ' · belangrijk' : ''}`,
       body: d.body || '',
     });
   }
@@ -122,13 +135,32 @@ function timelineEvents() {
       body: bits.join('\n'),
     });
   }
+  for (const t of alive(store.tasks)) {
+    if (!t.due_date) continue;
+    rows.push({
+      date: t.due_date,
+      sort: `${t.due_date}T12:00:00`,
+      kind: 'Taak',
+      title: `${personName(t.assignee) || 'niemand'}${t.done ? ' · klaar' : ''}`,
+      body: t.title || '',
+    });
+  }
+  for (const m of store.measurements || []) {
+    rows.push({
+      date: localDate(new Date(m.measured_at)),
+      sort: m.measured_at,
+      kind: 'Meting',
+      title: `${personName(m.author)} · ${m.kind}`,
+      body: [m.value, m.note].filter(Boolean).join(' · '),
+    });
+  }
   for (const c of store.checkins || []) {
     const label = STATUS[c.status]?.label || c.status || '';
     rows.push({
       date: localDate(new Date(c.created_at)),
       sort: c.created_at,
       kind: 'Hoe gaat het',
-      title: `${c.author || '?'} · ${label}`,
+      title: `${personName(c.author) || '?'} · ${label}`,
       body: [traitPhrase(c), c.note].filter(Boolean).join('\n'),
     });
   }
@@ -157,13 +189,13 @@ export function renderTimeline() {
           ${row.body ? `<p>${esc(row.body)}</p>` : ''}
         `).join('')}
       </section>`).join('')
-    : '<p>Nog niks om uit te draaien. Dagboek, agenda en status verschijnen hier.</p>';
+    : '<p>Nog niks om uit te draaien. Dagboek, agenda, status, taken met een datum en metingen verschijnen hier. Chat niet.</p>';
 
   el.innerHTML = `
     <header class="print-head">
       <h1>triagEve – tijdlijn</h1>
       <p>Uitdraai op ${esc(fmtStamp(new Date().toISOString()))}${store.me ? ` door ${esc(store.me)}` : ''}</p>
-      <p class="notice">Let op: Jacky, Paps en Bren zien deze gegevens en kunnen ze wijzigen. Dit is een momentopname.</p>
+      <p class="notice">Let op: Jacky, Ronald en Bren zien deze gegevens en kunnen ze wijzigen. Dit is een momentopname. Chat zit er niet in.</p>
     </header>
     ${body}
   `;

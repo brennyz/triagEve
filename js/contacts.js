@@ -1,5 +1,5 @@
 import {
-  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, softDelete,
+  $, $$, store, db, esc, check, onLoad, onRealtime, fmtStamp, actions, alive, softDelete, personName,
 } from './core.js';
 import { renderHome } from './home.js';
 import { renderNood } from './eef.js';
@@ -10,13 +10,14 @@ export const ROLES = [
 ];
 const QUICK_ROLES = ['Huisarts', 'Psychiater', 'Psycholoog', 'Apotheek', 'Thuiszorg'];
 const FAMILY = [
-  ['Paps', 'hoofd', 'Hoofdcontact'],
+  ['Ronald', 'hoofd', 'Hoofdcontact'],
   ['Jacky', 'secundair', 'Secundair'],
   ['Bren', 'secundair', 'Secundair'],
 ];
 
 function familyOf(name) {
-  return alive(store.contacts).find((c) => c.circle === 'familie' && c.name === name) || null;
+  const want = personName(name);
+  return alive(store.contacts).find((c) => c.circle === 'familie' && personName(c.name) === want) || null;
 }
 
 export function isZorg(c) {
@@ -117,13 +118,14 @@ function openContact(id = null, preset = {}) {
   store.editingContactId = c?.id || null;
   store.draftCircle = c?.circle || preset.circle || 'zorg';
   store.draftRank = c?.rank || preset.rank || null;
-  const who = c?.name || preset.name || '';
+  const raw = c?.name || preset.name || '';
   const familyName = c?.circle === 'familie' || preset.circle === 'familie';
+  const who = familyName ? (personName(raw) || raw) : raw;
   $('#contact-title').textContent = familyName
     ? `Nummer van ${who || 'ons'}`
     : (c ? 'Contact wijzigen' : (who || 'Nieuw contact'));
-  $('#c-name').value = c?.name || preset.name || '';
-  $('#c-name').readOnly = familyName && FAMILY.some(([name]) => name === $('#c-name').value);
+  $('#c-name').value = who;
+  $('#c-name').readOnly = familyName && FAMILY.some(([name]) => name === personName(who));
   fillRoles(c?.role || preset.role || (store.draftCircle === 'familie' ? 'Familie' : 'Huisarts'));
   $('#c-org').value = c?.organisation || '';
   $('#c-phone').value = c?.phone || '';
@@ -201,9 +203,10 @@ $('#contact-form')?.addEventListener('submit', async (e) => {
     updated_at: new Date().toISOString(),
   };
   if (!data.name) return;
-  const familyRanks = { Paps: 'hoofd', Jacky: 'secundair', Bren: 'secundair' };
-  const canonical = Object.keys(familyRanks).find((name) => name.toLowerCase() === data.name.toLowerCase());
-  if (!store.editingContactId && canonical) {
+  const familyRanks = { Ronald: 'hoofd', Jacky: 'secundair', Bren: 'secundair' };
+  const named = personName(data.name);
+  const canonical = familyRanks[named] ? named : '';
+  if (canonical && (store.draftCircle === 'familie' || !store.editingContactId)) {
     data.name = canonical;
     const existing = familyOf(canonical);
     if (existing) {
