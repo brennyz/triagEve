@@ -129,6 +129,7 @@ function shiftHtml() {
     ? `Laatst door ${personName(p.handover_by) || '?'} · ${whenLabel(p.handover_at)}`
     : 'Nog niks achtergelaten.';
   const active = alive(store.medications).filter((m) => m.active);
+  const medDot = samePerson(store.me, 'Ronald') && !active.length;
   const lines = active.length
     ? active.map((m) => {
       const mine = todayDoses(m.id);
@@ -162,7 +163,10 @@ function shiftHtml() {
   return `
     ${presence}
     <article class="card home-card">
-      <h2>Inname vandaag</h2>
+      <div class="card-head">
+        <h2>Inname vandaag</h2>
+        <button type="button" class="plus-btn" id="home-add-med" aria-label="${medDot ? 'Medicatie toevoegen voor Ronald' : 'Medicatie toevoegen'}">+${medDot ? '<span class="alert-dot" title="Voor Ronald"></span>' : ''}</button>
+      </div>
       ${lines}
       <p class="item-meta">Vink alleen aan wat je echt gegeven hebt.</p>
     </article>`;

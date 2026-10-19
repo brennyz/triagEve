@@ -17,6 +17,12 @@ export const DIARY_CATEGORIES = [
 
 const catLabel = (c) => (DIARY_CATEGORIES.find(([k]) => k === c) || ['algemeen', 'Algemeen'])[1];
 
+function whoClass(author) {
+  const name = personName(author).toLowerCase();
+  if (name === 'jacky' || name === 'ronald' || name === 'bren') return `who-${name}`;
+  return '';
+}
+
 export async function loadDiary() {
   if (!db) {
     store.diary = store.diary || [];
@@ -63,11 +69,11 @@ export function renderDiary() {
     html += `
       <article class="card entry ${mine ? 'editable' : ''} ${d.important ? 'important' : ''}" data-id="${d.id}">
         <div class="item-head">
-          <strong>${esc(personName(d.author))}${d.important ? ' · belangrijk' : ''}</strong>
+          <strong class="entry-author ${whoClass(d.author)}">${esc(personName(d.author))}</strong>
           <span class="item-date">${esc(fmtStamp(d.created_at))}</span>
         </div>
-        <p class="kind-label">${esc(catLabel(cat))}</p>
         <p class="entry-body">${esc(d.body)}</p>
+        <p class="entry-meta"><span class="entry-cat">${esc(catLabel(cat))}</span>${d.important ? '<span class="entry-flag">Belangrijk</span>' : ''}</p>
         ${d.updated_at ? `<div class="item-meta">Bewerkt op ${esc(fmtStamp(d.updated_at))}</div>` : ''}
       </article>`;
     return html;

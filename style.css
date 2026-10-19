@@ -435,7 +435,21 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .entry.important { border-color: #e0b15a; box-shadow: 0 0 0 1px #e0b15a, var(--shadow); }
 .entry.editable { cursor: pointer; }
 .entry.editable:hover { border-color: var(--primary); }
-.entry-body { margin: 8px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.entry-author { font-size: 1rem; }
+.entry-author.who-jacky { color: var(--who-jacky-ink); }
+.entry-author.who-ronald { color: var(--who-ronald-ink); }
+.entry-author.who-bren { color: var(--who-bren-ink); }
+.entry-body { margin: 8px 0 0; font-size: 1.05rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.entry-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+.entry-cat, .entry-flag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.entry-cat { background: var(--bg); color: var(--muted); }
+.entry-flag { background: #ffe7b3; color: #7a5200; }
 
 /* ---------- Overleg ---------- */
 
@@ -735,15 +749,26 @@ dialog h2 { margin-top: 0; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
 .card-head h2 { margin: 0; }
 .plus-btn {
+  position: relative;
   width: 44px;
   height: 44px;
   border-radius: 12px;
   background: var(--primary);
-  color: white;
+  color: var(--btn-text);
   font-size: 1.7rem;
   line-height: 1;
   padding: 0;
   flex-shrink: 0;
+}
+.alert-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e23b4a;
+  box-shadow: 0 0 0 2px var(--card);
 }
 .home-card .primary { margin-top: 8px; min-height: 44px; }
 .empty-inline { color: var(--muted); margin: 0; font-size: 0.95rem; }

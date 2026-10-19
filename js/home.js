@@ -131,6 +131,7 @@ export function renderHome() {
 document.addEventListener('click', (e) => {
   if (e.target.id === 'status-open') actions.openStatus?.();
   if (e.target.closest('#home-add-task')) actions.openTask?.();
+  if (e.target.closest('#home-add-med')) actions.openMed?.();
 });
 
 onAfterLoad(renderHome);
