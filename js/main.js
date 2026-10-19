@@ -13,6 +13,7 @@ import './meds.js';
 import './zorgdag.js';
 import './tasks.js';
 import './print.js';
+import './machtiging.js';
 import './checkins.js';
 import './push.js';
 import './history.js';

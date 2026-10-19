@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#5c3d82">
   <meta name="description" content="Contact, dagboek en agenda voor Jacky, Ronald en Bren">
   <meta name="robots" content="noindex, nofollow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://slddtxwbufoadmvdconz.supabase.co wss://slddtxwbufoadmvdconz.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' blob:; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://slddtxwbufoadmvdconz.supabase.co wss://slddtxwbufoadmvdconz.supabase.co; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>triagEve</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -172,6 +172,7 @@
           <button type="button" class="menu-item" data-go="tasks">Taken</button>
           <button type="button" class="menu-item" data-go="contacts">Contacten</button>
           <p class="menu-label">Papieren en extra</p>
+          <button type="button" class="menu-item" data-go="machtiging">Machtiging</button>
           <button type="button" class="menu-item" data-go="print">PDF voor dienstverlener</button>
           <button type="button" class="menu-item" data-go="timeline">Tijdlijn uitdraaien</button>
           <button type="button" class="menu-item" data-go="wishes">Wensen van Eef</button>
@@ -331,11 +332,109 @@
         </form>
       </div>
     </div>
+    <div id="tab-machtiging" class="tab-panel" hidden>
+      <div class="scroll">
+        <button type="button" class="ghost back" data-go="more">← Meer</button>
+        <form id="mgt-form" class="card">
+          <h2>Machtiging</h2>
+          <p class="pdf-note">Ronald Zijffers staat als gemachtigde en eerste contactpersoon. Elk veld kun je aanpassen. Pdf downloadt meteen, zonder papierformaat. Mailen zet de pdf in je eigen mail; de mail komt aan als je daar op Versturen tikt.</p>
+          <h3>Volmachtgever</h3>
+          <label for="mgt-principal">Naam</label>
+          <input id="mgt-principal" autocomplete="name">
+          <div class="row">
+            <div>
+              <label for="mgt-principalBirth">Geboortedatum</label>
+              <input id="mgt-principalBirth" type="date">
+            </div>
+            <div>
+              <label for="mgt-address">Adres</label>
+              <input id="mgt-address" autocomplete="street-address">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="mgt-postcode">Postcode</label>
+              <input id="mgt-postcode" autocomplete="postal-code">
+            </div>
+            <div>
+              <label for="mgt-city">Plaats</label>
+              <input id="mgt-city" autocomplete="address-level2">
+            </div>
+          </div>
+          <h3>Gemachtigde, eerste contactpersoon</h3>
+          <label for="mgt-rep">Naam</label>
+          <input id="mgt-rep">
+          <div class="row">
+            <div>
+              <label for="mgt-relation">Relatie</label>
+              <input id="mgt-relation">
+            </div>
+            <div>
+              <label for="mgt-repBirth">Geboortedatum</label>
+              <input id="mgt-repBirth" type="date">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="mgt-repPhone">Telefoon</label>
+              <input id="mgt-repPhone" type="tel" autocomplete="tel">
+            </div>
+            <div>
+              <label for="mgt-repEmail">E-mail</label>
+              <input id="mgt-repEmail" type="email" autocomplete="email">
+              <a id="mgt-mail-ronald" class="contact-call" hidden href="mailto:">Mailen</a>
+            </div>
+          </div>
+          <h3>Vervanger, als de gemachtigde niet bereikbaar is</h3>
+          <label for="mgt-alt">Naam</label>
+          <input id="mgt-alt">
+          <div class="row">
+            <div>
+              <label for="mgt-altRelation">Relatie</label>
+              <input id="mgt-altRelation">
+            </div>
+            <div>
+              <label for="mgt-altPhone">Telefoon</label>
+              <input id="mgt-altPhone" type="tel">
+            </div>
+          </div>
+          <h3>Wensen</h3>
+          <label for="mgt-wishes">In eigen woorden, dit komt in de machtiging</label>
+          <textarea id="mgt-wishes" rows="5"></textarea>
+          <h3>Ondertekening</h3>
+          <div class="row">
+            <div>
+              <label for="mgt-place">Plaats</label>
+              <input id="mgt-place">
+            </div>
+            <div>
+              <label for="mgt-date">Datum</label>
+              <input id="mgt-date" type="date">
+            </div>
+          </div>
+          <h3>Huisarts, optioneel</h3>
+          <label for="mgt-doctor">Naam huisarts</label>
+          <input id="mgt-doctor">
+          <label for="mgt-practice">Praktijk</label>
+          <input id="mgt-practice">
+          <label for="mgt-doctorDate">Datum verklaring</label>
+          <input id="mgt-doctorDate" type="date">
+          <div class="dialog-buttons">
+            <button type="submit" class="ghost">Bewaren</button>
+            <button type="button" id="mgt-pdf" class="primary">Pdf</button>
+            <button type="button" id="mgt-mail" class="primary">Mailen</button>
+          </div>
+        </form>
+      </div>
+    </div>
     <div id="tab-print" class="tab-panel" hidden>
       <div class="scroll">
         <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
         <p class="muted no-print">Contacten, Over Eef, wensen, de laatste status, medicatie, inname van vandaag, belangrijke dagboekstukjes (30 dagen), open taken, recente metingen en komende afspraken. Chat zit er niet in.</p>
-        <button type="button" id="print-btn" class="primary no-print">Printen / Opslaan als PDF</button>
+        <div class="dialog-buttons no-print">
+          <button type="button" id="print-btn" class="primary">Pdf downloaden</button>
+          <button type="button" id="print-mail" class="ghost">Mailen</button>
+        </div>
         <div id="print-root"></div>
       </div>
     </div>
@@ -343,7 +442,10 @@
       <div class="scroll">
         <button type="button" class="ghost back no-print" data-go="more">← Meer</button>
         <p class="muted no-print">Dagboek, agenda, status, taken met een datum en metingen. Chat zit er niet in.</p>
-        <button type="button" id="timeline-print" class="primary no-print">Printen / Opslaan als PDF</button>
+        <div class="dialog-buttons no-print">
+          <button type="button" id="timeline-print" class="primary">Pdf downloaden</button>
+          <button type="button" id="timeline-mail" class="ghost">Mailen</button>
+        </div>
         <div id="timeline-root"></div>
       </div>
     </div>
@@ -551,6 +653,7 @@
 
   <div id="toast" class="toast" hidden></div>
 
+  <script src="vendor/pdf-lib.min.js"></script>
   <script src="vendor/supabase.js"></script>
   <script src="config.js"></script>
   <script type="module" src="js/main.js"></script>

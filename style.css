@@ -567,7 +567,8 @@ body:has(#app-view:not([hidden])) .install-bar { bottom: calc(78px + env(safe-ar
 .contact-phone { color: var(--text) !important; font-weight: 700; font-size: 1rem !important; }
 .contact-actions { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
 .contact-actions .ghost, .contact-actions .primary { min-height: 44px; padding: 8px 12px; }
-a.contact-call[href^="tel:"] {
+a.contact-call[href^="tel:"],
+a.contact-call[href^="mailto:"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -672,6 +673,8 @@ dialog h2 { margin-top: 0; }
 .stay-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .stay-copy strong { font-size: 1.15rem; }
 .stay-copy span { color: var(--muted); font-size: 0.9rem; }
+.stay-address { color: var(--text) !important; font-size: 0.95rem !important; font-weight: 700; }
+.home-link { margin: 0 0 12px; }
 .house { position: relative; width: 64px; height: 64px; flex: none; color: var(--primary); }
 .house svg { width: 64px; height: 64px; display: block; }
 .house span {

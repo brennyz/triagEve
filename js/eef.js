@@ -48,7 +48,7 @@ export function renderNood() {
   const contacts = alive(store.contacts).sort((a, b) => Number(b.is_emergency) - Number(a.is_emergency));
   const familyOrder = [['Ronald', 'hoofd'], ['Jacky', 'secundair'], ['Bren', 'secundair']];
   const family = familyOrder.map(([name, rank]) => {
-    const c = contacts.find((x) => x.circle === 'familie' && personName(x.name) === name && x.phone);
+    const c = contacts.find((x) => x.circle === 'familie' && personName(x.name) === name && (x.phone || x.email));
     return c ? { ...c, name: personName(c.name), rank } : null;
   }).filter(Boolean);
   const familyIds = new Set(family.map((c) => c.id));
@@ -59,9 +59,16 @@ export function renderNood() {
   const psychIds = new Set(psychiaterAll.map((c) => c.id));
   const nood = contacts.filter((c) => c.is_emergency && !familyIds.has(c.id) && !huisIds.has(c.id) && !psychIds.has(c.id));
 
-  const telBtn = (c, extra) => c.phone
-    ? `<a class="emergency-call small" href="tel:${esc(String(c.phone).replace(/\s+/g, ''))}">${esc(c.name)}${extra ? ` · ${esc(extra)}` : ''} · ${esc(c.phone)}</a>`
-    : `<p class="empty-inline">${esc(c.name)} (geen nummer)</p>`;
+  const telBtn = (c, extra) => {
+    const who = `${esc(c.name)}${extra ? ` · ${esc(extra)}` : ''}`;
+    const call = c.phone
+      ? `<a class="emergency-call small" href="tel:${esc(String(c.phone).replace(/\s+/g, ''))}">${who} · ${esc(c.phone)}</a>`
+      : `<p class="empty-inline">${who}</p>`;
+    const mail = c.email
+      ? `<a class="emergency-call small" href="mailto:${esc(c.email)}">Mail ${esc(c.name)} · ${esc(c.email)}</a>`
+      : '';
+    return call + mail;
+  };
 
   el.innerHTML = `
     <a class="emergency-call" href="tel:112">112 bellen</a>

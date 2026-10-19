@@ -223,7 +223,8 @@ function stayHtml() {
   const home = stay === 'thuis';
   const title = home ? 'Thuis' : (stay ? stayPhrase().replace(/^Eef is (in |)/, '') : 'Plek kiezen');
   const sub = home ? 'Eef is thuis' : 'Tik om te wijzigen';
-  return `<button type="button" class="stay-tile stay-edit" aria-label="Plek van Eef wijzigen">${stayMark(home)}<span class="stay-copy"><strong>${esc(title)}</strong><span>${esc(sub)}</span></span></button>`;
+  const address = actions.addressLine?.() || '';
+  return `<button type="button" class="stay-tile stay-edit" aria-label="Plek van Eef wijzigen">${stayMark(home)}<span class="stay-copy"><strong>${esc(title)}</strong><span>${esc(sub)}</span>${address ? `<span class="stay-address">${esc(address)}</span>` : ''}</span></button>`;
 }
 
 function renderStayChoices() {

@@ -54,18 +54,27 @@ function phoneLink(phone) {
   return `<a class="contact-call" href="tel:${esc(raw.replace(/\s+/g, ''))}">Bellen</a>`;
 }
 
+function mailLink(email) {
+  const raw = String(email || '').trim();
+  if (!raw) return '';
+  return `<a class="contact-call" href="mailto:${esc(raw)}">Mailen</a>`;
+}
+
 function familyCard(name, rank, label) {
   const c = familyOf(name);
   const phone = c?.phone ? String(c.phone) : '';
+  const email = c?.email ? String(c.email) : '';
   return `
     <article class="card contact-row" data-family="${esc(name)}" data-rank="${rank}">
       <div class="contact-copy">
         <strong>${esc(name)} · ${esc(label)}</strong>
         <span class="${phone ? 'contact-phone' : ''}">${phone ? esc(phone) : 'Nog geen nummer'}</span>
+        ${email ? `<span class="contact-phone">${esc(email)}</span>` : ''}
       </div>
       <div class="contact-actions">
         ${phoneLink(phone)}
-        <button type="button" class="${phone ? 'ghost' : 'primary'}">${phone ? 'Wijzigen' : 'Nummer invullen'}</button>
+        ${mailLink(email)}
+        <button type="button" class="${phone || email ? 'ghost' : 'primary'}">${phone || email ? 'Wijzigen' : 'Nummer invullen'}</button>
       </div>
     </article>`;
 }
@@ -89,9 +98,11 @@ export function renderContacts() {
           <strong>${esc(c.name)}${c.is_emergency ? '<span class="badge danger-badge">nood</span>' : ''}</strong>
           <span>${esc([c.role, c.organisation].filter(Boolean).join(' · '))}</span>
           <span class="${c.phone ? 'contact-phone' : ''}">${c.phone ? esc(c.phone) : 'Nog geen nummer'}</span>
+          ${c.email ? `<span class="contact-phone">${esc(c.email)}</span>` : ''}
         </div>
         <div class="contact-actions">
           ${phoneLink(c.phone)}
+          ${mailLink(c.email)}
           <button type="button" class="${c.phone ? 'ghost' : 'primary'}">${c.phone ? 'Wijzigen' : 'Nummer invullen'}</button>
         </div>
       </article>`).join('')

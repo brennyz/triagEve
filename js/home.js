@@ -100,6 +100,7 @@ export function renderHome() {
 
   el.innerHTML = `
     ${actions.stayHtml ? actions.stayHtml() : ''}
+    <button type="button" class="ghost home-link" data-go="machtiging">Machtiging</button>
     ${statusCard()}
     ${actions.shiftHtml ? actions.shiftHtml() : ''}
     ${visitCard()}

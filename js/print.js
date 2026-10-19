@@ -1,4 +1,5 @@
-import { $, store, esc, localDate, fmtStamp, actions, alive, personName } from './core.js';
+import { $, store, esc, localDate, fmtStamp, toast, actions, alive, personName } from './core.js';
+import { blocksFrom, buildPdf, downloadPdf, sharePdf } from './pdfdoc.js';
 import { KINDS } from './meet.js';
 import { STATUS, traitPhrase, lastCheckin } from './checkins.js';
 import { isZorg } from './contacts.js';
@@ -201,8 +202,27 @@ export function renderTimeline() {
   `;
 }
 
-$('#print-btn')?.addEventListener('click', () => window.print());
-$('#timeline-print')?.addEventListener('click', () => window.print());
+async function saveOrShare(kind, share) {
+  if (kind === 'print') renderPrint();
+  else renderTimeline();
+  const root = kind === 'print' ? $('#print-root') : $('#timeline-root');
+  const name = kind === 'print' ? 'triageve-dienstverlener.pdf' : 'triageve-tijdlijn.pdf';
+  const title = kind === 'print' ? 'Overzicht voor de dienstverlener' : 'Tijdlijn';
+  const bytes = await buildPdf(blocksFrom(root), title);
+  if (!share) {
+    downloadPdf(name, bytes);
+    toast('Pdf staat in je downloads.');
+    return;
+  }
+  const result = await sharePdf(name, bytes, title, 'De pdf zit bij deze mail. Chat zit er niet in.');
+  if (result === 'shared') toast('Kies je mail en tik op Versturen. Dan komt de mail aan.');
+  else if (result === 'downloaded') toast('Delen lukt hier niet. De pdf is gedownload. Zet die zelf als bijlage.');
+}
+
+$('#print-btn')?.addEventListener('click', () => saveOrShare('print', false));
+$('#print-mail')?.addEventListener('click', () => saveOrShare('print', true));
+$('#timeline-print')?.addEventListener('click', () => saveOrShare('timeline', false));
+$('#timeline-mail')?.addEventListener('click', () => saveOrShare('timeline', true));
 
 actions.renderPrint = renderPrint;
 actions.renderTimeline = renderTimeline;
