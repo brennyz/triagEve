@@ -102,6 +102,7 @@ export function renderHome() {
     ${actions.stayHtml ? actions.stayHtml() : ''}
     <button type="button" class="ghost home-link" data-go="machtiging">Machtiging</button>
     ${statusCard()}
+    ${actions.stockBanner ? actions.stockBanner() : ''}
     ${actions.shiftHtml ? actions.shiftHtml() : ''}
     ${visitCard()}
     <button type="button" class="emergency-btn" data-go="nood" aria-label="Noodkaart">Noodkaart</button>

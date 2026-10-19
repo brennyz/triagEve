@@ -52,6 +52,8 @@ Het lijstje is voor de familie. Volg altijd wat de arts of apotheek zegt.
 
 Vink **ochtend, middag, avond of nacht** aan als je het gegeven hebt. De ander ziet wie het was en hoe laat, zodat het niet nog een keer gegeven wordt. Tik nog eens om het vinkje weg te halen.
 
+Bij een medicijn kun je de voorraad invullen. De app zegt **Op rond** en, als het bijna op is, **Bijna op**. Dan kies je **Nog niet op** of **Is weer besteld**. Na bestellen tik je **Opgehaald** en vul je het aantal in. Zo nodig, zonder vast aantal per dag: tik **1 ingenomen**. Jacky, Ronald en Bren zien een korte regel in het dagboek.
+
 ## Wie is er, en voor de volgende
 
 Op Home: **Ik ben er** en **Ik ga weg**. Staat er al iemand, dan vraagt de app het eerst. **Voor de volgende** is één briefje met wie het opsloeg en wanneer. Iedereen ziet het en kan het wijzigen.

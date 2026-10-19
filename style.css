@@ -745,6 +745,46 @@ dialog h2 { margin-top: 0; }
 @media (prefers-color-scheme: dark) {
   .present-card.is-here { background: #1c3d2a; }
 }
+.stock-box, .stock-line, .stock-note { margin-top: 10px; }
+.stock-forecast { margin: 4px 0 0; font-size: 0.95rem; line-height: 1.4; }
+.stock-note { margin: 4px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
+.stock-box { border-radius: 14px; padding: 12px; }
+.stock-box p { margin: 0; line-height: 1.4; }
+.stock-box strong { display: block; font-size: 1rem; }
+.stock-warn { background: #fff4e5; border: 1px solid #e0a15a; }
+.stock-warn p, .stock-warn strong { color: #7a4a00; }
+.stock-ordered { background: #eef8f0; border: 1px solid #8fbf9a; }
+.stock-ordered p { color: #1d5538; }
+.stock-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.stock-line p { margin: 0; flex: 1 1 10rem; line-height: 1.4; }
+.stock-actions { display: grid; gap: 8px; margin-top: 10px; }
+.stock-actions button, .stock-line button { width: 100%; min-height: 44px; font-weight: 700; }
+.stock-actions .ghost, .stock-line button {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.stock-warn .stock-actions .ghost {
+  background: #fff8ee;
+  color: #7a4a00;
+  border: 1px solid #e0a15a;
+}
+.stock-line button { width: auto; flex: none; }
+.stock-home { display: grid; gap: 8px; margin: 0 0 12px; }
+.stock-home .stock-box { margin-top: 0; }
+@media (prefers-color-scheme: dark) {
+  .stock-warn { background: #3a2a18; border-color: #e0a15a; }
+  .stock-warn p, .stock-warn strong { color: #ffd7a8; }
+  .stock-warn .stock-actions .ghost { background: #4a3520; color: #ffd7a8; border-color: #e0a15a; }
+  .stock-ordered { background: #1c3d2a; border-color: #8fbf9a; }
+  .stock-ordered p { color: #d7f5e2; }
+}
 .home-card h2 { margin: 0 0 8px; font-size: 1rem; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
 .card-head h2 { margin: 0; }
