@@ -39,7 +39,11 @@ function filedFor(id) {
 export function renderChat({ followMine = true } = {}) {
   const el = $('#messages');
   if (!el) return;
-  if (editingId && $('#bubble-editor-body')) editDraft = $('#bubble-editor-body').value;
+  if (editingId && $('#bubble-editor')) {
+    editDraft = $('#bubble-editor-body')?.value ?? editDraft;
+    editCat = $('#bubble-editor-cats .chip.active')?.dataset.cat || 'algemeen';
+    editImportant = Boolean($('#bubble-editor-important')?.checked);
+  }
   const top = el.scrollTop;
   const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
   if (!store.messages.length) {
@@ -74,8 +78,16 @@ export function renderChat({ followMine = true } = {}) {
   else el.scrollTop = top;
   if (editingId) {
     const draft = editDraft;
+    const cat = editCat;
+    const important = editImportant;
     openEditor(editingId);
-    if (draft != null && $('#bubble-editor-body')) $('#bubble-editor-body').value = draft;
+    const body = $('#bubble-editor-body');
+    if (draft != null && body && !body.hidden) {
+      body.value = draft;
+      $$('#bubble-editor-cats .chip').forEach((c) => c.classList.toggle('active', c.dataset.cat === cat));
+      const box = $('#bubble-editor-important');
+      if (box) box.checked = important;
+    }
   }
 }
 
@@ -162,12 +174,16 @@ function moveHold(e) {
 
 let editingId = null;
 let editDraft = null;
+let editCat = 'algemeen';
+let editImportant = false;
 let hoverTimer = null;
 let hoverId = null;
 
 function closeEditor() {
   editingId = null;
   editDraft = null;
+  editCat = 'algemeen';
+  editImportant = false;
   $('#bubble-editor')?.remove();
 }
 
@@ -191,6 +207,7 @@ function ensureEditor() {
       <button type="button" class="chip" data-cat="incident">Incident</button>
     </div>
     <label class="check-line"><input id="bubble-editor-important" type="checkbox"> Belangrijk</label>
+    <p class="bubble-editor-pdf">Belangrijk komt in de pdf. De chat zelf niet.</p>
     <p class="bubble-editor-already" hidden></p>
     <div class="bubble-editor-actions">
       <button type="button" data-edit-cancel>Annuleren</button>
@@ -199,6 +216,12 @@ function ensureEditor() {
     </div>
   `;
   form.addEventListener('pointerdown', (e) => e.stopPropagation());
+  form.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    e.preventDefault();
+    e.stopPropagation();
+    closeEditor();
+  });
   form.addEventListener('click', (e) => {
     const chip = e.target.closest('#bubble-editor-cats .chip');
     if (chip) {
@@ -227,7 +250,11 @@ function ensureEditor() {
 
 function openEditor(id) {
   const m = (store.messages || []).find((x) => String(x.id) === String(id));
-  if (!m || m.pending) {
+  if (!m) {
+    closeEditor();
+    return;
+  }
+  if (m.pending) {
     toast('Dit bericht is nog niet verstuurd.');
     return;
   }
@@ -249,6 +276,7 @@ function openEditor(id) {
   $('#bubble-editor-important').closest('label').hidden = already;
   form.querySelector('[type="submit"]').hidden = already;
   form.querySelector('[data-edit-open]').hidden = !already;
+  form.querySelector('.bubble-editor-pdf').hidden = already;
   const note = form.querySelector('.bubble-editor-already');
   note.hidden = !already;
   if (already) {
@@ -300,14 +328,15 @@ messages?.addEventListener('pointerdown', (e) => {
 });
 messages?.addEventListener('pointerover', (e) => {
   if (e.pointerType && e.pointerType !== 'mouse') return;
-  if (e.buttons || document.activeElement === chatInput) return;
+  if (e.buttons || document.activeElement === chatInput || $('#bubble-editor')) return;
   const bubble = e.target.closest('.bubble[data-id]');
-  if (!bubble || bubble.dataset.pending || bubble.contains($('#bubble-editor'))) return;
+  if (!bubble || bubble.dataset.pending) return;
   if (hoverId === bubble.dataset.id) return;
   clearTimeout(hoverTimer);
   hoverId = bubble.dataset.id;
   hoverTimer = setTimeout(() => {
-    if (!bubble.matches(':hover')) return;
+    if ($('#bubble-editor') || document.activeElement === chatInput) return;
+    if (!bubble.isConnected || !bubble.matches(':hover')) return;
     openEditor(bubble.dataset.id);
   }, 450);
 });
@@ -349,45 +378,46 @@ async function saveFromEditor(e) {
     return;
   }
   if (submit) submit.disabled = true;
-  if (filedFor(m.id)) {
-    toast('Dit staat al in het dagboek.');
-    closeEditor();
-    return;
-  }
-  const row = {
-    author: personName(m.author) || m.author || 'Onbekend',
-    body,
-    category: $('#bubble-editor-cats .chip.active')?.dataset.cat || 'algemeen',
-    important: $('#bubble-editor-important').checked,
-    created_at: m.created_at,
-    source_message_id: Number(m.id),
-    filed_by: store.me,
-  };
-  if (!db) {
-    store.diary = store.diary || [];
-    store.diary.unshift({ id: Date.now(), ...row });
+  try {
+    if (filedFor(m.id)) {
+      toast('Dit staat al in het dagboek.');
+      closeEditor();
+      return;
+    }
+    const row = {
+      author: personName(m.author) || m.author || 'Onbekend',
+      body,
+      category: $('#bubble-editor-cats .chip.active')?.dataset.cat || 'algemeen',
+      important: $('#bubble-editor-important').checked,
+      created_at: m.created_at,
+      source_message_id: Number(m.id),
+      filed_by: store.me,
+    };
+    if (!db) {
+      store.diary = store.diary || [];
+      store.diary.unshift({ id: Date.now(), ...row });
+      closeEditor();
+      toast('In het dagboek gezet.');
+      actions.renderDiary?.();
+      renderHome();
+      renderChat({ followMine: false });
+      return;
+    }
+    const { error } = await db.from('triageve_diary').insert(row);
+    if (error?.code === '23505') {
+      toast('Dit staat al in het dagboek.');
+      closeEditor();
+      loadDiary();
+      return;
+    }
+    if (check(error, 'Dagboek')) return;
+    if (row.important) pingNotify('diary');
     closeEditor();
     toast('In het dagboek gezet.');
-    actions.renderDiary?.();
-    renderHome();
-    renderChat({ followMine: false });
-    return;
-  }
-  const { error } = await db.from('triageve_diary').insert(row);
-  if (error?.code === '23505') {
-    toast('Dit staat al in het dagboek.');
-    closeEditor();
     loadDiary();
-    return;
+  } finally {
+    if (submit?.isConnected) submit.disabled = false;
   }
-  if (check(error, 'Dagboek')) {
-    if (submit) submit.disabled = false;
-    return;
-  }
-  if (row.important) pingNotify('diary');
-  closeEditor();
-  toast('In het dagboek gezet.');
-  loadDiary();
 }
 
 onLoad(loadMessages);

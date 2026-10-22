@@ -419,13 +419,17 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .bubble:has(.bubble-editor) .bubble-file { display: none; }
 .bubble-editor {
   margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
   text-align: left;
   color: var(--text);
 }
-.bubble-editor label { color: var(--text); }
+.bubble-editor label,
+.bubble-editor .check-line { color: var(--text); }
 .bubble-editor-when,
+.bubble-editor-pdf,
 .bubble-editor-already { margin: 0 0 6px; color: var(--muted); font-size: 0.85rem; line-height: 1.35; }
 .bubble-editor textarea,
 .bubble-editor .chip { color: var(--text); background: var(--bg); }
