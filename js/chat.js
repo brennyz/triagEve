@@ -58,10 +58,11 @@ export function renderChat({ followMine = true } = {}) {
     const filed = !m.pending && filedFor(m.id);
     html += `
       <div class="bubble-row ${mine ? 'mine' : ''} ${who}">
-        <div class="bubble" data-id="${esc(m.id)}" ${m.pending ? 'data-pending="1"' : ''} title="${esc(fmtStamp(m.created_at))}">
+        <div class="bubble" data-id="${esc(m.id)}" ${m.pending ? 'data-pending="1"' : ''}>
           <div class="bubble-author">${esc(personName(m.author) || 'Onbekend')}</div>
           <div class="bubble-body">${esc(m.body)}</div>
           <div class="bubble-time">${esc(fmtTime(m.created_at))}${m.pending ? ' · wacht op verbinding' : ''}${filed ? ' · in dagboek' : ''}</div>
+          ${m.pending ? '' : `<button type="button" class="bubble-file" data-file="${esc(m.id)}">${filed ? 'Staat in dagboek' : 'In dagboek'}</button>`}
         </div>
       </div>`;
     return html;
@@ -120,14 +121,36 @@ $('#chat-form').addEventListener('submit', async (e) => {
 
 let hold = null;
 let openedAt = 0;
-const HOLD_MS = 500;
 
-function clearHold() {
+function detachHold() {
   if (!hold) return;
   clearTimeout(hold.timer);
   clearTimeout(hold.hint);
   hold.bubble?.classList.remove('is-holding');
+  window.removeEventListener('pointerup', endHold);
+  window.removeEventListener('pointercancel', endHold);
+  window.removeEventListener('pointermove', moveHold);
   hold = null;
+}
+
+function finishHold() {
+  if (!hold) return;
+  const id = hold.id;
+  detachHold();
+  openFile(id);
+}
+
+function endHold(e) {
+  if (!hold || e.pointerId !== hold.pointerId) return;
+  const tell = hold.armed && hold.pointerType === 'mouse';
+  detachHold();
+  if (tell) toast('Houd nog iets langer vast.');
+}
+
+function moveHold(e) {
+  if (!hold || e.pointerId !== hold.pointerId) return;
+  const slop = hold.pointerType === 'mouse' ? 48 : 14;
+  if (Math.hypot(e.clientX - hold.startX, e.clientY - hold.startY) > slop) detachHold();
 }
 
 function openFile(id) {
@@ -161,46 +184,58 @@ function openFile(id) {
 
 const messages = $('#messages');
 messages?.addEventListener('pointerdown', (e) => {
-  if (e.button !== 0) return;
+  if (e.button !== 0 || e.target.closest('.bubble-file')) return;
   const bubble = e.target.closest('.bubble[data-id]');
   if (!bubble || bubble.dataset.pending) return;
-  const startX = e.clientX;
-  const startY = e.clientY;
-  const id = bubble.dataset.id;
+  if (e.pointerType === 'mouse') e.preventDefault();
+  detachHold();
+  try { bubble.setPointerCapture(e.pointerId); } catch { /* de bel kan het gebaar ook zonder vangst volgen */ }
   hold = {
-    id,
+    id: bubble.dataset.id,
     bubble,
-    startX,
-    startY,
+    startX: e.clientX,
+    startY: e.clientY,
     pointerId: e.pointerId,
-    hint: setTimeout(() => bubble.classList.add('is-holding'), 160),
-    timer: setTimeout(() => {
-      const current = hold;
-      hold = null;
-      current?.bubble?.classList.remove('is-holding');
-      if (navigator.vibrate) navigator.vibrate(12);
-      openFile(id);
-    }, HOLD_MS),
+    pointerType: e.pointerType,
+    armed: false,
+    hint: null,
+    timer: null,
   };
+  hold.hint = setTimeout(() => {
+    if (!hold || hold.bubble !== bubble) return;
+    hold.armed = true;
+    bubble.classList.add('is-holding');
+    window.getSelection()?.removeAllRanges();
+  }, 160);
+  hold.timer = setTimeout(() => {
+    if (navigator.vibrate) navigator.vibrate(12);
+    finishHold();
+  }, 500);
+  window.addEventListener('pointerup', endHold);
+  window.addEventListener('pointercancel', endHold);
+  window.addEventListener('pointermove', moveHold);
 });
-messages?.addEventListener('pointermove', (e) => {
-  if (!hold || e.pointerId !== hold.pointerId) return;
-  if (Math.hypot(e.clientX - hold.startX, e.clientY - hold.startY) > 12) clearHold();
+messages?.addEventListener('click', (e) => {
+  const btn = e.target.closest('.bubble-file');
+  if (!btn) return;
+  e.preventDefault();
+  openFile(btn.dataset.file);
 });
-messages?.addEventListener('pointerup', (e) => {
-  if (hold && e.pointerId === hold.pointerId) clearHold();
-});
-messages?.addEventListener('pointercancel', clearHold);
 messages?.addEventListener('contextmenu', (e) => {
   const bubble = e.target.closest('.bubble[data-id]');
   if (!bubble) return;
   e.preventDefault();
-  clearHold();
+  detachHold();
   if (bubble.dataset.pending) {
     toast('Dit bericht is nog niet verstuurd.');
     return;
   }
   openFile(bubble.dataset.id);
+});
+$('#file-dialog')?.addEventListener('close', () => {
+  const id = $('#file-dialog').dataset.id;
+  if (!id) return;
+  document.querySelector(`.bubble-file[data-file="${CSS.escape(id)}"]`)?.focus();
 });
 
 $$('#file-cats .chip').forEach((chip) => {

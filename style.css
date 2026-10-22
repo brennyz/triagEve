@@ -399,6 +399,22 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .bubble-row.mine .bubble-time { color: #fff; }
 .bubble-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .bubble.is-holding { outline: 2px solid var(--primary); outline-offset: 2px; }
+.bubble-file { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .bubble-file {
+    display: flex;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 6px;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border-radius: 10px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+  }
+}
 .bubble-time { font-size: 0.75rem; text-align: right; margin-top: 2px; color: var(--muted); }
 .entry-via { margin: 6px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
 #file-dialog .dialog-buttons button { min-height: 44px; }
