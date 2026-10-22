@@ -82,7 +82,7 @@
     <!-- Chat -->
     <div id="tab-chat" class="tab-panel" hidden>
       <div id="messages" class="messages"><p class="empty">Nog geen berichten. Zeg hallo!</p></div>
-      <p class="pdf-note">Chat blijft in de app en komt niet in een pdf.</p>
+      <p class="pdf-note">Houd een bericht vast (rechtsklik op de computer) om het met die tijd in het dagboek te zetten. Chat komt niet in een pdf.</p>
       <form id="chat-form" class="composer">
         <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
         <button type="submit" class="primary send" title="Versturen" aria-label="Versturen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -670,6 +670,37 @@
       </div>
       <div class="dialog-buttons">
         <button type="button" id="stay-cancel" class="ghost">Sluiten</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="file-dialog">
+    <form id="file-form">
+      <h2 id="file-title">In het dagboek</h2>
+      <p id="file-when" class="item-meta"></p>
+      <p id="file-who"></p>
+      <p id="file-already" hidden></p>
+      <div id="file-fields">
+        <label for="file-body">Tekst</label>
+        <textarea id="file-body" rows="3" maxlength="20000"></textarea>
+        <p class="chip-label">Categorie</p>
+        <div class="chips chip-row" id="file-cats">
+          <button type="button" class="chip active" data-cat="algemeen">Algemeen</button>
+          <button type="button" class="chip" data-cat="gezondheid">Gezondheid</button>
+          <button type="button" class="chip" data-cat="stemming">Stemming</button>
+          <button type="button" class="chip" data-cat="eten">Eten</button>
+          <button type="button" class="chip" data-cat="slaap">Slaap</button>
+          <button type="button" class="chip" data-cat="medicatie">Medicatie</button>
+          <button type="button" class="chip" data-cat="incident">Incident</button>
+        </div>
+        <label class="check-line"><input id="file-important" type="checkbox"> Belangrijk</label>
+        <p class="pdf-note">Belangrijk komt in de pdf voor de dienstverlener. De chat zelf niet.</p>
+      </div>
+      <div class="dialog-buttons">
+        <button type="button" id="file-cancel" class="ghost">Annuleren</button>
+        <span class="spacer"></span>
+        <button type="button" id="file-open" class="ghost" hidden>Naar dagboek</button>
+        <button type="submit" class="primary" id="file-save">In dagboek</button>
       </div>
     </form>
   </dialog>

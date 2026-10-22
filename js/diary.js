@@ -27,6 +27,7 @@ export async function loadDiary() {
   if (!db) {
     store.diary = store.diary || [];
     renderDiary();
+    actions.renderChat?.({ followMine: false });
     return;
   }
   const { data, error } = await db.from('triageve_diary').select('*').order('created_at', { ascending: false });
@@ -34,6 +35,7 @@ export async function loadDiary() {
   store.diary = alive(data);
   renderDiary();
   renderHome();
+  actions.renderChat?.({ followMine: false });
 }
 
 function formCategory() {
@@ -43,7 +45,7 @@ function formCategory() {
 export function renderDiary() {
   const q = ($('#diary-search')?.value || '').trim().toLowerCase();
   const items = alive(store.diary).filter((d) => {
-    const blob = `${d.author || ''} ${d.body || ''} ${catLabel(d.category)}`.toLowerCase();
+    const blob = `${d.author || ''} ${d.filed_by || ''} ${d.body || ''} ${catLabel(d.category)}`.toLowerCase();
     return (!store.diaryWho || samePerson(d.author, store.diaryWho))
       && (!store.diaryCategory || (d.category || 'algemeen') === store.diaryCategory)
       && (!q || blob.includes(q));
@@ -64,16 +66,17 @@ export function renderDiary() {
       html += `<h3 class="list-day">${esc(dayLabel(d.created_at))}</h3>`;
       lastDay = day;
     }
-    const mine = samePerson(d.author, store.me);
+    const canEdit = samePerson(d.author, store.me) || samePerson(d.filed_by, store.me);
     const cat = d.category || 'algemeen';
     html += `
-      <article class="card entry ${mine ? 'editable' : ''} ${d.important ? 'important' : ''}" data-id="${d.id}">
+      <article class="card entry ${canEdit ? 'editable' : ''} ${d.important ? 'important' : ''}" data-id="${d.id}">
         <div class="item-head">
           <strong class="entry-author ${whoClass(d.author)}">${esc(personName(d.author))}</strong>
           <span class="item-date">${esc(fmtStamp(d.created_at))}</span>
         </div>
         <p class="entry-body">${esc(d.body)}</p>
         <p class="entry-meta"><span class="entry-cat">${esc(catLabel(cat))}</span>${d.important ? '<span class="entry-flag">Belangrijk</span>' : ''}</p>
+        ${d.filed_by ? `<p class="entry-via">In het dagboek gezet door ${esc(personName(d.filed_by))}.</p>` : ''}
         ${d.updated_at ? `<div class="item-meta">Bewerkt op ${esc(fmtStamp(d.updated_at))}</div>` : ''}
       </article>`;
     return html;
@@ -193,4 +196,5 @@ $('#diary-search').addEventListener('input', renderDiary);
 onLoad(loadDiary);
 onRealtime('triageve_diary', () => loadDiary());
 actions.renderDiary = renderDiary;
+actions.editDiary = editDiary;
 actions.DIARY_CATEGORIES = DIARY_CATEGORIES;

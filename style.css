@@ -363,6 +363,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .bubble-row { display: flex; }
 .bubble-row.mine { justify-content: flex-end; }
 .bubble {
+  -webkit-touch-callout: none;
   max-width: min(78%, 520px);
   background: var(--bubble-other);
   border: 1px solid var(--border);
@@ -397,7 +398,11 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .bubble-row.mine .bubble-body,
 .bubble-row.mine .bubble-time { color: #fff; }
 .bubble-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.bubble.is-holding { outline: 2px solid var(--primary); outline-offset: 2px; }
 .bubble-time { font-size: 0.75rem; text-align: right; margin-top: 2px; color: var(--muted); }
+.entry-via { margin: 6px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
+#file-dialog .dialog-buttons button { min-height: 44px; }
+#file-cats.chip-row { flex-wrap: wrap; overflow: visible; }
 .pdf-note { margin: 0 0 8px; color: var(--muted); font-size: 0.85rem; line-height: 1.35; }
 #tab-chat .pdf-note { margin: 0; padding: 6px 16px 0; background: var(--card); }
 

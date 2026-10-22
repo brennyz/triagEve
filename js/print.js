@@ -100,7 +100,7 @@ export function renderPrint() {
       : '<p>Geen huidige medicatie in de app.</p>')}
     ${block('Inname vandaag', intakeToday(meds))}
     ${block('Belangrijke dagboekstukjes (30 dagen)', diary.length
-      ? diary.map((d) => `<p><strong>${esc(personName(d.author))}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}</p>`).join('')
+      ? diary.map((d) => `<p><strong>${esc(personName(d.author))}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}${d.filed_by ? `<br>In het dagboek gezet door ${esc(personName(d.filed_by))}.` : ''}</p>`).join('')
       : '<p>Geen belangrijke stukjes in de laatste 30 dagen.</p>')}
     ${block('Open taken', openTasks.length
       ? `<ul>${openTasks.map((t) => `<li><strong>${esc(t.title)}</strong> · ${esc(personName(t.assignee) || 'niemand')}${t.due_date ? ` · uiterlijk ${esc(t.due_date)}` : ''}</li>`).join('')}</ul>`
@@ -122,7 +122,7 @@ function timelineEvents() {
       sort: d.created_at,
       kind: 'Dagboek',
       title: `${personName(d.author) || '?'}${d.important ? ' · belangrijk' : ''}`,
-      body: d.body || '',
+      body: `${d.body || ''}${d.filed_by ? `\nIn het dagboek gezet door ${personName(d.filed_by)}.` : ''}`,
     });
   }
   for (const m of alive(store.meetings)) {
