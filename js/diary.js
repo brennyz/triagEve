@@ -76,13 +76,27 @@ export function renderDiary() {
         </div>
         <p class="entry-body">${esc(d.body)}</p>
         <p class="entry-meta"><span class="entry-cat">${esc(catLabel(cat))}</span>${d.important ? '<span class="entry-flag">Belangrijk</span>' : ''}</p>
-        ${d.filed_by ? `<p class="entry-via">In het dagboek gezet door ${esc(personName(d.filed_by))}.</p>` : ''}
+        ${viaHtml(d)}
         ${d.updated_at ? `<div class="item-meta">Bewerkt op ${esc(fmtStamp(d.updated_at))}</div>` : ''}
       </article>`;
     return html;
   }).join('');
 
   $$('#diary-list .entry.editable').forEach((el) => el.addEventListener('click', () => editDiary(Number(el.dataset.id))));
+  $$('#diary-list .entry-chat').forEach((btn) => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    actions.showMessage?.(btn.dataset.chat);
+  }));
+}
+
+function viaHtml(d) {
+  const who = personName(d.filed_by);
+  const line = d.source_message_id
+    ? `Uit de chat${who ? `, gezet door ${who}` : ''}.`
+    : (who ? `In het dagboek gezet door ${who}.` : '');
+  if (!line && !d.source_message_id) return '';
+  return `${line ? `<p class="entry-via">${esc(line)}</p>` : ''}
+    ${d.source_message_id ? `<button type="button" class="ghost entry-chat" data-chat="${esc(d.source_message_id)}">Naar de chat</button>` : ''}`;
 }
 
 function setCatChip(cat) {
@@ -107,7 +121,9 @@ function editDiary(id) {
   $('#diary-input').value = d.body;
   $('#diary-important').checked = Boolean(d.important);
   setCatChip(d.category || 'algemeen');
-  $('#diary-label').textContent = `Bewerken (${fmtStamp(d.created_at)})`;
+  $('#diary-label').textContent = d.source_message_id
+    ? `Bewerken, uit de chat (${fmtStamp(d.created_at)})`
+    : `Bewerken (${fmtStamp(d.created_at)})`;
   $('#diary-save').textContent = 'Bijwerken';
   $('#diary-cancel').hidden = false;
   $('#diary-delete').hidden = false;
@@ -139,6 +155,7 @@ $('#diary-form').addEventListener('submit', async (e) => {
     resetDiaryForm();
     renderDiary();
     renderHome();
+    actions.renderChat?.({ followMine: false });
     return;
   }
   const { error } = store.editingDiaryId
@@ -160,6 +177,7 @@ $('#diary-delete').addEventListener('click', async () => {
     resetDiaryForm();
     renderDiary();
     renderHome();
+    actions.renderChat?.({ followMine: false });
     return;
   }
   const { error } = await softDelete('triageve_diary', store.editingDiaryId);

@@ -89,7 +89,7 @@ export function renderHome() {
 
   const diaryHtml = diaryBits.length
     ? diaryBits.map((d) => `<button type="button" class="home-row" data-go="diary">
-        <strong>${esc(personName(d.author))}${d.important ? ' · belangrijk' : ''}</strong>
+        <strong>${esc(personName(d.author))}${d.important ? ' · belangrijk' : ''}${d.source_message_id ? ' · uit de chat' : ''}</strong>
         <span>${esc(clip(d.body))}</span>
       </button>`).join('')
     : '<p class="empty-inline">Nog geen dagboekstukjes.</p>';

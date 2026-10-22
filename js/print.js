@@ -13,6 +13,12 @@ const FAMILY = [
 
 const SLOT_LABEL = { ochtend: 'ochtend', middag: 'middag', avond: 'avond', nacht: 'nacht' };
 
+function diaryVia(d) {
+  const who = personName(d.filed_by);
+  if (d.source_message_id) return who ? `Uit de chat, in het dagboek gezet door ${who}.` : 'Uit de chat.';
+  return who ? `In het dagboek gezet door ${who}.` : '';
+}
+
 function intakeToday(meds) {
   const doses = (store.doses || []).filter((d) => d.day === localDate());
   if (!meds.length) return '<p>Geen huidige medicatie in de app.</p>';
@@ -100,7 +106,7 @@ export function renderPrint() {
       : '<p>Geen huidige medicatie in de app.</p>')}
     ${block('Inname vandaag', intakeToday(meds))}
     ${block('Belangrijke dagboekstukjes (30 dagen)', diary.length
-      ? diary.map((d) => `<p><strong>${esc(personName(d.author))}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}${d.filed_by ? `<br>In het dagboek gezet door ${esc(personName(d.filed_by))}.` : ''}</p>`).join('')
+      ? diary.map((d) => `<p><strong>${esc(personName(d.author))}</strong> · ${esc(fmtStamp(d.created_at))}<br>${esc(d.body)}${diaryVia(d) ? `<br>${esc(diaryVia(d))}` : ''}</p>`).join('')
       : '<p>Geen belangrijke stukjes in de laatste 30 dagen.</p>')}
     ${block('Open taken', openTasks.length
       ? `<ul>${openTasks.map((t) => `<li><strong>${esc(t.title)}</strong> · ${esc(personName(t.assignee) || 'niemand')}${t.due_date ? ` · uiterlijk ${esc(t.due_date)}` : ''}</li>`).join('')}</ul>`
@@ -122,7 +128,7 @@ function timelineEvents() {
       sort: d.created_at,
       kind: 'Dagboek',
       title: `${personName(d.author) || '?'}${d.important ? ' · belangrijk' : ''}`,
-      body: `${d.body || ''}${d.filed_by ? `\nIn het dagboek gezet door ${personName(d.filed_by)}.` : ''}`,
+      body: `${d.body || ''}${diaryVia(d) ? `\n${diaryVia(d)}` : ''}`,
     });
   }
   for (const m of alive(store.meetings)) {

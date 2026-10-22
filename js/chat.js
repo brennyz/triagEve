@@ -1,6 +1,6 @@
 import {
   $, $$, store, db, esc, check, onLoad, onRealtime, localDate, fmtTime, fmtStamp, dayLabel, actions,
-  personName, samePerson, alive, toast,
+  personName, samePerson, alive, toast, softDelete,
 } from './core.js';
 import { renderHome } from './home.js';
 import { loadDiary } from './diary.js';
@@ -91,9 +91,15 @@ export function renderChat({ followMine = true } = {}) {
   }
 }
 
+let pinChatUntil = 0;
+
 function scrollChatToBottom() {
+  if (Date.now() < pinChatUntil) return;
   const el = $('#messages');
-  requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
+  requestAnimationFrame(() => {
+    if (Date.now() < pinChatUntil) return;
+    el.scrollTop = el.scrollHeight;
+  });
 }
 
 function updateBadge() {
@@ -212,6 +218,7 @@ function ensureEditor() {
     <div class="bubble-editor-actions">
       <button type="button" data-edit-cancel>Annuleren</button>
       <button type="button" data-edit-open hidden>Naar dagboek</button>
+      <button type="button" class="danger" data-edit-unlink hidden>Uit dagboek halen</button>
       <button type="submit" class="primary">Zet in dagboek</button>
     </div>
   `;
@@ -240,12 +247,55 @@ function ensureEditor() {
       closeEditor();
       if (!existing) return;
       actions.go?.('diary');
-      const can = samePerson(existing.author, store.me) || samePerson(existing.filed_by, store.me);
-      if (can) actions.editDiary?.(existing.id);
+      if (canFile(existing)) actions.editDiary?.(existing.id);
+      return;
+    }
+    if (e.target.closest('[data-edit-unlink]')) {
+      e.preventDefault();
+      const existing = filedFor(form.dataset.id);
+      if (!existing || !canFile(existing)) return;
+      if (!confirm('Uit het dagboek halen?')) return;
+      unfile(existing);
     }
   });
   form.addEventListener('submit', saveFromEditor);
   return form;
+}
+
+function canFile(entry) {
+  return samePerson(entry.author, store.me) || samePerson(entry.filed_by, store.me);
+}
+
+async function unfile(existing) {
+  if (!db) {
+    existing.deleted_at = new Date().toISOString();
+    closeEditor();
+    toast('Uit het dagboek gehaald.');
+    actions.renderDiary?.();
+    renderHome();
+    renderChat({ followMine: false });
+    return;
+  }
+  const { error } = await softDelete('triageve_diary', existing.id);
+  if (check(error, 'Dagboek')) return;
+  closeEditor();
+  toast('Uit het dagboek gehaald.');
+  loadDiary();
+}
+
+export function showMessage(id) {
+  actions.go?.('chat');
+  pinChatUntil = Date.now() + 700;
+  const mark = () => {
+    const bubble = document.querySelector(`.bubble[data-id="${CSS.escape(String(id))}"]`);
+    if (!bubble) return false;
+    bubble.scrollIntoView({ block: 'center' });
+    bubble.classList.add('is-linked');
+    setTimeout(() => bubble.classList.remove('is-linked'), 1800);
+    return true;
+  };
+  if (!mark()) toast('Dat bericht staat niet meer in de chat.');
+  requestAnimationFrame(mark);
 }
 
 function openEditor(id) {
@@ -269,24 +319,35 @@ function openEditor(id) {
   bubble.appendChild(form);
   const existing = filedFor(m.id);
   const already = Boolean(existing);
+  const locked = already && !canFile(existing);
   form.querySelector('.bubble-editor-when').textContent = `Tijd van het bericht: ${fmtStamp(m.created_at)}. Die tijd blijft.`;
-  form.querySelector('label[for="bubble-editor-body"]').hidden = already;
-  $('#bubble-editor-body').hidden = already;
-  $('#bubble-editor-cats').hidden = already;
-  $('#bubble-editor-important').closest('label').hidden = already;
-  form.querySelector('[type="submit"]').hidden = already;
+  form.querySelector('label[for="bubble-editor-body"]').hidden = locked;
+  $('#bubble-editor-body').hidden = locked;
+  $('#bubble-editor-cats').hidden = locked;
+  $('#bubble-editor-important').closest('label').hidden = locked;
+  form.querySelector('.bubble-editor-pdf').hidden = locked;
+  const submit = form.querySelector('[type="submit"]');
+  submit.hidden = locked;
+  submit.textContent = already ? 'Bijwerken' : 'Zet in dagboek';
   form.querySelector('[data-edit-open]').hidden = !already;
-  form.querySelector('.bubble-editor-pdf').hidden = already;
+  form.querySelector('[data-edit-unlink]').hidden = !already || locked;
   const note = form.querySelector('.bubble-editor-already');
   note.hidden = !already;
-  if (already) {
-    note.textContent = `Staat al in het dagboek, gezet door ${personName(existing.filed_by) || 'iemand'}.`;
+  if (locked) {
+    note.textContent = `Staat in het dagboek, gezet door ${personName(existing.filed_by) || 'iemand'}.`;
+  } else if (already) {
+    note.textContent = 'Aanpassen werkt het dagboek bij. Het chatbericht blijft staan.';
+    if (!same) {
+      $('#bubble-editor-body').value = existing.body || '';
+      $('#bubble-editor-important').checked = Boolean(existing.important);
+      $$('#bubble-editor-cats .chip').forEach((c) => c.classList.toggle('active', c.dataset.cat === (existing.category || 'algemeen')));
+    }
   } else if (!same) {
     $('#bubble-editor-body').value = m.body || '';
     $('#bubble-editor-important').checked = false;
     $$('#bubble-editor-cats .chip').forEach((c) => c.classList.toggle('active', c.dataset.cat === 'algemeen'));
   }
-  if (!already) $('#bubble-editor-body').focus();
+  if (!locked) $('#bubble-editor-body').focus();
 }
 
 const messages = $('#messages');
@@ -379,16 +440,37 @@ async function saveFromEditor(e) {
   }
   if (submit) submit.disabled = true;
   try {
-    if (filedFor(m.id)) {
-      toast('Dit staat al in het dagboek.');
+    const category = $('#bubble-editor-cats .chip.active')?.dataset.cat || 'algemeen';
+    const important = $('#bubble-editor-important').checked;
+    const existing = filedFor(m.id);
+    if (existing) {
+      if (!canFile(existing)) {
+        toast('Dit stukje kun je niet wijzigen.');
+        return;
+      }
+      const patch = { body, category, important, updated_at: new Date().toISOString() };
+      if (!db) {
+        Object.assign(existing, patch);
+        closeEditor();
+        toast('Dagboek bijgewerkt.');
+        actions.renderDiary?.();
+        renderHome();
+        renderChat({ followMine: false });
+        return;
+      }
+      const { error } = await db.from('triageve_diary').update(patch).eq('id', existing.id);
+      if (check(error, 'Dagboek')) return;
+      if (important) pingNotify('diary');
       closeEditor();
+      toast('Dagboek bijgewerkt.');
+      loadDiary();
       return;
     }
     const row = {
       author: personName(m.author) || m.author || 'Onbekend',
       body,
-      category: $('#bubble-editor-cats .chip.active')?.dataset.cat || 'algemeen',
-      important: $('#bubble-editor-important').checked,
+      category,
+      important,
       created_at: m.created_at,
       source_message_id: Number(m.id),
       filed_by: store.me,
@@ -429,3 +511,4 @@ onRealtime('triageve_messages', (p) => {
 actions.updateBadge = updateBadge;
 actions.scrollChatToBottom = scrollChatToBottom;
 actions.renderChat = renderChat;
+actions.showMessage = showMessage;
