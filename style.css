@@ -416,9 +416,29 @@ button:disabled { opacity: 0.6; cursor: wait; }
   }
 }
 .bubble-time { font-size: 0.75rem; text-align: right; margin-top: 2px; color: var(--muted); }
+.bubble:has(.bubble-editor) .bubble-file { display: none; }
+.bubble-editor {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  text-align: left;
+  color: var(--text);
+}
+.bubble-editor label { color: var(--text); }
+.bubble-editor-when,
+.bubble-editor-already { margin: 0 0 6px; color: var(--muted); font-size: 0.85rem; line-height: 1.35; }
+.bubble-editor textarea,
+.bubble-editor .chip { color: var(--text); background: var(--bg); }
+#bubble-editor-cats.chip-row { flex-wrap: wrap; overflow: visible; }
+.bubble-editor-actions { display: grid; gap: 8px; margin-top: 8px; }
+.bubble-editor-actions button { width: 100%; min-height: 44px; font-weight: 700; }
+.bubble-editor [data-edit-cancel],
+.bubble-editor [data-edit-open] {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
 .entry-via { margin: 6px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
-#file-dialog .dialog-buttons button { min-height: 44px; }
-#file-cats.chip-row { flex-wrap: wrap; overflow: visible; }
 .pdf-note { margin: 0 0 8px; color: var(--muted); font-size: 0.85rem; line-height: 1.35; }
 #tab-chat .pdf-note { margin: 0; padding: 6px 16px 0; background: var(--card); }
 
