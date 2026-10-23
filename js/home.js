@@ -15,6 +15,7 @@ function statusCard() {
       <p class="status-kicker">Hoe gaat het met Eef?</p>
       <p class="status-big">${esc(meta.label)}</p>
       ${traits ? `<p class="status-traits">${esc(traits)}</p>` : ''}
+      ${c?.note ? `<p class="status-note">${esc(c.note)}</p>` : ''}
       <p class="item-who">${esc(when)}</p>
       <button type="button" class="primary" id="status-open">Status doorgeven</button>
     </article>`;
@@ -45,6 +46,10 @@ function visitCard() {
   return `<article class="card home-card"><h2>Bezoek</h2><p class="empty-inline">${esc(text)}</p></article>`;
 }
 
+function diaryFresh(d) {
+  return [d.inserted_at, d.updated_at, d.created_at].filter(Boolean).sort().at(-1) || '';
+}
+
 function clip(text, n = 140) {
   const t = String(text || '').trim();
   if (t.length <= n) return t;
@@ -62,9 +67,10 @@ export function renderHome() {
     .slice(0, 3);
 
   const openTasks = alive(store.tasks).filter((t) => !t.done).slice(0, 5);
-  const importantDiary = alive(store.diary).filter((d) => d.important);
-  const otherDiary = alive(store.diary).filter((d) => !d.important);
-  const diaryBits = [...importantDiary, ...otherDiary].slice(0, 3);
+  const diaryBits = alive(store.diary)
+    .slice()
+    .sort((a, b) => diaryFresh(b).localeCompare(diaryFresh(a)))
+    .slice(0, 3);
   const unread = store.unread || 0;
 
   const meetHtml = upcoming.length
@@ -122,7 +128,10 @@ export function renderHome() {
       ${diaryHtml}
     </article>
     <article class="card home-card">
-      <h2>Chat</h2>
+      <div class="card-head">
+        <h2>Chat</h2>
+        ${unread ? '<span class="chat-dot" aria-label="Nieuwe berichten"></span>' : ''}
+      </div>
       <p class="empty-inline">${esc(msgLabel)}</p>
       <button type="button" class="primary" data-go="chat">Naar chat</button>
     </article>

@@ -18,6 +18,7 @@ export async function loadMessages() {
   if (check(error, 'Berichten laden')) return;
   store.messages = data.reverse();
   renderChat();
+  refreshUnread();
   renderHome();
 }
 
@@ -25,11 +26,8 @@ function addMessage(m) {
   if (store.messages.some((x) => x.id === m.id)) return;
   store.messages.push(m);
   renderChat();
+  refreshUnread();
   renderHome();
-  if (!samePerson(m.author, store.me) && (store.activeTab !== 'chat' || document.hidden)) {
-    store.unread += 1;
-    updateBadge();
-  }
 }
 
 function filedFor(id) {
@@ -102,12 +100,53 @@ function scrollChatToBottom() {
   });
 }
 
+const CHAT_SEEN_KEY = 'triageve.chatSeen';
+
+function chatSeenMap() {
+  try { return JSON.parse(localStorage.getItem(CHAT_SEEN_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function markChatSeen() {
+  if (!store.me) {
+    store.unread = 0;
+    updateBadge();
+    return;
+  }
+  const latest = (store.messages || []).reduce((max, m) => (m.created_at > max ? m.created_at : max), '');
+  const now = new Date().toISOString();
+  const map = chatSeenMap();
+  map[store.me] = latest > now ? latest : now;
+  localStorage.setItem(CHAT_SEEN_KEY, JSON.stringify(map));
+  store.unread = 0;
+  updateBadge();
+  renderHome();
+}
+
+function refreshUnread() {
+  if (!store.me || (store.activeTab === 'chat' && !document.hidden) || !chatSeenMap()[store.me]) {
+    markChatSeen();
+    return;
+  }
+  const seen = chatSeenMap()[store.me];
+  store.unread = (store.messages || []).filter((m) => (
+    !m.pending && !samePerson(m.author, store.me) && (!seen || m.created_at > seen)
+  )).length;
+  updateBadge();
+  if (store.activeTab === 'home') renderHome();
+}
+
 function updateBadge() {
   const badge = $('#chat-badge');
+  if (!badge) return;
   badge.hidden = store.unread === 0;
   badge.textContent = store.unread > 99 ? '99+' : store.unread;
   document.title = store.unread ? `(${store.unread}) triagEve` : 'triagEve';
 }
+
+document.addEventListener('visibilitychange', () => {
+  if (store.messages?.length) refreshUnread();
+});
 
 const chatInput = $('#chat-input');
 
@@ -477,7 +516,7 @@ async function saveFromEditor(e) {
     };
     if (!db) {
       store.diary = store.diary || [];
-      store.diary.unshift({ id: Date.now(), ...row });
+      store.diary.unshift({ id: Date.now(), inserted_at: new Date().toISOString(), ...row });
       closeEditor();
       toast('In het dagboek gezet.');
       actions.renderDiary?.();
@@ -509,6 +548,7 @@ onRealtime('triageve_messages', (p) => {
 });
 
 actions.updateBadge = updateBadge;
+actions.markChatSeen = markChatSeen;
 actions.scrollChatToBottom = scrollChatToBottom;
 actions.renderChat = renderChat;
 actions.showMessage = showMessage;

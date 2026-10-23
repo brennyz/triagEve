@@ -149,6 +149,7 @@ $('#diary-form').addEventListener('submit', async (e) => {
         id: Date.now(),
         author: store.me,
         created_at: new Date().toISOString(),
+        inserted_at: new Date().toISOString(),
         ...payload,
       });
     }

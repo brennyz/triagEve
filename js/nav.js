@@ -32,8 +32,7 @@ export function switchTab(tab) {
   $$('.tab-panel').forEach((p) => { p.hidden = p.id !== `tab-${tab}`; });
   $('#page-title').textContent = TITLES[tab] || 'triagEve';
   if (tab === 'chat') {
-    store.unread = 0;
-    actions.updateBadge?.();
+    actions.markChatSeen?.();
     actions.scrollChatToBottom?.();
   }
   if (tab === 'home') renderHome();

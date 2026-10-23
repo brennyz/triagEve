@@ -54,6 +54,7 @@ Zie `docs/GROK_PLAN.md` voor wat elke fase inhoudt.
 - Geen echte gegevens over Eef in de repo of testdata
 
 ## Notities
+- 2026-10-23: Status heeft de opmerking direct boven Goed, Matig en Zorgelijk, en toont die op Home. Het chat-icoon krijgt een bolletje bij een nieuw bericht van een ander. Een chatbericht dat in het dagboek gaat, komt ook bij Laatste dagboek op Home. Migratie `20261023120000_dagboek_geplaatst.sql`.
 - 2026-10-22: Vasthouden op een chatbericht zet het in het dagboek met de tijd van dat bericht. Het blijft hetzelfde stukje: bijwerken kan in de chat en in het dagboek, en Naar de chat springt terug. Geen tweede kopie. Migratie `20261022120000_chat_dagboek.sql`.
 - 2026-10-17: Bij openen in de browser vraagt de app om hem op de telefoon te zetten. Android krijgt de installatievraag, iPhone de stappen via Delen. In de agenda klapt de kalender weg bij Aankomend, Huidig en Eerder, en komt terug als je helemaal naar boven scrolt.
 - 2026-10-17: Home toont weer wie er is, het briefje voor de volgende en de inname. De agenda-kalender is vol breed met tikbare dagen, de lijst eronder ook. Een nieuwe afspraak begint als afspraak, met datum en tijd naast elkaar. Zoeken in het dagboek staat bovenaan. Meer is gesplitst in Elke dag en Papieren en extra.
