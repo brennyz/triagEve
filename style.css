@@ -1002,8 +1002,25 @@ dialog h2 { margin-top: 0; }
 .status-kicker { margin: 0; color: var(--muted); font-size: 0.85rem; }
 .status-big { font-size: 1.45rem; font-weight: 800; margin: 4px 0; }
 .status-note { margin: 0 0 8px; white-space: pre-wrap; line-height: 1.4; }
-.status-actions label { margin-top: 0; }
-.status-actions textarea { margin: 4px 0 8px; }
+.status-scroll > label { margin-top: 4px; }
+.status-more { margin: 8px 0 12px; }
+.status-more summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+.status-btns { grid-template-columns: 1fr; }
+.status-btns .status-good { background: #1f6b3a; color: #fff; }
+.status-btns .status-ok { background: #8a5a08; color: #fff; }
+.status-btns .status-bad { background: #9d1c2c; color: #fff; }
+.status-scroll { max-height: 92dvh; }
+.status-btns .status-good:hover,
+.status-btns .status-good:active,
+.status-btns .status-good:focus-visible { background: #1f6b3a; color: #fff; }
+.status-btns .status-ok:hover,
+.status-btns .status-ok:active,
+.status-btns .status-ok:focus-visible { background: #8a5a08; color: #fff; }
+.status-btns .status-bad:hover,
+.status-btns .status-bad:active,
+.status-btns .status-bad:focus-visible { background: #9d1c2c; color: #fff; }
+.bubble-editor-more { margin: 4px 0 8px; }
+.bubble-editor-more summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; cursor: pointer; color: var(--text); }
 .status-good { border-left-color: #2f7d4a; }
 .status-ok { border-left-color: #c4841d; }
 .status-bad { border-left-color: #b42334; }
@@ -1047,12 +1064,8 @@ dialog h2 { margin-top: 0; }
 .status-fields { display: grid; gap: 2px; margin-top: 4px; }
 .status-fields label { margin-top: 8px; }
 .status-for { margin-top: 8px; }
-.status-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
-.status-btns button { min-height: 52px; min-width: 0; font-weight: 800; border-radius: 12px; }
-@media (max-width: 360px) {
-  .status-btns { grid-template-columns: 1fr; }
-}
-html.large-text .status-btns { grid-template-columns: 1fr; }
+.status-btns { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 12px 0; }
+.status-btns button { min-height: 56px; width: 100%; font-size: 1.15rem; font-weight: 800; border-radius: 12px; }
 @media (prefers-color-scheme: dark) {
   .status-good { border-left-color: #8ddeaf; }
   .status-ok { border-left-color: #e6c27a; }

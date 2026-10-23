@@ -82,7 +82,7 @@
     <!-- Chat -->
     <div id="tab-chat" class="tab-panel" hidden>
       <div id="messages" class="messages"><p class="empty">Nog geen berichten. Zeg hallo!</p></div>
-      <p class="pdf-note">Houd de muis op een bericht of houd het vast. Pas de tekst aan en tik Zet in dagboek. Staat het er al, dan werk je dat stukje hier bij. Chat komt niet in een pdf.</p>
+      <p class="pdf-note">Houd een bericht even vast om het in het dagboek te zetten. Op een computer kun je ook op In dagboek tikken.</p>
       <form id="chat-form" class="composer">
         <textarea id="chat-input" rows="1" placeholder="Bericht..." maxlength="5000"></textarea>
         <button type="submit" class="primary send" title="Versturen" aria-label="Versturen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -529,23 +529,23 @@
   <dialog id="status-dialog">
     <form id="status-form">
       <div class="status-scroll">
-        <h2>Hoe gaat het?</h2>
-        <p class="notice">Bij acuut gevaar: bel 112. Twijfel? Bel de huisarts of huisartsenpost.</p>
-        <p class="muted">Kies alleen wat opviel. Dan één tik.</p>
-        <p class="pdf-note">De laatste status komt mee in de pdf. Alles komt in de tijdlijn.</p>
-        <label for="status-moment">Moment</label>
-        <select id="status-moment"><option value="">Nu</option></select>
-        <div id="status-context" class="status-fields"></div>
-        <div id="status-traits" class="status-fields"></div>
-      </div>
-      <div class="status-actions">
-        <label for="status-note">Opmerking</label>
-        <textarea id="status-note" rows="2" placeholder="Extra opmerking, mag leeg"></textarea>
+        <h2 id="status-heading" tabindex="-1">Hoe gaat het met Eef?</h2>
+        <p class="status-kicker">Bij gevaar: bel 112.</p>
         <div class="status-btns">
-          <button type="submit" class="status-good" data-status="goed">Goed</button>
-          <button type="submit" class="status-ok" data-status="matig">Matig</button>
-          <button type="submit" class="status-bad" data-status="zorgelijk">Zorgelijk</button>
+          <button type="button" class="status-good" data-status="goed">Goed</button>
+          <button type="button" class="status-ok" data-status="matig">Matig</button>
+          <button type="button" class="status-bad" data-status="zorgelijk">Zorgelijk</button>
         </div>
+        <label for="status-note">Opmerking</label>
+        <textarea id="status-note" rows="2" placeholder="Mag leeg"></textarea>
+        <details id="status-more" class="status-more">
+          <summary>Meer, als er iets opviel</summary>
+          <label for="status-moment">Moment</label>
+          <select id="status-moment"><option value="">Nu</option></select>
+          <div id="status-context" class="status-fields"></div>
+          <div id="status-traits" class="status-fields"></div>
+          <p class="pdf-note">De laatste status komt mee in de pdf. Alles komt in de tijdlijn.</p>
+        </details>
         <button type="button" id="status-cancel" class="ghost">Annuleren</button>
       </div>
     </form>

@@ -97,7 +97,16 @@ export function openStatus(meetingId = null) {
     moment.value = wanted;
   }
   if (place) place.value = guessPlace(selectedMeeting());
-  $('#status-dialog')?.showModal();
+  const more = $('#status-more');
+  if (more) more.open = Boolean(meetingId);
+  const scroll = document.querySelector('#status-dialog .status-scroll');
+  if (scroll) scroll.scrollTop = 0;
+  const dialog = $('#status-dialog');
+  if (!dialog) return;
+  if (!dialog.open) dialog.showModal();
+  const focusHeading = () => $('#status-heading')?.focus({ preventScroll: true });
+  focusHeading();
+  requestAnimationFrame(focusHeading);
 }
 
 export async function loadCheckins() {
@@ -194,10 +203,10 @@ export async function submitStatus(status, note, extra = {}) {
     renderHome();
     actions.renderMeetings?.();
     toast('Status doorgegeven.');
-    return;
+    return true;
   }
   const { error } = await db.from('triageve_checkins').insert(row);
-  if (check(error, 'Status opslaan')) return;
+  if (check(error, 'Status opslaan')) return false;
   if (status === 'zorgelijk') {
     const { error: dErr } = await db.from('triageve_diary').insert({
       author: store.me,
@@ -205,21 +214,40 @@ export async function submitStatus(status, note, extra = {}) {
       category: 'gezondheid',
       important: true,
     });
-    if (check(dErr, 'Dagboekregel')) return;
-    loadDiary();
-    pingNotify('status');
+    if (!check(dErr, 'Dagboekregel')) {
+      loadDiary();
+      pingNotify('status');
+    }
   }
   toast('Status doorgegeven.');
   loadCheckins();
   actions.renderMeetings?.();
+  return true;
 }
 
-$('#status-form')?.addEventListener('submit', async (e) => {
+let statusBusy = false;
+
+async function chooseStatus(status) {
+  if (statusBusy || !STATUS[status]) return;
+  statusBusy = true;
+  const buttons = document.querySelectorAll('#status-dialog .status-btns button');
+  buttons.forEach((btn) => { btn.disabled = true; });
+  try {
+    const ok = await submitStatus(status, $('#status-note').value.trim(), readTraits());
+    if (ok) $('#status-dialog')?.close();
+  } finally {
+    statusBusy = false;
+    buttons.forEach((btn) => { btn.disabled = false; });
+  }
+}
+
+$('#status-form')?.addEventListener('submit', (e) => {
   e.preventDefault();
-  const status = e.submitter?.dataset.status;
-  if (!status) return;
-  await submitStatus(status, $('#status-note').value.trim(), readTraits());
-  $('#status-dialog').close();
+});
+document.querySelector('#status-dialog .status-btns')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-status]');
+  if (!btn || btn.disabled) return;
+  chooseStatus(btn.dataset.status);
 });
 $('#status-cancel')?.addEventListener('click', () => $('#status-dialog').close());
 

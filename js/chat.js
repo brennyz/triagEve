@@ -85,6 +85,8 @@ export function renderChat({ followMine = true } = {}) {
       $$('#bubble-editor-cats .chip').forEach((c) => c.classList.toggle('active', c.dataset.cat === cat));
       const box = $('#bubble-editor-important');
       if (box) box.checked = important;
+      const more = document.querySelector('#bubble-editor .bubble-editor-more');
+      if (more) more.open = cat !== 'algemeen' || important;
     }
   }
 }
@@ -221,9 +223,6 @@ let editingId = null;
 let editDraft = null;
 let editCat = 'algemeen';
 let editImportant = false;
-let hoverTimer = null;
-let hoverId = null;
-
 function closeEditor() {
   editingId = null;
   editDraft = null;
@@ -242,17 +241,20 @@ function ensureEditor() {
     <p class="bubble-editor-when"></p>
     <label for="bubble-editor-body">Pas aan voor het dagboek</label>
     <textarea id="bubble-editor-body" rows="3" maxlength="20000"></textarea>
-    <div class="chips chip-row" id="bubble-editor-cats">
-      <button type="button" class="chip active" data-cat="algemeen">Algemeen</button>
-      <button type="button" class="chip" data-cat="gezondheid">Gezondheid</button>
-      <button type="button" class="chip" data-cat="stemming">Stemming</button>
-      <button type="button" class="chip" data-cat="eten">Eten</button>
-      <button type="button" class="chip" data-cat="slaap">Slaap</button>
-      <button type="button" class="chip" data-cat="medicatie">Medicatie</button>
-      <button type="button" class="chip" data-cat="incident">Incident</button>
-    </div>
-    <label class="check-line"><input id="bubble-editor-important" type="checkbox"> Belangrijk</label>
-    <p class="bubble-editor-pdf">Belangrijk komt in de pdf. De chat zelf niet.</p>
+    <details class="bubble-editor-more">
+      <summary>Soort of belangrijk</summary>
+      <div class="chips chip-row" id="bubble-editor-cats">
+        <button type="button" class="chip active" data-cat="algemeen">Algemeen</button>
+        <button type="button" class="chip" data-cat="gezondheid">Gezondheid</button>
+        <button type="button" class="chip" data-cat="stemming">Stemming</button>
+        <button type="button" class="chip" data-cat="eten">Eten</button>
+        <button type="button" class="chip" data-cat="slaap">Slaap</button>
+        <button type="button" class="chip" data-cat="medicatie">Medicatie</button>
+        <button type="button" class="chip" data-cat="incident">Incident</button>
+      </div>
+      <label class="check-line"><input id="bubble-editor-important" type="checkbox"> Belangrijk</label>
+      <p class="bubble-editor-pdf">Belangrijk komt in de pdf. De chat zelf niet.</p>
+    </details>
     <p class="bubble-editor-already" hidden></p>
     <div class="bubble-editor-actions">
       <button type="button" data-edit-cancel>Annuleren</button>
@@ -349,8 +351,6 @@ function openEditor(id) {
   }
   const bubble = document.querySelector(`.bubble[data-id="${CSS.escape(String(m.id))}"]`);
   if (!bubble) return;
-  clearTimeout(hoverTimer);
-  hoverId = null;
   const form = ensureEditor();
   const same = editingId === String(m.id) && form.isConnected;
   editingId = String(m.id);
@@ -362,9 +362,15 @@ function openEditor(id) {
   form.querySelector('.bubble-editor-when').textContent = `Tijd van het bericht: ${fmtStamp(m.created_at)}. Die tijd blijft.`;
   form.querySelector('label[for="bubble-editor-body"]').hidden = locked;
   $('#bubble-editor-body').hidden = locked;
-  $('#bubble-editor-cats').hidden = locked;
-  $('#bubble-editor-important').closest('label').hidden = locked;
-  form.querySelector('.bubble-editor-pdf').hidden = locked;
+  const more = form.querySelector('.bubble-editor-more');
+  if (more) {
+    more.hidden = locked;
+    if (!same) {
+      more.open = !locked && already && (
+        Boolean(existing.important) || (existing.category && existing.category !== 'algemeen')
+      );
+    }
+  }
   const submit = form.querySelector('[type="submit"]');
   submit.hidden = locked;
   submit.textContent = already ? 'Bijwerken' : 'Zet in dagboek';
@@ -425,27 +431,6 @@ messages?.addEventListener('pointerdown', (e) => {
   window.addEventListener('pointerup', endHold);
   window.addEventListener('pointercancel', endHold);
   window.addEventListener('pointermove', moveHold);
-});
-messages?.addEventListener('pointerover', (e) => {
-  if (e.pointerType && e.pointerType !== 'mouse') return;
-  if (e.buttons || document.activeElement === chatInput || $('#bubble-editor')) return;
-  const bubble = e.target.closest('.bubble[data-id]');
-  if (!bubble || bubble.dataset.pending) return;
-  if (hoverId === bubble.dataset.id) return;
-  clearTimeout(hoverTimer);
-  hoverId = bubble.dataset.id;
-  hoverTimer = setTimeout(() => {
-    if ($('#bubble-editor') || document.activeElement === chatInput) return;
-    if (!bubble.isConnected || !bubble.matches(':hover')) return;
-    openEditor(bubble.dataset.id);
-  }, 450);
-});
-messages?.addEventListener('pointerout', (e) => {
-  const bubble = e.target.closest('.bubble[data-id]');
-  if (!bubble || bubble.contains(e.relatedTarget)) return;
-  if (hoverId !== bubble.dataset.id) return;
-  clearTimeout(hoverTimer);
-  hoverId = null;
 });
 messages?.addEventListener('click', (e) => {
   const btn = e.target.closest('.bubble-file');
